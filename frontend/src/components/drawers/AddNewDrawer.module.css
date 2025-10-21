@@ -1,0 +1,321 @@
+.addNewParentCtn {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    cursor: pointer;
+}
+
+.addNewCtn {
+    width: 400px;
+    position: fixed;
+    bottom: -100%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    max-height: 85vh;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border-radius: 20px;
+    transition: bottom 300ms ease-out;
+    background-color: #fff8f0;
+    padding: 15px 20px 40px 20px;
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    cursor: default;
+}
+
+.addNewCtn::-webkit-scrollbar {
+    display: none;
+}
+
+.addNewCtnSlide {
+    bottom: -20px;
+}
+
+.addNewTitle {
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 16px;
+    padding-bottom: 4px;
+    border-bottom: 0.5px dashed #00000096;
+    width: 100%;
+}
+
+.addNewCaption {
+    font-size: 16px;
+    margin-bottom: 5px;
+    width: 100%;
+}
+
+.typeBtnCtn {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 25px;
+    padding-top: 3px;
+    width: 100%;
+    min-height: 40px;
+}
+
+.typeBtn {
+    border: 2px solid #7D7D7D99;
+    background: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    transition: ease 0.3s, box-shadow 0.3s ease, background 0.3s ease;
+    color: #00000096;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 90px;
+    height: 35px;
+}
+
+.typeBtnImg {
+    height: 20px;
+    width: 20px;
+}
+
+.typeBtnActive {
+    color: black;
+    border: 2px solid #FF9801;
+    background: #FF9801;
+}
+
+.typeBtn:hover {
+    border: 2px solid #FF9801;
+    box-shadow: 0px 2px 15px 1px rgba(252, 167, 40, 0.495);
+    transform: translateY(-5px);
+    cursor: pointer;
+    color: black;
+}
+
+.addNewLabel {
+    position: absolute;
+    left: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+    color: #00000096;
+    top: 6px;
+    /*keep it padding bottom equal to */
+}
+
+.addNewInputCtn:focus-within .addNewLabel,
+.filled {
+    top: -8px;
+    left: 10px;
+    font-size: 12px;
+    color: black;
+    background-color: #fff8f0;
+    height: fit-content;
+}
+
+.addNewInputCtn {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.addNewInput {
+    /* border: none; */
+    border: 1px solid #fca728;
+    background: none;
+    width: 370px;
+    /* keep it 350 - padding-left*2 -10 */
+    font-size: 16px;
+    padding: 6px 10px 6px 10px;
+    border-radius: 8px;
+}
+
+
+.addNewTextArea {
+    border: 1px solid #fca728;
+    background: none;
+    width: 370px;
+    /* keep it 350 - padding-left*2 - 10*/
+    font-size: 16px;
+    padding: 6px 10px 6px 10px;
+    border-radius: 8px;
+    resize: none;
+}
+
+.addNewTextArea:active,
+.addNewTextArea:focus,
+.addNewTextArea:hover {
+    outline: none;
+    border-color: #a56b12;
+}
+
+.addNewInput:active,
+.addNewInput:focus,
+.addNewInput:hover {
+    outline: none;
+    border-color: #a56b12;
+}
+
+.addNewInput::-webkit-outer-spin-button,
+.addNewInput::-webkit-inner-spin-button {
+    display: none;
+    -webkit-appearance: none;
+}
+
+.confirmAddBtn {
+    background-color: #fca728;
+    width: 225px;
+    padding: 7px 0;
+    font-size: 16px;
+    border-radius: 10px;
+    color: black;
+    transition: ease 0.3s, box-shadow 0.3s ease;
+    border: 1px solid #FF9801;
+}
+
+.confirmAddBtn:hover {
+    box-shadow: 0px 2px 15px 1px rgba(252, 167, 40, 0.495);
+    transform: translateY(-5px);
+    cursor: pointer;
+}
+
+.suggestionDiv {
+    width: 400px;
+    position: absolute;
+    background-color: #fff8f0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 330px;
+    overflow: scroll;
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border-radius: 10px;
+    top: 105px;
+    padding-top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* color: red; */
+}
+
+.suggestionBtn {
+    border: 1.5px dashed #FF9801;
+    background: none;
+    border-radius: 8px;
+    padding: 3px 5px;
+    margin-bottom: 5px;
+    width: 380px;
+    text-align: left;
+    color: black;
+}
+
+.suggestionBtn:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.error {
+    font-size: 14px;
+    padding-left: 6px;
+    position: absolute;
+    bottom: -17px;
+    color: red;
+}
+
+.errorTextArea {
+    font-size: 14px;
+    padding-left: 6px;
+    position: absolute;
+    bottom: -13px;
+    color: red;
+}
+
+.addNewMap {
+    width: 100%;
+    height: 380px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.addNewChip {
+    display: flex;
+    align-items: center;
+    width: calc(100% - 20px);
+    padding: 10px;
+    gap: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border: 1px solid #FF9801;
+    font-size: 14px;
+}
+
+.addNewChipImg {
+    width: 30px;
+    height: 30px;
+}
+
+.confirmEditBtn {
+    background-color: #fff8f0;
+    width: 225px;
+    padding: 7px 0;
+    border-color: transparent;
+    font-size: 16px;
+    border-radius: 10px;
+    color: black;
+    transition: ease 0.3s, box-shadow 0.3s ease;
+    margin-bottom: 15px;
+    border: 1px solid #FF9801;
+}
+
+.confirmEditBtn:hover {
+    box-shadow: 0px 2px 15px 1px rgba(252, 167, 40, 0.495);
+    transform: translateY(-5px);
+    cursor: pointer;
+}
+
+@media (max-width:600px) {
+    .addNewCtn {
+        width: 85vw;
+        padding: 15px 15px 40px 15px;
+    }
+
+    .addNewInputCtn {
+        width: 100%;
+    }
+
+    .addNewInput,
+    .addNewTextArea {
+        width: calc(100% - 20px);
+        /* 2* padding of input */
+    }
+
+    .typeBtnCtn {
+        gap: 15px;
+        overflow-x: scroll;
+        -ms-overflow-style: none;
+        /* Internet Explorer 10+ */
+        scrollbar-width: none;
+        /* Firefox */
+    }
+
+    .typeBtnCtn::-webkit-scrollbar {
+        display: none;
+    }
+
+    .suggestionDiv{
+        width: calc(100% + 10px)
+    }
+
+    .suggestionBtn{
+        width: calc(100% - 10px);
+    }
+
+}

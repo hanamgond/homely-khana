@@ -1,0 +1,131 @@
+/* src/components/offering/Offering.module.css */
+.offeringCard {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05); /* Softer shadow */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
+}
+
+.offeringCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Softer hover shadow */
+}
+
+/* Image Styles */
+.imageContainer {
+    position: relative;
+    width: 100%;
+    /* --- FIX: Use aspect-ratio instead of fixed height --- */
+    aspect-ratio: 16 / 10;
+    background-color: #f3f4f6; /* Placeholder color while image loads */
+}
+
+.offeringImage {
+    /* layout='fill' and objectFit='cover' in the component handle the rest */
+}
+
+/* Price Badge Styles */
+.priceBadge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
+}
+
+/* Content Styles */
+.offeringContent {
+    padding: 1rem; /* Reduced padding */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.title {
+    font-size: 1.1rem; /* Slightly smaller */
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 0.75rem;
+}
+
+.reviews {
+    font-size: 0.75rem; /* Smaller */
+    color: #6b7280;
+}
+
+.caption {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin: 0 0 1rem 0; /* Reduced margin */
+    line-height: 1.5;
+    flex-grow: 1; /* This pushes the footer down */
+}
+
+/* List of Items */
+.itemsList {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0; /* Add margin at the bottom */
+}
+
+.itemsList li {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Reduced gap */
+    font-size: 0.85rem; /* Smaller */
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.checkIcon {
+    color: #22c55e;
+    flex-shrink: 0;
+}
+
+/* Footer Styles */
+.footer {
+    padding: 0 1rem 1rem 1rem; /* Reduced padding, removed top padding */
+    margin-top: auto; /* Pushes the footer to the bottom */
+}
+
+/* Order Button Styles */
+.orderButton {
+    background-color: #10b981; /* Brighter green from design */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px; /* Reduced padding */
+    font-size: 0.9rem; /* Smaller font */
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s ease;
+    text-align: center;
+}
+
+.orderButton:hover {
+    background-color: #059669; /* Darker green */
+}

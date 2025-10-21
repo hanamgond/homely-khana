@@ -1,0 +1,174 @@
+/* styles/Payment.module.css */
+.pageContainer {
+  max-width: 1000px; /* Slightly wider for better spacing */
+  margin: 3rem auto;
+  padding: 0 1rem;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: var(--primary-orange);
+  text-decoration: none;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+.layoutGrid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 2.5rem; /* Increased gap */
+  align-items: start;
+}
+
+.paymentColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.infoBox, .paymentBox {
+  background-color: #fff;
+  border-radius: var(--card-radius);
+  padding: 2rem;
+  box-shadow: var(--card-shadow);
+  border: 1px solid #f0f0f0;
+}
+
+.boxHeader {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.addressDisplay {
+  font-size: 1rem;
+  color: var(--muted-text);
+  line-height: 1.6;
+  font-weight: 600;
+}
+
+.paymentFormContainer {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-text);
+}
+
+.securityInfo {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the security info */
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: #22c55e; /* Green for trust */
+  font-weight: 600;
+  margin-top: 1.5rem;
+  background-color: #f0fff4; /* Light green background */
+  padding: 0.75rem;
+  border-radius: 8px;
+}
+
+.securityInfo svg {
+  flex-shrink: 0; /* Prevent icon from shrinking */
+}
+
+/* Right Column: Order Summary */
+.summaryBox {
+  background-color: #fff;
+  border-radius: var(--card-radius);
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+  border: 1px solid #f0f0f0;
+  position: sticky;
+  top: 120px;
+}
+
+.summaryHeader {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0 0 1.5rem 0;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  row-gap: 1rem; /* Increased row gap */
+  margin-bottom: 1.5rem;
+}
+
+.summaryLabel {
+  color: var(--muted-text);
+  font-weight: 600;
+}
+
+.summaryValue {
+  font-weight: 700;
+  text-align: right;
+}
+
+.totalAmountRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 1.25rem;
+}
+
+.summaryTotalLabel {
+  font-weight: 800;
+  font-size: 1.2rem; /* Slightly larger */
+}
+
+.summaryTotalPrice {
+  font-weight: 800;
+  font-size: 1.6rem; /* Slightly larger */
+  color: var(--primary-orange);
+}
+
+.payButton {
+  background-color: #22c55e;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  padding: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.payButton:hover {
+  background-color: #16a34a;
+}
+
+/* --- NEW: Loading spinner styles --- */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

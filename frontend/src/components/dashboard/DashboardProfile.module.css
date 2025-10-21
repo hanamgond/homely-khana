@@ -1,0 +1,324 @@
+.main {
+    width: 100vw;
+    display: flex;
+}
+
+.mainLeft {
+    width: 220px;
+    height: 100vh;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    padding: 0 15px;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.mainLeftCtn {
+    margin-top: 30px;
+}
+
+.mainRight {
+    margin: 40px 25px;
+    padding: 20px;
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    justify-content: space-evenly;
+    gap: 35px;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.companyName {
+    font-family: "Lancelot", serif;
+    font-size: 36px;
+    font-weight: 600;
+    text-decoration: none;
+    color: black;
+}
+
+.userName {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #FF9801;
+}
+
+.sidebarBtnCtn {
+    margin-top: 65px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transform: translateX(-15px);
+}
+
+.sideBarLink {
+    text-align: left;
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    padding-left: 15px;
+    width: calc(100% + 15px);
+    color: black;
+    text-decoration: none;
+}
+
+.sideBarLink:hover {
+    text-decoration: underline;
+}
+
+.sideBarLogoutBtn {
+    text-align: left;
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    padding-left: 15px;
+    width: calc(100% + 15px);
+    color: red;
+    font-weight: 600;
+    transform: translateX(-15px);
+    margin-bottom: 45px;
+}
+
+.rightParent {
+    max-height: 30px;
+    transition: all 400ms ease-in;
+    width: 100%;
+    border-radius: 10px;
+    padding: 10px 20px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    overflow: hidden;
+}
+
+.expandRightParent {
+    max-height: 500px;
+}
+
+.rightChipFlexCtn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rightTitle {
+    font-size: 24px;
+    font-weight: 600;
+    color: #FF9801;
+}
+
+.titleBorder {
+    border-bottom: 0.5px dashed #FF9801;
+}
+
+.rightChipHeroCtn {
+    position: relative;
+}
+
+.expandBtn {
+    position: absolute;
+    top: 5px;
+    right: 0;
+    border: none;
+    background: transparent;
+    transition: all 300ms ease-in-out;
+}
+
+.rotateBtn {
+    transform: rotate(-180deg);
+}
+
+.inputCtn {
+    position: relative;
+}
+
+.passwordFields {
+    display: flex;
+    flex-direction: column;
+    gap: 33px;
+    margin-top: 20px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.passwordLabel {
+    position: absolute;
+    left: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+    color: #00000096;
+    top: 6px;
+}
+
+.inputCtn:focus-within .passwordLabel,
+.filled {
+    top: -8px;
+    left: 10px;
+    font-size: 12px;
+    color: black;
+    background-color: #fff8f0;
+    height: fit-content;
+}
+
+.error {
+    font-size: 14px;
+    padding-left: 6px;
+    position: absolute;
+    bottom: -20px;
+    color: red;
+}
+
+.passwordInput {
+    border: 1px solid #fca728;
+    background: none;
+    width: 80%;
+    font-size: 16px;
+    padding: 6px 10px 6px 10px;
+    border-radius: 8px;
+}
+
+.passwordInput:active,
+.passwordInput:focus,
+.passwordInput:hover {
+    outline: none;
+    border-color: #a56b12;
+}
+
+.passwordInput::-webkit-outer-spin-button,
+.passwordInput::-webkit-inner-spin-button {
+    display: none;
+    -webkit-appearance: none;
+}
+
+.savePasswordBtn {
+    background-color: #fca728;
+    width: 170px;
+    padding: 7px 0;
+    font-size: 16px;
+    border-radius: 10px;
+    color: black;
+    transition: ease 0.3s, box-shadow 0.3s ease;
+    border: 1px solid #FF9801;
+    position: relative;
+    transform: translate(-50%, 0);
+    left: 50%;
+}
+
+.savePasswordBtn:hover {
+    box-shadow: 0px 2px 15px 1px rgba(252, 167, 40, 0.495);
+    transform: translate(-50%, -5px);
+    cursor: pointer;
+}
+
+.addAddBtn{
+    border: none;
+    background: none;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #FF9801;
+    width: 100%;
+    text-align: left;
+}
+
+.addCtn{
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.addChipCtn{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chip {
+    /* width: 100%; */
+    padding: 5px 10px;
+    margin-bottom: 8px;
+    border: 1px #7D7D7D99 solid;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 400px;
+}
+
+.chipImg {
+    height: 32px;
+    width: 32px;
+}
+
+.chipTitle {
+    font-weight: 600;
+}
+
+.chipBody {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chipCaption{
+    color: #00000096;
+}
+
+.title {
+    font-size: 18px;
+    margin-bottom: 16px;
+    padding-bottom: 3px;
+    border-bottom: 0.5px dashed #00000096;
+    width: fit-content;
+}
+
+.toggleButton{
+    position: absolute;
+    right: calc(20% - 10px);
+    background: none;
+    border: none;
+    padding: 3px;
+    top:50%;
+    transform: translateY(-50%);
+}
+
+.passIcon{
+    height: 23px;
+    width: 23px;
+}
+
+.rightInfo{
+    display: flex;
+    gap:4px;
+    margin-top: 3px;
+}
+
+.rightInfo span:nth-child(1) {
+    width: 45px;
+    font-weight: 600;
+}
+
+.rightInfoCtn{
+    margin: 10px 0;
+}
+
+@media (max-width: 730px),
+(orientation: portrait) {
+    .mainRight{
+        margin: 90px 0 55px 0;
+    }
+
+    .passwordInput{
+        width: 92%;
+    }
+
+    .toggleButton{
+        right: calc(8% - 10px);
+    }
+
+}

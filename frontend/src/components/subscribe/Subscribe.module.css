@@ -1,0 +1,253 @@
+.pageContainer {
+  max-width: 900px;
+  margin: 4rem auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+.header p {
+  font-size: 1.1rem;
+  color: var(--muted-text);
+  text-align: center;
+}
+
+.stepBox {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid #e5e7eb;
+}
+.stepHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.stepNumber {
+  background-color: var(--primary-orange);
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+.stepHeader h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+.stepTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.selectionGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.mealCard {
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.mealCard.active {
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3);
+}
+.mealCard img { width: 100%; height: 180px; object-fit: cover; }
+.mealInfo { padding: 1rem; }
+.mealInfo h3 { margin: 0 0 0.25rem 0; }
+.mealInfo p { color: var(--muted-text); font-size: 0.9rem; }
+.mealPrice { font-weight: 700; color: var(--primary-orange); margin-top: 0.5rem; }
+
+.quantitySelector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.quantityLabel { font-weight: 600; }
+.quantityControls { display: flex; align-items: center; gap: 0.75rem; }
+.quantityButton {
+  background-color: #fff;
+  border: 2px solid #e5e7eb;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+.quantityDisplay { font-size: 1.2rem; font-weight: 700; }
+
+.buttonGroup {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+.optionButton {
+  background-color: #fff;
+  border: 2px solid #e5e7eb;
+  padding: 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+.optionButton.active {
+  background-color: var(--primary-orange);
+  color: white;
+  border-color: var(--primary-orange);
+}
+.optionButton span { display: block; font-size: 0.85rem; font-weight: 400; color: #a0aec0; }
+.optionButton.active span { color: rgba(255, 255, 255, 0.8); }
+
+.customDayContainer { margin-top: 1rem; }
+.daySelector {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.dayButton {
+  background-color: #f3f4f6;
+  border: none;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: 700;
+}
+.dayButton.active {
+  background-color: var(--primary-orange);
+  color: white;
+}
+
+/* --- POPUP CALENDAR STYLES --- */
+.datePickerContainer {
+    position: relative;
+    max-width: 300px;
+}
+.dateDisplayButton {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    background-color: #fff;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.calendarWrapper {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 10;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem;
+}
+.daySelected {
+  background-color: var(--primary-orange) !important;
+  color: white !important;
+  border-radius: 50%;
+}
+
+/* --- SUMMARY STYLES --- */
+.summaryGrid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  row-gap: 0.85rem;
+  margin-top: 1.5rem;
+}
+.summaryLabel { font-weight: 600; color: #4a5568; }
+.summaryValue { font-weight: 700; text-align: right; }
+.totalAmountRow {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 1.25rem;
+}
+.summaryTotalLabel { font-weight: 800; font-size: 1.3rem; }
+.summaryTotalPrice { font-weight: 900; font-size: 1.7rem; color: var(--primary-orange); }
+
+.checkoutButton {
+  background-color: #22c55e; color: #fff; font-weight: 700; border: none;
+  padding: 1rem; border-radius: 12px; cursor: pointer;
+  width: 100%; font-size: 1.1rem; margin-top: 1.5rem;
+}
+/* ... all your existing styles ... */
+
+.customDayContainer { 
+  margin-top: 1.5rem; 
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 12px;
+}
+
+.daySelector {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.dayButton {
+  background-color: #f3f4f6;
+  border: 2px solid #e5e7eb;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+.dayButton.active {
+  background-color: var(--primary-orange);
+  border-color: var(--primary-orange);
+  color: white;
+}
+.dayButton:hover:not(.active) {
+    background-color: #e5e7eb;
+}
+/* ... all your existing styles ... */
+
+/* --- NEW STYLES TO ADD --- */
+
+/* For the (20% Off) badge on the plan buttons */
+.discountBadge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #22c55e; /* Green */
+  margin-left: 0.5rem;
+}
+.optionButton.active .discountBadge {
+  color: #fff; /* Make it white on active button */
+}
+
+/* For the "Subscription Discount" text in the summary */
+.summaryGrid .discountText {
+  color: #22c55e; /* Green */
+  font-weight: 700;
+}

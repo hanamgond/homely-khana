@@ -1,0 +1,32 @@
+/* src/components/AuthLayout.module.css */
+.pageContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+.imagePanel {
+  background-image: linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url('/login-bg.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.formPanel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: #f9fafb;
+}
+
+@media (max-width: 768px) {
+  .pageContainer {
+    grid-template-columns: 1fr;
+  }
+  .imagePanel {
+    display: none;
+  }
+  .formPanel {
+    min-height: 100vh;
+  }
+}

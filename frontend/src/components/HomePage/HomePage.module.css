@@ -1,0 +1,201 @@
+/* styles/HomePage.module.css */
+.hero {
+  position: relative; display: flex; align-items: center; justify-content: center; text-align: center;
+  padding: 100px 20px; min-height: 50vh; color: white;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('/background.jpg');
+  background-size: cover; background-position: center;
+}
+.heroContent { max-width: 800px; z-index: 2; }
+.hero h1 {
+  font-family: 'Lancelot', serif; font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 400; line-height: 1.1; margin-bottom: 1rem;
+}
+.accent { color: var(--primary-orange); } /* For "Homely Food" */
+.hero p { font-size: 1.125rem; max-width: 600px; margin: 0 auto 2rem auto; opacity: 0.95; }
+.ctaGroup { display: flex; gap: 1rem; justify-content: center; }
+.ctaButton {
+  padding: 12px 28px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700;
+  cursor: pointer; text-decoration: none; display: inline-block;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.ctaButton:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.primary { background-color: var(--primary-orange); color: white; }
+.secondary { background-color: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.4); }
+
+.section { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
+.sectionHeader { text-align: center; margin-bottom: 50px; }
+.sectionHeader h2 { font-size: clamp(2rem, 5vw, 2.75rem); margin-bottom: 0.5rem; font-weight: 800; }
+.sectionHeader p { font-size: 1.1rem; color: var(--muted-text); max-width: 700px; margin: 0 auto; }
+
+.whyUsGrid { 
+  display: grid; 
+  grid-template-columns: 1fr 1.2fr; 
+  gap: 3rem; 
+  align-items: stretch;
+}
+.whyUsImages { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 1rem; 
+}
+.whyUsImages > div { 
+  transition: transform 0.2s ease, box-shadow 0.2s ease; 
+  border-radius: 12px; 
+}
+.whyUsImages > div:hover { 
+  transform: translateY(-8px); 
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12); 
+}
+.whyUsList { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 1rem; 
+  justify-content: space-between;
+}
+.whyUsItem {
+  display: flex; align-items: center; gap: 1.5rem; padding: 1.25rem;
+  background-color: #fff; border-radius: 12px; border: 1px solid #f0f0f0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.whyUsItem:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.08); }
+.whyUsIcon {
+  background-color: #fff5e6; color: var(--primary-orange); padding: 12px;
+  border-radius: 50%; display: flex; font-size: 1.5rem;
+}
+.whyUsItem h3 { margin: 0 0 0.25rem 0; font-size: 1.1rem; font-weight: 700; }
+.whyUsItem p { margin: 0; color: var(--muted-text); font-size: 0.95rem; }
+
+.offeringsGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+
+.testimonialsGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+.testimonialCard { background: white; padding: 2rem; border-radius: var(--card-radius); border: 1px solid #f0f0f0; box-shadow: var(--card-shadow); }
+.testimonialHeader { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.testimonialAvatar {
+  width: 50px; height: 50px; border-radius: 50%; 
+  background: #d1fae5;
+  color: #065f46;
+  display: flex; align-items: center; justify-content: center; 
+  font-weight: 700; font-size: 1.2rem;
+}
+.testimonialCard h3 { margin: 0; font-size: 1.1rem; font-weight: 700; }
+.testimonialCard .role { color: var(--muted-text); font-size: 0.9rem; }
+.testimonialStars { color: #f59e0b; margin-bottom: 1rem; }
+.testimonialCard p { color: var(--muted-text); line-height: 1.6; font-style: italic; }
+
+/* --- START: IMPROVED FAQ SECTION STYLES --- */
+.faqSearch {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 3rem auto;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  display: block; /* Ensures it behaves correctly with margin auto */
+}
+
+.faqCategoryTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #374151;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.faqContainer { 
+  max-width: 800px; 
+  margin: 0 auto; 
+}
+
+.faqItem { 
+  background: white; 
+  margin-bottom: 10px; 
+  border-radius: 10px; 
+  border: 1px solid #f0f0f0; 
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.faqItem:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.faqQuestion {
+  width: 100%; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  padding: 1.25rem; 
+  background: none; 
+  border: none; 
+  font-size: 1.05rem;
+  font-weight: 700; 
+  text-align: left; 
+  cursor: pointer;
+  color: #111827;
+}
+
+.faqIcon {
+  font-size: 1.2rem;
+  color: var(--primary-orange);
+  transition: transform 0.3s ease;
+}
+
+.faqAnswer { 
+  padding: 0 1.25rem;
+  color: var(--muted-text); 
+  line-height: 1.6; 
+  max-height: 0; 
+  overflow: hidden; 
+  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+}
+
+.faqAnswer.open { 
+  max-height: 200px; /* Adjust if answers are longer */
+  padding-bottom: 1.25rem;
+}
+
+.contactCta {
+  text-align: center;
+  margin-top: 4rem;
+  padding: 2.5rem;
+  background-color: #fffaf0; /* Light orange background */
+  border-radius: var(--card-radius);
+  border: 1px solid #ffe8c7;
+}
+
+.contactCta h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
+}
+
+.contactCta p {
+  color: var(--muted-text);
+  margin-bottom: 1.5rem;
+}
+
+.contactButton {
+  background-color: var(--primary-orange);
+  color: white;
+  font-weight: 700;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.contactButton:hover {
+  background-color: #e68a00;
+}
+/* --- END: IMPROVED FAQ SECTION STYLES --- */
+
+@media (max-width: 992px) { 
+  .whyUsGrid { grid-template-columns: 1fr; } 
+  .offeringsGrid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); } 
+}

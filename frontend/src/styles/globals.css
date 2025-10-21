@@ -1,0 +1,30 @@
+/* styles/globals.css */
+
+/* --- Font Imports --- */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lancelot&display=swap');
+
+/* --- Global CSS Variables (Theme) --- */
+:root {
+  --primary-orange: #ff9801;
+  --muted-text: #6b7280;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --card-radius: 14px;
+  --background-color: #f9fafb; /* The correct light gray background */
+}
+
+/* --- Base Styles --- */
+body {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: "Nunito", sans-serif;
+  font-weight: 400;
+  overflow-x: hidden;
+  background-color: var(--background-color);
+  color: #111827; /* Darker text for better contrast */
+}
+
+p { margin: 0; padding: 0; }
+button, input, textarea { font-family: "Nunito", sans-serif; }
+button:hover { cursor: pointer; }

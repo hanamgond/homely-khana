@@ -1,0 +1,125 @@
+.formCtn {
+    max-width: 800px;
+    margin: 2rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.parent {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+.parentExpand {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.mealTypeParent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+}
+
+.mealTypeDiv {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+.mealTypeDiv p {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #666;
+    margin: 0;
+}
+
+.expandBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.arrow {
+    transition: transform 0.3s ease;
+}
+.arrow.active {
+    transform: rotate(180deg);
+}
+
+.innerTitle {
+    font-weight: 600;
+    margin: 1rem 1.5rem 0.5rem;
+}
+
+.mealNameCtn {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 0 1.5rem;
+}
+
+.mealImg {
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.mealInfo {
+    font-weight: 500;
+}
+
+.mealCaption {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.endBtnCtn {
+    padding: 1.5rem;
+    text-align: right;
+}
+
+.subscribeButton, .removeButton {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+}
+
+.subscribeButton {
+    background-color: var(--primary-orange);
+    color: white;
+}
+
+.removeButton {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.checkoutFooter {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 1rem;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.checkoutNowBtn {
+    width: 100%;
+    max-width: 400px;
+    padding: 14px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background-color: #22c55e;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+}

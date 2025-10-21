@@ -1,0 +1,138 @@
+.row{
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 40px;
+    transition: background 0.3s ease;
+    gap:10px;
+    align-items: center;
+}
+
+.row:hover{
+    cursor: pointer;
+    /* background-image: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.04), transparent); */
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.row:hover .addBtn{
+    transform: scale(1.1) translateX(-45%);
+    box-shadow: 0px 2px 15px 1px #2DC04E;
+}
+
+.rowBody{
+    width: 84%;
+}
+
+.mealImgDiv{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 120px;
+    height: 120px;
+    padding-bottom: 5px;
+}
+
+.mealImg{
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 10px;
+}
+
+.mealName{
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.mealCaption{
+    font-size: 15px;
+    color: #00000096;
+    margin-bottom: 6px;
+}
+
+.mealPriceBody{
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+.mealPrice{
+    color: #FF9801;
+    font-weight: 600;
+}
+
+.detailsBtn{
+    color: #FF9801;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    font-size: 15px;
+}
+
+.addBtn{
+    font-weight: 800;
+    padding: 5px 16px;
+    border-radius: 7px;
+    background: #2DC04E;
+    border: none;
+    transition: ease 0.3s, box-shadow 0.3s ease;
+    font-size: 16px;
+    color:white;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -5px;
+}
+
+@media (orientation: portrait) {
+    .addBtn{
+        bottom: 0;
+    }
+
+    .mealName{
+        width: 150%;
+    }
+
+    .row{
+        padding: 15px 20px;
+    }
+}
+
+/* .btnCtnWithQuant{
+    background: green;
+    color: white;
+    border-radius: 7px;
+    position: absolute;
+    bottom: -5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-weight: 600;
+} */
+
+/* .quantAddBtn{
+    font-size: 18px;
+    background: none;
+    border: none;
+    padding: 5px 0;
+    color: white;
+} */
+/* border-left: 2px #fca728 solid; */
+
+/* .quantSubBtn{
+    font-size: 18px;
+    background: none;
+    border: none;
+    padding: 5px 0;
+    color: white;
+} */
+/* border-right: 2px #fca728 solid; */
+
+/* .mealQuant{
+    font-size: 16px;
+    width: 30px;
+    padding: 0 5px;
+    text-align: center;
+} */

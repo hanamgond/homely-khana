@@ -1,0 +1,230 @@
+.main {
+    width: 100vw;
+    display: flex;
+}
+
+.mainLeft {
+    width: 220px;
+    height: 100vh;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    padding: 0 15px;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.mainLeftCtn {
+    margin-top: 30px;
+}
+
+.mainRight {
+    margin: 40px 25px;
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    justify-content: space-evenly;
+    gap: 40px;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.companyName {
+    font-family: "Lancelot", serif;
+    font-size: 36px;
+    font-weight: 600;
+    text-decoration: none;
+    color: black;
+}
+
+.userName {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #FF9801;
+}
+
+.sidebarBtnCtn {
+    margin-top: 65px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transform: translateX(-15px);
+}
+
+.sideBarLink {
+    text-align: left;
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    padding-left: 15px;
+    width: calc(100% + 15px);
+    color: black;
+    text-decoration: none;
+}
+
+.sideBarLink:hover {
+    text-decoration: underline;
+}
+
+.sideBarLogoutBtn {
+    text-align: left;
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    padding-left: 15px;
+    width: calc(100% + 15px);
+    color: red;
+    font-weight: 600;
+    transform: translateX(-15px);
+    margin-bottom: 45px;
+}
+
+.rightParent {
+    padding: 20px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border-radius: 15px;
+    /* width: 350px; */
+    width: 100%;
+    height: fit-content;
+}
+
+.rightTitle {
+    margin-bottom: 25px;
+    padding: 3px;
+    border-bottom: 0.5px dashed #FF9801;
+    font-size: 28px;
+    font-weight: 600;
+    color: #FF9801;
+}
+
+.rightChip {
+    width: 350px;
+    /* margin-top: 10px; */
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    border: 1px solid #00000047;
+    padding: 10px;
+    border-radius: 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rightChipCtn {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.rightChipFlexCtn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rightChipFlexCtn:first-child {
+    margin-bottom: 3px;
+}
+
+.mealImg {
+    height: 70px;
+    width: 70px;
+    border-radius: 10px;
+}
+
+.chipCaption {
+    font-size: 14px;
+    color: #00000096;
+    display: flex;
+    gap: 4px;
+}
+
+.chipCaption span:nth-child(1) {
+    width: 65px;
+}
+
+/* .chipCaption span:nth-child(2) {
+  width: 4px;
+}
+.chipCaption span:nth-child(3) {
+  grid-column: 3;
+} */
+
+.chipMealName {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+
+.rateBtn {
+    border: none;
+    background: transparent;
+    /* margin-top: 3px; */
+    text-align: left;
+    font-size: 16px;
+    padding: 0;
+    color: #FF9801;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    transition: all 250ms ease-out;
+}
+
+.rateBtn:hover {
+    gap: 7px;
+}
+
+.rightCtn {
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.chipAdd {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    color: #00000096;
+    /* margin-top: 3px; */
+}
+
+.chipActiveLabel {
+    color: #2DC04E;
+}
+
+.chipExpiredLabel {
+    color: red;
+}
+
+.chipMealNum {
+    margin-top: 4px;
+}
+
+@media (max-width: 730px),
+(orientation: portrait) {
+
+    .main {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .mainRight {
+        margin: 90px 0 55px 0;
+        padding: 15px;
+        width: 93vw;
+    }
+
+    .rightChip {
+        width: 100%;
+    }
+
+    .rightTitle {
+        font-size: 26px;
+    }
+}

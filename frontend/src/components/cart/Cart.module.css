@@ -1,0 +1,322 @@
+.alwaysShowParent{
+    width: 45%;
+    position: fixed;
+    bottom: -10px;
+    border-radius: 10px;
+    background-color: #2DC04E;
+    padding: 5px 15px 15px 15px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    transition: transform 250ms ease-in-out , bottom 150ms ease-in-out;
+    z-index: 10;
+}
+
+.alwaysShowParent:hover{
+    transform: scale(1.05) translate(-47.5%,0);
+    cursor: pointer;
+}
+
+.alwaysShowParentHide{
+    bottom: -100%;
+}
+
+.shoppingCartImg{
+    width: 30px;
+    height: 30px;
+}
+
+.shoppingCartTxt{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.2s ease-in-out;
+}
+
+/* .alwaysShowParent:hover .shoppingCartTxt{
+    gap: 12px;
+} */
+
+.cartParent{
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    backdrop-filter: blur( 4px );
+    -webkit-backdrop-filter: blur( 4px );
+    cursor: pointer;
+}
+
+.cartCtn{
+    width: 50%;
+    position: fixed;
+    bottom: -100%;
+    left: 50%;
+    transform: translate(-50% , 50%);
+    max-height: 75vh;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border-radius: 20px;
+    transition: bottom 300ms ease-out;
+    background-color: #fff8f0;
+    padding: 10px 20px 10px 20px;
+    z-index: 10;
+    cursor: default;
+}
+
+.cartCtnSlide{
+    /* bottom: 50%; */
+    /* transform: translate(-50% , calc(50% + 30px)); */
+    bottom: 50%;
+}
+
+.orderSumTitle{
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 30px;
+}
+
+.orderSumBody{
+    max-height: 53vh;
+    overflow: scroll;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+    margin-bottom: 5px;
+}
+
+.orderSumBody::-webkit-scrollbar{
+    display: none;
+}
+
+.orderSumLastRow{
+    justify-content: space-between;
+    display: flex;
+    padding-top: 6px;
+    border-top: 1px black dashed;
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.orderSumLeft{
+    width: 62%;
+    font-size: 18px;
+}
+
+.orderSumRight{
+    width: 13%;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    justify-content: flex-end;
+    flex-shrink: 0.4;
+}
+
+.orderSumMiddle{
+    width: 20%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.quantAddBtn{
+    font-size: 20px;
+    background: none;
+    border: none;
+    padding: 0 6px;
+    color: black;
+    /* border-left: 2px #FF9801 solid; */
+}
+
+.quantSubBtn{
+    font-size: 20px;
+    background: none;
+    border: none;
+    padding: 0 6px;
+    color: black;
+    /* border-right: 2px #FF9801 solid; */
+}
+
+.mealQuant{
+    width: 30px;
+    padding: 0 5px;
+    text-align: center;
+}
+
+.quantWapper{
+    border: 2px solid #FF9801;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+}
+
+.orderSumRow{
+    justify-content: space-between;
+    display: flex;
+    padding: 10px 0px;
+    font-size: 16px;
+}
+
+.orderSumCaption{
+    color: #00000096;
+    font-size: 16px;
+}
+
+.captionCtn{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.buttonCtn{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;    
+}
+
+.editBtn{
+    border: none;
+    background: transparent;
+    color: black;
+    font-size: 16px;
+    display: flex;
+    align-items: flex-end;
+    padding: 0;
+    gap: 5px;
+    transition: text-decoration 0.2s ease-in-out;
+}
+
+.editBtn:hover{
+    text-decoration: underline;
+}
+
+.editBtnImg{
+    width: 25px;
+    height: 25px;
+}
+
+.closeBtn{
+    position: fixed;
+    right: 1.5%;
+}
+
+.closeBtnCtn{
+    position: absolute;
+    top:10px;
+    width:100%;
+    transition: top 300ms ease-out;
+    cursor: pointer;
+}
+
+.orderSumSubTitle{
+    text-align: center;
+    font-size: 18px;
+    font-weight:600;
+}
+
+.addSelectBtn{
+    border: none;
+    background: #2DC04E;
+    color: white;
+    font-size : 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap:4px;
+    transition: all 250ms ease-out;
+    margin: 6px 0 8px 0;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 7px;
+    padding: 5px 15px;
+}
+
+.addSelectBtn:hover{
+    box-shadow: 0px 1px 10px 0.5px #2DC04E;
+}
+
+.addSelectBtn:hover .arrowSpan{
+    transform: translateX(5px);
+}
+
+.arrowSpan{
+    display: flex;
+    transition: all 250ms ease-out;
+}
+
+@media (max-width: 700px), (orientation: portrait) {
+    .alwaysShowParent{
+        width: 85vw;
+    }
+
+    .cartCtn{
+        width: 90vw;
+        padding: 10px 12px 10px 12px;
+        max-height: 70vh;
+    }
+
+    .orderSumCaption{
+        width: 100%;
+        font-size: 13px;
+    }
+
+    .orderSumLeft{
+        width:50%;
+        font-size: 16px;
+    }
+
+    .orderSumBody{
+        max-height: 57vh;
+    }
+
+    .orderSumMiddle{
+        width: 22%;
+    }
+
+    .orderSumRight{
+        width: 22%;
+        font-size: 16px;
+    }
+
+    .mealQuant{
+        font-size: 16px;
+        width: 23px;
+        padding: 0 3px;
+    }
+
+    .orderSumTitle{
+        margin-top: 15px;
+    }
+
+    .closeBtn{
+        height: 23px;
+        width: 23px;
+        right: 3%;
+    }
+
+    .quantAddBtn{
+        padding: 0 5px;
+    }
+
+    .quantSubBtn{
+        padding: 0 5px;
+    }
+
+    .addSelectBtn{
+        font-size: 16px;
+        padding: 4px 12px;
+        margin-top: 15px;
+    }
+
+    .editBtnImg{
+        height: 21px;
+        width: 21px;
+    }
+}

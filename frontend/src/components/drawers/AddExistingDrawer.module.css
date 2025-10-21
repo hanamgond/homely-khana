@@ -1,0 +1,138 @@
+.parentCtn {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    cursor: pointer;
+}
+
+.ctn {
+    width: 500px;
+    position: fixed;
+    bottom: -100%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    max-height: 80vh;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border-radius: 20px;
+    transition: bottom 300ms ease-out;
+    background-color: #fff8f0;
+    padding: 25px 20px 15px 20px;
+    cursor: default;
+}
+
+.chipCtn{
+    max-height: 68vh;
+    overflow-y: auto;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.chipCtn::-webkit-scrollbar {
+    display: none;
+}
+
+.ctnSlide {
+    bottom: 50%;
+    transform: translate(-50%,50%);
+}
+
+.addAddressBtn {
+    border: none;
+    background: none;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #FF9801;
+    width: 100%;
+    text-align: left;
+}
+
+.title {
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 16px;
+    padding-bottom: 4px;
+    border-bottom: 0.5px dashed #00000096;
+    width: 100%;
+}
+
+.chip {
+    /* width: 100%; */
+    padding: 5px;
+    margin-bottom: 8px;
+    border: 1px #7D7D7D99 solid;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chipImg {
+    height: 32px;
+    width: 32px;
+}
+
+.chipTitle {
+    font-weight: 600;
+}
+
+.chipBody {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;/* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chipCaption{
+    color: #00000096;
+}
+
+.closeBtn{
+    position: fixed;
+    right: 3%;
+}
+
+.closeBtnCtn{
+    position: absolute;
+    top:10px;
+    width:100%;
+    transition: top 300ms ease-out;
+    cursor: pointer;
+}
+
+@media (max-width:600px){
+    .ctn{
+        width: 80vw;
+        max-height: 63vh;
+        padding: 20px 15px 15px 15px;
+    }
+
+    .chipCtn{
+        max-height: 48vh;
+    }
+
+    .addAddressBtn{
+        font-size: 16px;
+        margin-bottom: 7px;
+    }
+
+    .title{
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .chipBody , .chipCaption {
+        font-size: 14px;
+    }
+
+    .chipImg {
+        height: 28px;
+        width: 28px;
+    }
+}

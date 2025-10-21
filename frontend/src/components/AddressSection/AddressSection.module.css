@@ -1,0 +1,84 @@
+.stepBox {
+  background-color: #fff;
+  border-radius: var(--card-radius);
+  padding: 2rem;
+  box-shadow: var(--card-shadow);
+  margin-top: 2rem;
+}
+.stepHeader h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+.addressList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.addressCard {
+  border: 2px solid #e5e7eb;
+  padding: 1rem;
+  border-radius: var(--card-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.addressCard:hover {
+  border-color: #fbd38d;
+  background-color: #fffaf0;
+}
+.addressCard.active {
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 3px rgba(255, 152, 1, 0.4);
+}
+.addressType {
+  font-weight: 700;
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+.addressCard p {
+  margin: 0;
+  color: var(--muted-text);
+}
+.addNewButton {
+  width: 100%;
+  border: 2px dashed #e5e7eb;
+  background: none;
+  padding: 1rem;
+  border-radius: var(--card-radius);
+  font-weight: 700;
+  color: #374151;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: all 0.2s ease;
+}
+.addNewButton:hover {
+  border-color: var(--primary-orange);
+  color: var(--primary-orange);
+  background-color: #fffaf0;
+}
+.continueButton {
+  background-color: #22c55e;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  padding: 1rem;
+  border-radius: var(--card-radius);
+  cursor: pointer;
+  width: 100%;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+}
+.backButton {
+    background: none;
+    border: none;
+    color: var(--primary-orange);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1.5rem;
+}
