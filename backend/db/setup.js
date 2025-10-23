@@ -3,8 +3,9 @@ const bcrypt = require("bcrypt");
 const pool = require("./db");
 
 /**
- * FINALIZED SCHEMA SCRIPT (v11.5 - Fixed 'pulaoId' ReferenceError)
- * - Fixes the bug where `pulaoId` was used before it was defined.
+ * FINALIZED SCHEMA SCRIPT (v11.7 - Fixed SQL Syntax Error)
+ * - Fixes the `TIMESTAMT_NOT_NULL` syntax error in the users table.
+ * - Creates an 'admin' user.
  * - Inserts 'Monthly', 'Weekly', and 'Trial' plans for all 4 meals.
  *
  * To run: node backend/db/setup.js
@@ -81,7 +82,9 @@ const setupDatabase = async () => {
     await client.query(`
       CREATE TABLE "users" (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY, name VARCHAR(255) NOT NULL, email VARCHAR(255) UNIQUE NOT NULL, phone VARCHAR(15) UNIQUE NOT NULL,
-        password_hash VARCHAR(255) NOT NULL, role VARCHAR(50) DEFAULT 'customer', created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+        password_hash VARCHAR(255) NOT NULL, role VARCHAR(50) DEFAULT 'customer', 
+        created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- <-- THIS IS THE FIX
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
       );
     `);
     await applyUpdateTrigger(client, "users");
@@ -160,15 +163,15 @@ const setupDatabase = async () => {
     `);
     console.log("✅ Indexes created successfully.");
 
-    // --- 6. INSERT DUMMY DATA (UPDATED with Weekly/Trial plans) ---
+    // --- 6. INSERT DUMMY DATA (UPDATED with Admin User) ---
     console.log("Inserting updated dummy data with Monthly, Weekly, and Trial plans...");
     try {
         await client.query('BEGIN'); // Start transaction
 
-        // --- Create a User and Address (Required for testing) ---
+        // --- Create an ADMIN User and Address (Required for testing) ---
         const hashedPassword1 = await bcrypt.hash("password123", 10);
         const userResult = await client.query(
-          `INSERT INTO "users" (name, email, phone, password_hash) VALUES ($1, $2, $3, $4) RETURNING id;`,
+          `INSERT INTO "users" (name, email, phone, password_hash, role) VALUES ($1, $2, $3, $4, 'admin') RETURNING id;`,
           ['Hanamgond', 'hanamgond@example.com', '1234567890', hashedPassword1]
         );
         const userId = userResult.rows[0].id;
@@ -176,7 +179,7 @@ const setupDatabase = async () => {
           `INSERT INTO "addresses" (user_id, type, full_name, phone, address_line_1, city, state, pincode, is_default) VALUES ($1, 'Home', 'Hanamgond', '1234567890', '123 Tech Park', 'Navi Mumbai', 'Maharashtra', '400703', true);`,
           [userId]
         );
-        console.log(` -> Created default user and address.`);
+        console.log(` -> Created default ADMIN user and address.`); 
 
         // --- Create Product Type 'Meals' ---
         const typeResultMeals = await client.query(
@@ -186,7 +189,6 @@ const setupDatabase = async () => {
         console.log(` -> Created product type: Meals`);
 
         // --- MEAL 1: Homely Meal (Subscription) ---
-        // Per day price: 4500 / 30 = 150
         const homelyMealResult = await client.query(
           `INSERT INTO "products" (product_type_id, name, description, image_url, booking_type) VALUES ($1, 'Homely Meal', 'Traditional home-cooked meals that remind you of mom''s cooking', '/meal1.jpg', 'subscription') RETURNING id;`,
           [mealTypeId]
@@ -194,16 +196,15 @@ const setupDatabase = async () => {
         const homelyMealId = homelyMealResult.rows[0].id;
         await client.query(
           `INSERT INTO "subscription_plans" (product_id, plan_name, price, duration_days) VALUES 
-            ($1, 'Monthly', 4500, 30),  -- 150/day
-            ($1, 'Weekly', 1050, 7),   -- 150*7
-            ($1, 'Trial', 450, 3);     -- 150*3
+            ($1, 'Monthly', 4500, 30),
+            ($1, 'Weekly', 1050, 7),
+            ($1, 'Trial', 450, 3);
           `,
           [homelyMealId]
         );
         console.log(` -> Created product: Homely Meal (Monthly, Weekly, Trial plans)`);
 
         // --- MEAL 2: Healthy Meal (Subscription) ---
-        // Per day price: 5400 / 30 = 180
         const healthyMealResult = await client.query(
           `INSERT INTO "products" (product_type_id, name, description, image_url, booking_type) VALUES ($1, 'Healthy Meal', 'Nutritious meals designed for a balanced and healthy lifestyle', '/meal2.jpg', 'subscription') RETURNING id;`,
           [mealTypeId]
@@ -211,16 +212,15 @@ const setupDatabase = async () => {
         const healthyMealId = healthyMealResult.rows[0].id;
         await client.query(
           `INSERT INTO "subscription_plans" (product_id, plan_name, price, duration_days) VALUES 
-            ($1, 'Monthly', 5400, 30),  -- 180/day
-            ($1, 'Weekly', 1260, 7),   -- 180*7
-            ($1, 'Trial', 540, 3);     -- 180*3
+            ($1, 'Monthly', 5400, 30),
+            ($1, 'Weekly', 1260, 7),
+            ($1, 'Trial', 540, 3);
           `,
           [healthyMealId]
         );
         console.log(` -> Created product: Healthy Meal (Monthly, Weekly, Trial plans)`);
 
         // --- MEAL 3: Complete Thali (NOW Subscription) ---
-        // Per day price: 6000 / 30 = 200
         const thaliResult = await client.query(
           `INSERT INTO "products" (product_type_id, name, description, image_url, booking_type) VALUES ($1, 'Complete Thali', 'A wholesome indian thali with rice, dal, vegetables, roti and dessert', '/meal3.jpg', 'subscription') RETURNING id;`,
           [mealTypeId]
@@ -228,26 +228,25 @@ const setupDatabase = async () => {
         const thaliId = thaliResult.rows[0].id;
         await client.query(
           `INSERT INTO "subscription_plans" (product_id, plan_name, price, duration_days) VALUES 
-            ($1, 'Monthly', 6000, 30),  -- 200/day
-            ($1, 'Weekly', 1400, 7),   -- 200*7
-            ($1, 'Trial', 600, 3);     -- 200*3
+            ($1, 'Monthly', 6000, 30),
+            ($1, 'Weekly', 1400, 7),
+            ($1, 'Trial', 600, 3);
           `,
           [thaliId]
         );
         console.log(` -> Created product: Complete Thali (Monthly, Weekly, Trial plans)`);
 
         // --- MEAL 4: Vegetable Pulao Bowl (NOW Subscription) ---
-        // Per day price: 3600 / 30 = 120
         const pulaoResult = await client.query(
           `INSERT INTO "products" (product_type_id, name, description, image_url, booking_type) VALUES ($1, 'Vegetable Pulao Bowl', 'Aromatic rice cooked with fresh seasonal vegetables and aromatic spices', '/meal4.jpg', 'subscription') RETURNING id;`,
-          [mealTypeId] // <-- THIS WAS THE FIX
+          [mealTypeId] 
         );
         const pulaoId = pulaoResult.rows[0].id; 
         await client.query(
           `INSERT INTO "subscription_plans" (product_id, plan_name, price, duration_days) VALUES 
-            ($1, 'Monthly', 3600, 30),  -- 120/day
-            ($1, 'Weekly', 840, 7),    -- 120*7
-            ($1, 'Trial', 360, 3);     -- 120*3
+            ($1, 'Monthly', 3600, 30),
+            ($1, 'Weekly', 840, 7),
+            ($1, 'Trial', 360, 3);
           `,
           [pulaoId]
         );
@@ -264,13 +263,11 @@ const setupDatabase = async () => {
     }
     // --- END OF DUMMY DATA INSERTION ---
 
-
     console.log("🚀🚀🚀 PRODUCTION DATABASE SETUP COMPLETE! 🚀🚀🚀");
 
   } catch (err) {
     console.error("🚨 DATABASE SETUP FAILED! 🚨");
     console.error("Error details:", err.stack);
-    // Don't exit immediately if it's the insert error, we handled that above
     if (!err.message.includes("ERROR during dummy data insertion")) {
         process.exit(1);
     }

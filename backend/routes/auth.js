@@ -1,4 +1,3 @@
-// backend/routes/auth.js
 if (process.env.NODE_ENV !== "production") {
   require('dotenv').config()
 }
@@ -7,7 +6,8 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const pool = require("../db/db");
 const jwt = require("jsonwebtoken");
-const authenticateToken = require("../middlewares/auth");
+// --- FIX: De-structure the import ---
+const { authenticateToken } = require("../middlewares/auth");
 
 const router = express.Router();
 
@@ -21,8 +21,9 @@ router.post("/signup", async (req, res) => {
     
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
+        // --- FIX: Also return the user's role on signup ---
         const newUser = await pool.query(
-            'INSERT INTO "users" (name, email, phone, password_hash) VALUES ($1, $2, $3, $4) RETURNING id, name, email, phone',
+            'INSERT INTO "users" (name, email, phone, password_hash) VALUES ($1, $2, $3, $4) RETURNING id, name, email, phone, role',
             [name, email, phone, hashedPassword]
         );
         res.status(201).json({ success: true, message: "Account created successfully!", user: newUser.rows[0] });
@@ -58,12 +59,26 @@ router.post("/login", async (req, res) => {
         }
 
         const token = jwt.sign(
-            { userId: user.id, name: user.name, email: user.email, phone: user.phone },
+            { 
+              userId: user.id, 
+              name: user.name, 
+              email: user.email, 
+              phone: user.phone,
+              role: user.role // --- FIX 1: Add user's role to the JWT payload ---
+            },
             process.env.JWT_SECRET,
             { expiresIn: '7d' }
         );
 
-        const userResponse = { id: user.id, name: user.name, email: user.email, phone: user.phone };
+        // --- FIX 2: Add user's role to the JSON response ---
+        const userResponse = { 
+          id: user.id, 
+          name: user.name, 
+          email: user.email, 
+          phone: user.phone, 
+          role: user.role 
+        };
+        
         res.status(200).json({ success: true, token, user: userResponse });
     } catch (err) {
         console.error("LOGIN ERROR:", err.message);
@@ -75,7 +90,8 @@ router.post("/login", async (req, res) => {
 router.get("/profile", authenticateToken, async (req, res) => {
     try {
         const userId = req.user.userId;
-        const userResult = await pool.query('SELECT id, name, email, phone FROM "users" WHERE id = $1', [userId]);
+        // --- FIX: Also return the user's role from their profile ---
+        const userResult = await pool.query('SELECT id, name, email, phone, role FROM "users" WHERE id = $1', [userId]);
 
         if (userResult.rows.length === 0) {
             return res.status(404).json({ success: false, error: "User not found." });

@@ -24,6 +24,7 @@
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
+  --color-destructive-foreground: var(--destructive-foreground); /* Added if missing */
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
@@ -44,72 +45,76 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+  --radius: 0.5rem; /* Default Shadcn radius */
+  --background: 0 0% 100%; /* White */
+  --foreground: 224 71.4% 4.1%; /* Dark Slate */
+  --card: 0 0% 100%;
+  --card-foreground: 224 71.4% 4.1%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 224 71.4% 4.1%;
+  --primary: 220.9 39.3% 11%; /* Slightly different primary slate */
+  --primary-foreground: 210 20% 98%; /* Light */
+  --secondary: 220 14.3% 95.9%; /* Light Slate */
+  --secondary-foreground: 220.9 39.3% 11%;
+  --muted: 220 14.3% 95.9%;
+  --muted-foreground: 220 8.9% 46.1%; /* Muted Slate text */
+  --accent: 220 14.3% 95.9%;
+  --accent-foreground: 220.9 39.3% 11%;
+  --destructive: 0 84.2% 60.2%; /* Red */
+  --destructive-foreground: 210 20% 98%;
+  --border: 220 13% 91%; /* Slate Border */
+  --input: 220 13% 91%;
+  --ring: 224 71.4% 4.1%;
+  --chart-1: 220 70% 50%; /* Example chart colors */
+  --chart-2: 160 70% 50%;
+  --chart-3: 30 70% 50%;
+  --chart-4: 280 70% 50%;
+  --chart-5: 340 70% 50%;
+  /* Assuming you want sidebar colors similar to Shadcn default */
+  --sidebar: 220 14.3% 95.9%; /* Light Slate Bg */
+  --sidebar-foreground: 224 71.4% 4.1%; /* Dark text */
+  --sidebar-primary: 220.9 39.3% 11%; /* Primary text color for active */
+  --sidebar-primary-foreground: 210 20% 98%; /* White text on primary bg (if used) */
+  --sidebar-accent: 220 13% 91%; /* Slightly darker bg for hover/active */
+  --sidebar-accent-foreground: 220.9 39.3% 11%; /* Primary text for hover/active */
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 224 71.4% 4.1%;
 }
 
 .dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  --background: 224 71.4% 4.1%; /* Dark Slate */
+  --foreground: 210 20% 98%; /* Light */
+  --card: 224 71.4% 4.1%;
+  --card-foreground: 210 20% 98%;
+  --popover: 224 71.4% 4.1%;
+  --popover-foreground: 210 20% 98%;
+  --primary: 210 20% 98%;
+  --primary-foreground: 220.9 39.3% 11%;
+  --secondary: 215 27.9% 16.9%; /* Darker Slate */
+  --secondary-foreground: 210 20% 98%;
+  --muted: 215 27.9% 16.9%;
+  --muted-foreground: 217.9 10.6% 64.9%; /* Muted dark text */
+  --accent: 215 27.9% 16.9%;
+  --accent-foreground: 210 20% 98%;
+  --destructive: 0 62.8% 30.6%; /* Dark Red */
+  --destructive-foreground: 210 20% 98%;
+  --border: 215 27.9% 16.9%;
+  --input: 215 27.9% 16.9%;
+  --ring: 216 12.2% 83.9%;
+  --chart-1: 220 70% 60%; /* Example dark chart colors */
+  --chart-2: 160 70% 60%;
+  --chart-3: 30 70% 60%;
+  --chart-4: 280 70% 60%;
+  --chart-5: 340 70% 60%;
+  /* Assuming dark sidebar */
+  --sidebar: 224 71.4% 4.1%; /* Dark Slate Bg */
+  --sidebar-foreground: 210 20% 98%; /* Light text */
+  --sidebar-primary: 210 20% 98%; /* Primary text color for active */
+  --sidebar-primary-foreground: 220.9 39.3% 11%; /* Dark text on primary bg */
+  --sidebar-accent: 215 27.9% 16.9%; /* Slightly lighter bg for hover/active */
+  --sidebar-accent-foreground: 210 20% 98%; /* Primary text for hover/active */
+  --sidebar-border: 215 27.9% 16.9%;
+  --sidebar-ring: 216 12.2% 83.9%;
 }
 
 @layer base {
@@ -118,5 +123,17 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Added for Shadcn font */
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
+}
+
+/* --- ADD THIS SECTION for Badge Variants --- */
+@layer components {
+  .badge-success {
+    /* Tailwind classes for a green badge */
+    @apply border-transparent bg-green-100 text-green-800 hover:bg-green-100/80 dark:bg-green-900/80 dark:text-green-50 dark:hover:bg-green-900;
+  }
+  /* You can add other custom variants here if needed */
+  /* .badge-warning { ... } */
 }

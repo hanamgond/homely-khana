@@ -1,7 +1,7 @@
 // backend/routes/address.js
 const express = require("express");
 const pool = require("../db/db");
-const authenticateToken = require("../middlewares/auth"); // Your existing auth middleware
+const { authenticateToken } = require("../middlewares/auth"); // Your existing auth middleware
 
 const router = express.Router();
 

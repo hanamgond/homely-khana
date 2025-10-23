@@ -10,7 +10,8 @@ const app = express();
 const allowedOrigins = [
     "http://homelykhana.in",
     "http://13.48.120.129",
-    "http://localhost:3000" // Your frontend
+    "http://localhost:3000", // Your customer frontend
+    "http://localhost:3001"  // --- ADD THIS: Your new admin portal ---
 ];
 
 // --- Setup CORS ---
@@ -22,31 +23,33 @@ app.use(cors({
             callback(new Error('Not allowed by CORS'));
         }
     },
-    methods: "GET,POST,PUT,DELETE", // Added PUT and DELETE for our new address routes
+    methods: "GET,POST,PUT,DELETE",
     credentials: true
 }));
 
 // --- Middleware ---
-app.use(express.json()); // This is the modern replacement for body-parser
+app.use(express.json()); 
 
-// --- IMPORT ALL OUR NEW, REFACTORED ROUTES ---
+// --- IMPORT ALL OUR ROUTES ---
 const authRoutes = require("./routes/auth");
 const productsRoutes = require("./routes/products");
 const addressRoutes = require("./routes/address");
 const bookingsRoutes = require("./routes/bookings");
 const paymentsRoutes = require("./routes/payment");
 const reviewsRoutes = require("./routes/reviews");
+const adminRoutes = require("./routes/admin"); // --- ADD THIS ---
 
-// --- REGISTER ALL THE NEW ROUTES ---
+// --- REGISTER ALL THE ROUTES ---
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productsRoutes);
-app.use("/api/addresses", addressRoutes); // Using plural '/addresses' to match the file
+app.use("/api/addresses", addressRoutes); 
 app.use("/api/bookings", bookingsRoutes);
 app.use("/api/payment", paymentsRoutes);
 app.use("/api/reviews", reviewsRoutes);
+app.use("/api/admin", adminRoutes); // --- ADD THIS ---
 
 // --- Start server ---
-const port = process.env.PORT || 5000; // Use port 5000 as a default
+const port = process.env.PORT || 5000; 
 app.listen(port, () => {
     console.log(`✅ Server running at http://localhost:${port}`);
 });

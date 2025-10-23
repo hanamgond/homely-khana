@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useState, useEffect, useCallback } from "react";
-import { getCookie, removeCookie, fetchWithToken } from './CookieManagement'; // Assuming fetchWithToken is in this file
+import { getCookie, removeCookie, fetchWithToken } from './CookieManagement'; 
 
 export const AppContext = createContext(null);
 
@@ -21,17 +21,14 @@ export function AppProvider({ children }) {
     setUser(null);
     setIsLoggedIn(false);
     setCart({ lunch: [], dinner: [] });
+    localStorage.removeItem('homelykhana-cart-v2'); // Also clear storage on logout
   }, []);
 
   const fetchUserProfile = useCallback(async () => {
     const token = getCookie();
     if (token) {
       try {
-        // --- THIS IS THE FIX ---
-        // Changed /users/profile to our new /auth/profile route
         const response = await fetchWithToken(`${process.env.NEXT_PUBLIC_URL}/api/auth/profile`); 
-        // -----------------------
-
         const data = await response.json();
         if (data.success) {
           setUser(data.user);
@@ -43,6 +40,9 @@ export function AppProvider({ children }) {
         console.error("Failed to fetch user profile", error);
         logout();
       }
+    } else {
+        setUser(null);
+        setIsLoggedIn(false);
     }
   }, [logout]);
 
@@ -50,7 +50,16 @@ export function AppProvider({ children }) {
     fetchUserProfile();
     const savedCart = localStorage.getItem('homelykhana-cart-v2');
     if (savedCart) {
-      try { setCart(JSON.parse(savedCart)); } catch (e) { console.error("Failed to parse cart", e); }
+      try { 
+        const parsedCart = JSON.parse(savedCart);
+        const ensureTotalPrice = (items) => items.map(item => ({
+            ...item,
+            totalPrice: item.totalPrice || item.totalAmount || 0 
+        }));
+        parsedCart.lunch = ensureTotalPrice(parsedCart.lunch || []);
+        parsedCart.dinner = ensureTotalPrice(parsedCart.dinner || []);
+        setCart(parsedCart); 
+      } catch (e) { console.error("Failed to parse cart", e); }
     }
     setIsMounted(true);
   }, [fetchUserProfile]);
@@ -58,19 +67,33 @@ export function AppProvider({ children }) {
   useEffect(() => {
     if (isMounted) {
       let total = 0;
-      cart.lunch.forEach(item => total += item.totalAmount);
-      cart.dinner.forEach(item => total += item.totalAmount);
+      cart.lunch.forEach(item => {
+        total += item.totalPrice || 0; 
+      });
+      cart.dinner.forEach(item => {
+        total += item.totalPrice || 0;
+      });
       setCartTotal(total);
-      localStorage.setItem('homelykhana-cart-v2', JSON.stringify(cart));
+
+      // Only save to storage if cart is not empty
+      if (cart.lunch.length > 0 || cart.dinner.length > 0) {
+        localStorage.setItem('homelykhana-cart-v2', JSON.stringify(cart));
+      } else {
+        localStorage.removeItem('homelykhana-cart-v2'); // Clean up storage if cart is empty
+      }
     }
-  }, [cart, isMounted]);
+  }, [cart, isMounted]); 
 
   const addSubscription = (subscriptionDetails) => {
     const mealType = subscriptionDetails.mealType.toLowerCase();
     
     setCart(prevCart => {
         const newCart = { ...prevCart };
-        const itemWithId = { ...subscriptionDetails, subs_id: Date.now() };
+        const itemWithId = { 
+            ...subscriptionDetails, 
+            totalPrice: subscriptionDetails.totalPrice || 0,
+            subs_id: Date.now() 
+        };
 
         if (mealType === 'lunch') {
             newCart.lunch = [itemWithId];
@@ -83,22 +106,48 @@ export function AppProvider({ children }) {
 
   const removeSubscription = (mealType, subs_id) => {
     const type = mealType.toLowerCase();
-    if (type === 'lunch') {
-      setCart(prev => ({ ...prev, lunch: prev.lunch.filter(item => item.subs_id !== subs_id) }));
-    } else {
-      setCart(prev => ({ ...prev, dinner: prev.dinner.filter(item => item.subs_id !== subs_id) }));
-    }
+    setCart(prev => {
+        const updatedCart = { ...prev };
+        if (type === 'lunch') {
+            updatedCart.lunch = prev.lunch.filter(item => item.subs_id !== subs_id);
+        } else {
+            updatedCart.dinner = prev.dinner.filter(item => item.subs_id !== subs_id);
+        }
+        return updatedCart;
+    });
   };
   
+  // --- NEW clearCart Function ---
+  const clearCart = () => {
+    setCart({ lunch: [], dinner: [] });
+    setCartTotal(0);
+    // The useEffect hook will automatically remove the item from localStorage
+    console.log("Cart Cleared via function call"); 
+  };
+  // --- END NEW Function ---
+
   const updateQuantity = (mealType, subs_id, newQuantity) => {
     const type = mealType.toLowerCase();
     const update = (items) => items.map(item => {
         if (item.subs_id === subs_id) {
-            const newTotalAmount = item.basePrice * item.totalMeals * newQuantity;
-            return { ...item, quantity: newQuantity, totalAmount: newTotalAmount };
+            const baseAmount = item.originalAmount || (item.plan ? item.plan.price : item.base_price) || 0;
+            const discount = (item.originalAmount && item.discountAmount) ? item.discountAmount / item.originalAmount : 0;
+            
+            const newOriginalAmount = parseFloat(baseAmount) * newQuantity;
+            const newDiscountAmount = newOriginalAmount * discount;
+            const newTotalPrice = newOriginalAmount - newDiscountAmount;
+
+            return { 
+              ...item, 
+              quantity: newQuantity, 
+              originalAmount: newOriginalAmount, 
+              discountAmount: newDiscountAmount,
+              totalPrice: newTotalPrice 
+            };
         }
         return item;
     });
+    
     if (type === 'lunch') setCart(prev => ({ ...prev, lunch: update(prev.lunch) }));
     else if (type === 'dinner') setCart(prev => ({ ...prev, dinner: update(prev.dinner) }));
   };
@@ -107,13 +156,15 @@ export function AppProvider({ children }) {
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
 
+  // --- ADD clearCart to the value ---
   const value = {
     isLoggedIn, user, login, logout,
-    cart, cartTotal, addSubscription, removeSubscription, updateQuantity,
+    cart, cartTotal, addSubscription, removeSubscription, updateQuantity, clearCart, // Added clearCart
     isCartOpen, openCart, closeCart,
     deliveryAddress, setDeliveryAddress,
     subStep, setSubStep, menuId, setMenuId,
   };
+  // --- END ADD ---
 
   if (!isMounted) return null;
 

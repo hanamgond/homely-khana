@@ -1,8 +1,9 @@
-/* styles/Checkout.module.css */
+/* frontend/src/components/checkout/Checkout.module.css */
 
+/* --- Main Layout & Grid --- */
 .pageContainer {
-  max-width: 1100px;
-  margin: 2rem auto;
+  max-width: 1200px; /* Increased slightly */
+  margin: 2rem auto 4rem; /* Added bottom margin */
   padding: 0 1rem;
 }
 
@@ -11,39 +12,57 @@
   align-items: center;
   gap: 0.5rem;
   font-weight: 600;
-  color: #4b5563;
+  color: #4b5563; /* Gray-600 */
   text-decoration: none;
   margin-bottom: 1.5rem;
   font-size: 1rem;
 }
+.backLink:hover {
+  color: #1f2937; /* Gray-800 */
+}
 
 .pageTitle {
-    font-size: 2.25rem;
-    font-weight: 800;
-    margin-bottom: 2rem;
+  font-size: 2.25rem; /* Adjusted size */
+  font-weight: 800;
+  margin-bottom: 2.5rem; /* Increased spacing */
 }
 
 .layoutGrid {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
+  grid-template-columns: 1fr; /* Default mobile */
   gap: 2.5rem;
   align-items: start;
 }
+/* Desktop layout */
+@media (min-width: 1024px) {
+  .layoutGrid {
+    grid-template-columns: 1.5fr 1fr; /* Your desired ratio */
+  }
+}
 
-.formColumn .formBox {
+.formColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* --- General Form Box Styling --- */
+.formBox {
   background-color: #fff;
   border-radius: 16px;
   padding: 2rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #e5e7eb; /* Gray-200 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .formBox h2 {
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0 0 1.5rem 0;
+  color: #111827; /* Gray-900 */
 }
 
-/* --- Address Selection Styles --- */
+/* --- Address Selection & List --- */
 .addressList {
   display: flex;
   flex-direction: column;
@@ -52,46 +71,96 @@
 }
 
 .addressCard {
-  border: 2px solid #e5e7eb;
+  border: 2px solid #e5e7eb; /* Gray-200 */
   padding: 1.25rem;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  position: relative; /* For positioning button if needed, but flexbox works */
+}
+
+.addressCard:hover {
+  border-color: #fbd38d; /* Orange-200 */
+  background-color: #fffaf0; /* Orange-50 */
 }
 
 .addressCard.active {
   border-color: var(--primary-orange);
-  background-color: #fffaf0;
+  background-color: #fffaf0; /* Orange-50 */
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3);
 }
 
+.addressCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem; /* Increased spacing */
+}
+
 .addressType {
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+  font-weight: 600; /* Adjusted from 700 */
+  background-color: #f3f4f6; /* Gray-100 */
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem; /* Slightly smaller */
+  color: #374151; /* Gray-700 */
+}
+
+.editAddressButton {
+  background: none;
+  border: none;
+  color: var(--primary-orange);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  margin-left: auto; /* Push to the right */
+}
+
+.editAddressButton:hover {
+  background-color: rgba(249, 115, 22, 0.1);
+  text-decoration: underline;
 }
 
 .addressCard p {
   margin: 0;
-  color: #6b7280;
+  color: #4b5563; /* Gray-600 */
+  line-height: 1.5; /* Improved readability */
+}
+.addressCard p strong {
+  color: #111827; /* Gray-900 */
 }
 
 .addNewButton {
   width: 100%;
-  border: 2px dashed #d1d5db;
+  border: 2px dashed #d1d5db; /* Gray-300 */
   background: none;
   padding: 1rem;
   border-radius: 12px;
   font-weight: 600;
-  color: #374151;
+  color: #374151; /* Gray-700 */
   font-size: 1rem;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+.addNewButton:hover {
+  border-color: #9ca3af; /* Gray-400 */
+  color: #111827; /* Gray-900 */
+  background-color: #f9fafb; /* Gray-50 */
 }
 
 /* --- Add New Address Form Styles --- */
 .formRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr; /* Default mobile */
   gap: 1.5rem;
+}
+@media (min-width: 640px) { /* Apply 2 columns on small screens and up */
+  .formRow {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 .formGroup {
   display: flex;
@@ -101,15 +170,16 @@
 }
 .formGroup label {
   font-weight: 600;
-  color: #374151;
+  color: #374151; /* Gray-700 */
   font-size: 0.9rem;
 }
 .inputField {
   width: 100%;
   padding: 0.85rem 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid #d1d5db; /* Gray-300 */
   border-radius: 8px;
   font-size: 1rem;
+  transition: all 0.2s ease;
 }
 .inputField:focus {
   outline: none;
@@ -118,74 +188,244 @@
 }
 .formActions {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end; /* Align buttons right */
   align-items: center;
+  gap: 1rem; /* Space between buttons */
   margin-top: 1.5rem;
 }
 .backButton {
-  background: none; border: none; color: #4b5563;
-  font-weight: 600; font-size: 1rem; cursor: pointer;
+  background: none;
+  border: 1px solid #d1d5db; /* Gray-300 */
+  color: #4b5563; /* Gray-600 */
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.backButton:hover {
+  background-color: #f3f4f6; /* Gray-100 */
+  border-color: #9ca3af; /* Gray-400 */
 }
 .confirmButton {
-  background-color: var(--primary-orange); color: white;
-  padding: 12px 24px; border: none; border-radius: 8px;
-  font-weight: 600; font-size: 1rem; cursor: pointer;
+  background-color: var(--primary-orange);
+  color: white;
+  padding: 11px 24px; /* Align vertical padding with back button */
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.confirmButton:hover {
+  background-color: #ea580c; /* Darker orange */
+}
+.confirmButton:disabled {
+  background-color: #fdba74; /* Lighter orange */
+  cursor: not-allowed;
+}
+
+/* --- Payment Method Styles --- */
+.paymentOptionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.paymentOption {
+  display: flex;
+  align-items: flex-start; /* Align radio button with the top */
+  gap: 1rem;
+  border: 2px solid #e5e7eb; /* Gray-200 */
+  padding: 1.25rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.paymentOption:hover {
+  border-color: #fbd38d; /* Orange-200 */
+  background-color: #fffaf0; /* Orange-50 */
+}
+.paymentOption.active {
+  border-color: var(--primary-orange);
+  background-color: #fffaf0; /* Orange-50 */
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3);
+}
+.paymentOption input[type="radio"] {
+  margin-top: 4px; /* Align radio button vertically */
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary-orange); /* Modern way to color radio buttons */
+  flex-shrink: 0;
+}
+.paymentDetails {
+  display: flex;
+  flex-direction: column;
+}
+.paymentTitle {
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: #111827; /* Gray-900 */
+}
+.paymentDesc {
+  font-size: 0.9rem;
+  color: #6b7280; /* Gray-500 */
 }
 
 /* --- Right Column (Order Summary) --- */
 .summaryColumn {
   position: sticky;
-  top: 100px;
+  top: 2rem; /* Adjusted sticky position */
+}
+/* Move summary to top on mobile */
+@media (max-width: 1023px) {
+  .summaryColumn {
+    position: static;
+    grid-row: 1;
+  }
 }
 
 .summaryBox {
-  background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background-color: #f9fafb; /* Gray-50 */
+  border: 1px solid #e5e7eb; /* Gray-200 */
   border-radius: 16px;
-  padding: 1.5rem;
+  padding: 1.5rem; /* Slightly reduced padding */
 }
+
 .summaryHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1.5rem; /* Added margin */
+  border-bottom: 1px solid #e5e7eb; /* Gray-200 */
 }
+
 .summaryHeader h2 {
   font-size: 1.25rem;
   font-weight: 700;
   margin: 0;
 }
-.editButton {
-  font-weight: 600;
-  color: var(--primary-orange);
-  text-decoration: none;
+
+/* --- Item-Specific Action Buttons & Layout --- */
+.summaryItem {
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e7eb; /* Gray-200 */
+  margin-bottom: 1.5rem;
 }
+.summaryItem:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.summaryItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.summaryMealTypeLabel {
+  font-weight: 700;
+  color: var(--primary-orange);
+  background-color: #fff7ed; /* Orange-100 */
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--primary-orange);
+  font-size: 0.9rem; /* Slightly larger */
+}
+
+.itemActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Generic button style for Edit/Remove */
+.editItemButton,
+.removeItemButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem; /* Smaller text */
+  font-weight: 600;
+  padding: 0.25rem; /* Minimal padding */
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+.editItemButton:disabled,
+.removeItemButton:disabled {
+    color: #9ca3af; /* Gray-400 */
+    cursor: not-allowed;
+}
+
+.editItemButton { color: #3b82f6; } /* Blue-500 */
+.editItemButton:hover:not(:disabled) {
+    color: #2563eb; /* Blue-600 */
+    background-color: rgba(59, 130, 246, 0.1); /* Light blue bg */
+}
+
+.removeItemButton { color: #ef4444; } /* Red-500 */
+.removeItemButton:hover:not(:disabled) {
+    color: #dc2626; /* Red-600 */
+    background-color: rgba(239, 68, 68, 0.1); /* Light red bg */
+}
+
+.summaryDivider {
+  height: 1px;
+  background-color: #e5e7eb; /* Gray-200 */
+  margin: 1.5rem 0; /* Add vertical margin for separation */
+}
+
+/* --- Summary Details Grid --- */
 .summaryGrid {
   display: grid;
-  grid-template-columns: auto 1fr;
-  row-gap: 0.85rem;
-  margin: 1.5rem 0;
+  grid-template-columns: auto 1fr; /* Label takes auto width, value takes rest */
+  row-gap: 0.75rem; /* Increased row gap */
+  column-gap: 1rem;
+  font-size: 0.9rem; /* Adjusted font size */
 }
-.summaryLabel { color: #6b7280; }
-.summaryValue { font-weight: 600; text-align: right; }
+
+.summaryLabel {
+  color: #6b7280; /* Gray-500 */
+  font-weight: 500;
+}
+
+.summaryValue {
+  font-weight: 600;
+  text-align: right;
+  color: #111827; /* Gray-900 */
+}
+
+/* --- Total Amount Row --- */
 .totalAmountRow {
-  grid-column: 1 / -1;
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  padding-top: 1.25rem;
-  border-top: 1px solid #e5e7eb;
-  margin-top: 1rem;
+  padding-top: 1.5rem; /* Increased padding */
+  border-top: 1px solid #e5e7eb; /* Gray-200 */
+  margin-top: 1.5rem; /* Increased margin */
 }
-.summaryTotalLabel { font-weight: 700; font-size: 1.1rem; }
+
+.summaryTotalLabel {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #111827; /* Gray-900 */
+}
+
 .summaryTotalPrice {
   font-weight: 800;
   font-size: 1.5rem;
   color: var(--primary-orange);
 }
+
+/* --- Final Action Button & Text --- */
 .paymentButton {
-  background-color: #22c55e;
+  background-color: #22c55e; /* Green-500 */
   color: #fff;
   font-weight: 700;
   border: none;
@@ -194,153 +434,20 @@
   cursor: pointer;
   width: 100%;
   font-size: 1.1rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem; /* Increased margin */
   transition: background-color 0.2s ease;
 }
+.paymentButton:hover:not(:disabled) {
+  background-color: #16a34a; /* Green-600 */
+}
 .paymentButton:disabled {
-  background-color: #d1d5db;
+  background-color: #9ca3af; /* Gray-400 */
   cursor: not-allowed;
 }
+
 .terms {
   font-size: 0.8rem;
-  color: #9ca3af;
+  color: #9ca3af; /* Gray-400 */
   text-align: center;
   margin-top: 1rem;
 }
-
-/* Responsive adjustments */
-@media (max-width: 992px) {
-  .layoutGrid {
-    grid-template-columns: 1fr;
-  }
-  .summaryColumn {
-    position: static;
-    grid-row: 1; /* Move summary to the top on mobile */
-  }
-}
-
-/* --- ADD THESE STYLES for Payment Method --- */
-.paymentOptionsList {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.paymentOption {
-    display: flex;
-    align-items: flex-start; /* Align radio button with the top */
-    gap: 1rem;
-    border: 2px solid #e5e7eb;
-    padding: 1.25rem;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.paymentOption:hover {
-    border-color: #fbd38d;
-    background-color: #fffaf0;
-}
-
-.paymentOption.active {
-    border-color: var(--primary-orange);
-    background-color: #fffaf0;
-    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3);
-}
-
-.paymentOption input[type="radio"] {
-    margin-top: 4px; /* Align radio button vertically */
-    width: 18px;
-    height: 18px;
-    accent-color: var(--primary-orange); /* Modern way to color radio buttons */
-    flex-shrink: 0;
-}
-
-.paymentDetails {
-    display: flex;
-    flex-direction: column;
-}
-
-.paymentTitle {
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-    color: #111827;
-}
-
-.paymentDesc {
-    font-size: 0.9rem;
-    color: #6b7280;
-}
-/* (Keep all your existing styles) */
-
-.addressCard {
-  /* ... existing styles ... */
-  position: relative; /* Needed for absolute positioning of edit button */
-}
-
-/* --- NEW: Styles for Edit Button --- */
-.addressCardHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-}
-
-.editAddressButton {
-    background: none;
-    border: none;
-    color: var(--primary-orange);
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    padding: 0.25rem 0.5rem; /* Small padding */
-    margin-left: auto; /* Push to the right */
-}
-
-.editAddressButton:hover {
-    text-decoration: underline;
-}
-/* --- Address Card Header with Edit Button --- */
-.addressCardHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-}
-
-.editAddressButton {
-    background: none;
-    border: none;
-    color: var(--primary-orange);
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-}
-
-.editAddressButton:hover {
-    background-color: rgba(249, 115, 22, 0.1);
-    text-decoration: underline;
-}
-
-/* Ensure the address card is still clickable for selection */
-.addressCard {
-    position: relative;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.addressCard:hover {
-    border-color: #fbd38d;
-    background-color: #fffaf0;
-}
-
-.addressCard.active {
-    border-color: var(--primary-orange);
-    background-color: #fffaf0;
-    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3);
-}
-
-/* --- END OF NEW STYLES --- */

@@ -230,24 +230,3 @@
 .dayButton:hover:not(.active) {
     background-color: #e5e7eb;
 }
-/* ... all your existing styles ... */
-
-/* --- NEW STYLES TO ADD --- */
-
-/* For the (20% Off) badge on the plan buttons */
-.discountBadge {
-  display: inline-block;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #22c55e; /* Green */
-  margin-left: 0.5rem;
-}
-.optionButton.active .discountBadge {
-  color: #fff; /* Make it white on active button */
-}
-
-/* For the "Subscription Discount" text in the summary */
-.summaryGrid .discountText {
-  color: #22c55e; /* Green */
-  font-weight: 700;
-}

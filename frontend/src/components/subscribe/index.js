@@ -194,7 +194,7 @@ export default function SubscribeClient() {
       // Pass all price components to checkout
       originalAmount: summary.originalAmount,
       discountAmount: summary.discountAmount,
-      totalAmount: summary.totalAmount, // This is the final, discounted price
+      totalPrice: summary.totalAmount, // This is the final, discounted price
       
       quantity: quantity,
       booking_type: selectedProduct.booking_type,

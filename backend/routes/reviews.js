@@ -1,7 +1,7 @@
 // backend/routes/reviews.js
 const express = require("express");
 const pool = require("../db/db");
-const authenticateToken = require("../middlewares/auth"); // Import auth middleware
+const { authenticateToken } = require("../middlewares/auth"); // Import auth middleware
 
 const router = express.Router();
 
