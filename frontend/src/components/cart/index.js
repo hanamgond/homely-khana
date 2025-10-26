@@ -1,45 +1,59 @@
 'use client';
 
-import React, { useContext } from "react";
+import React, { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from 'sonner';
+import styles from "./Cart.module.css";
 
-import styles from "./Cart.module.css"; // Assumes colocation
-import { AppContext } from '@/utils/AppContext';
+// --- NEW IMPORTS ---
+import { useUIStore } from '@/store/uiStore';      // Manages open/close state
+import { useCartStore } from '@/store/cartStore'; // Manages cart data
+
+// --- REMOVED APP CONTEXT ---
+// import { AppContext } from '@/utils/AppContext';
 
 const Cart = () => {
   const router = useRouter();
 
-  // Get everything from AppContext
+  // --- 1. Get UI state from useUIStore ---
+  const { isCartOpen, closeCart } = useUIStore();
+  
+  // --- 2. Get Cart data from useCartStore ---
   const { 
-    isCartOpen, 
-    closeCart, 
-    cart, 
-    cartTotal, 
+    cartItems, 
+    getTotalPrice, 
     updateQuantity, 
-    removeSubscription 
-  } = useContext(AppContext);
+    removeFromCart 
+  } = useCartStore();
 
-  const hasItems = cart && ((cart.lunch?.length > 0) || (cart.dinner?.length > 0));
+  // --- 3. Get calculated values from store ---
+  const cartTotal = getTotalPrice();
+  const hasItems = cartItems.length > 0;
+
+  // --- 4. Derive Lunch/Dinner items (like in CheckoutClient) ---
+  const { lunchItems, dinnerItems } = useMemo(() => {
+    const lunch = cartItems.filter(item => item.mealType?.toLowerCase() === 'lunch');
+    const dinner = cartItems.filter(item => item.mealType?.toLowerCase() === 'dinner');
+    return { lunchItems: lunch, dinnerItems: dinner };
+  }, [cartItems]);
+
 
   const handleProceedToCheckout = () => {
     closeCart();
     router.push("/checkout");
   };
   
-  const modifyQuantity = (type, action, sub) => {
-    const currentQuantity = sub.quantity;
+  // --- REFACTORED: Quantity modification ---
+  const modifyQuantity = (action, item) => {
+    const currentQuantity = item.quantity;
     let newQuantity = action === 'add' ? currentQuantity + 1 : currentQuantity - 1;
 
     if (newQuantity < 1) {
-      if (removeSubscription) {
-        removeSubscription(type, sub.subs_id);
-        toast.success("Meal removed from cart");
-      }
+      // Use the item's unique ID (from subscribe page)
+      removeFromCart(item.id || item.subs_id);
+      toast.success("Meal removed from cart");
     } else if (newQuantity < 100) {
-      if (updateQuantity) {
-        updateQuantity(type, sub.subs_id, newQuantity);
-      }
+      updateQuantity(item.id || item.subs_id, newQuantity);
     }
   };
 
@@ -59,36 +73,40 @@ const Cart = () => {
         {hasItems ? (
           <div className={styles.cartContent}>
             <div className={styles.itemList}>
-              {/* Lunch Items */}
-              {cart.lunch.length > 0 && <h3 className={styles.cartSectionTitle}>Lunch</h3>}
-              {cart.lunch.map(sub => (
-                <div key={sub.subs_id} className={styles.cartItem}>
+              
+              {/* --- REFACTORED: Lunch Items --- */}
+              {lunchItems.length > 0 && <h3 className={styles.cartSectionTitle}>Lunch</h3>}
+              {lunchItems.map(item => (
+                <div key={item.id || item.subs_id} className={styles.cartItem}>
                   <div className={styles.itemDetails}>
-                    <p className={styles.itemName}>{sub.selectedMeal}</p>
-                    <p className={styles.itemMeta}>Plan: {sub.plan}</p>
+                    {/* Use new property names: name, plan.plan_name */}
+                    <p className={styles.itemName}>{item.name || item.selectedMeal}</p>
+                    <p className={styles.itemMeta}>Plan: {item.plan?.plan_name || item.plan}</p>
                   </div>
                   <div className={styles.quantityControls}>
-                    <button onClick={() => modifyQuantity('lunch', 'remove', sub)}>-</button>
-                    <span>{sub.quantity}</span>
-                    <button onClick={() => modifyQuantity('lunch', 'add', sub)}>+</button>
+                    <button onClick={() => modifyQuantity('remove', item)}>-</button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => modifyQuantity('add', item)}>+</button>
                   </div>
-                  <p className={styles.itemPrice}>₹{sub.totalAmount}</p>
+                  {/* Use new property name: totalPrice */}
+                  <p className={styles.itemPrice}>₹{item.totalPrice || item.totalAmount}</p>
                 </div>
               ))}
-              {/* Dinner Items */}
-              {cart.dinner.length > 0 && <h3 className={styles.cartSectionTitle}>Dinner</h3>}
-              {cart.dinner.map(sub => (
-                 <div key={sub.subs_id} className={styles.cartItem}>
+              
+              {/* --- REFACTORED: Dinner Items --- */}
+              {dinnerItems.length > 0 && <h3 className={styles.cartSectionTitle}>Dinner</h3>}
+              {dinnerItems.map(item => (
+                 <div key={item.id || item.subs_id} className={styles.cartItem}>
                   <div className={styles.itemDetails}>
-                    <p className={styles.itemName}>{sub.selectedMeal}</p>
-                    <p className={styles.itemMeta}>Plan: {sub.plan}</p>
+                    <p className={styles.itemName}>{item.name || item.selectedMeal}</p>
+                    <p className={styles.itemMeta}>Plan: {item.plan?.plan_name || item.plan}</p>
                   </div>
                   <div className={styles.quantityControls}>
-                    <button onClick={() => modifyQuantity('dinner', 'remove', sub)}>-</button>
-                    <span>{sub.quantity}</span>
-                    <button onClick={() => modifyQuantity('dinner', 'add', sub)}>+</button>
+                    <button onClick={() => modifyQuantity('remove', item)}>-</button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => modifyQuantity('add', item)}>+</button>
                   </div>
-                  <p className={styles.itemPrice}>₹{sub.totalAmount}</p>
+                  <p className={styles.itemPrice}>₹{item.totalPrice || item.totalAmount}</p>
                 </div>
               ))}
             </div>
@@ -96,6 +114,7 @@ const Cart = () => {
             <div className={styles.footer}>
               <div className={styles.totalRow}>
                 <span>Grand Total</span>
+                {/* Use new cartTotal from store */}
                 <span>₹{cartTotal.toLocaleString('en-IN')}</span>
               </div>
               <button className={styles.checkoutButton} onClick={handleProceedToCheckout}>

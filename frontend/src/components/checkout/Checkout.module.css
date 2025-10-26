@@ -2,8 +2,8 @@
 
 /* --- Main Layout & Grid --- */
 .pageContainer {
-  max-width: 1200px; /* Increased slightly */
-  margin: 2rem auto 4rem; /* Added bottom margin */
+  max-width: 1200px;
+  margin: 2rem auto 4rem;
   padding: 0 1rem;
 }
 
@@ -22,9 +22,9 @@
 }
 
 .pageTitle {
-  font-size: 2.25rem; /* Adjusted size */
+  font-size: 2.25rem;
   font-weight: 800;
-  margin-bottom: 2.5rem; /* Increased spacing */
+  margin-bottom: 2.5rem;
 }
 
 .layoutGrid {
@@ -36,7 +36,7 @@
 /* Desktop layout */
 @media (min-width: 1024px) {
   .layoutGrid {
-    grid-template-columns: 1.5fr 1fr; /* Your desired ratio */
+    grid-template-columns: 1.5fr 1fr; /* Ratio from previous version */
   }
 }
 
@@ -76,7 +76,7 @@
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
-  position: relative; /* For positioning button if needed, but flexbox works */
+  position: relative;
 }
 
 .addressCard:hover {
@@ -94,15 +94,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem; /* Increased spacing */
+  margin-bottom: 0.75rem;
 }
 
 .addressType {
-  font-weight: 600; /* Adjusted from 700 */
+  font-weight: 600;
   background-color: #f3f4f6; /* Gray-100 */
   padding: 0.25rem 0.75rem;
   border-radius: 6px;
-  font-size: 0.85rem; /* Slightly smaller */
+  font-size: 0.85rem;
   color: #374151; /* Gray-700 */
 }
 
@@ -116,7 +116,7 @@
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   transition: background-color 0.2s ease;
-  margin-left: auto; /* Push to the right */
+  margin-left: auto;
 }
 
 .editAddressButton:hover {
@@ -127,7 +127,7 @@
 .addressCard p {
   margin: 0;
   color: #4b5563; /* Gray-600 */
-  line-height: 1.5; /* Improved readability */
+  line-height: 1.5;
 }
 .addressCard p strong {
   color: #111827; /* Gray-900 */
@@ -154,10 +154,10 @@
 /* --- Add New Address Form Styles --- */
 .formRow {
   display: grid;
-  grid-template-columns: 1fr; /* Default mobile */
-  gap: 1.5rem;
+  grid-template-columns: 1fr; /* Mobile */
+  gap: 1.5rem; /* Consistent gap */
 }
-@media (min-width: 640px) { /* Apply 2 columns on small screens and up */
+@media (min-width: 640px) { /* Desktop */
   .formRow {
     grid-template-columns: 1fr 1fr;
   }
@@ -166,37 +166,46 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.5rem; /* Consistent spacing */
 }
 .formGroup label {
   font-weight: 600;
   color: #374151; /* Gray-700 */
-  font-size: 0.9rem;
+  font-size: 0.9rem; /* Match design */
 }
+/* --- UPDATED Input Field Styling --- */
 .inputField {
   width: 100%;
   padding: 0.85rem 1rem;
-  border: 1px solid #d1d5db; /* Gray-300 */
+  border: 1px solid #e5e7eb; /* Gray-200 - Slightly lighter border */
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.2s ease;
+  background-color: #f9fafb; /* Light gray background like screenshot */
+}
+.inputField::placeholder {
+    color: #9ca3af; /* Gray-400 - Lighter placeholder */
+    font-size: 0.95rem; /* Slightly smaller placeholder */
 }
 .inputField:focus {
   outline: none;
   border-color: var(--primary-orange);
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+  background-color: #fff; /* White background on focus */
 }
+/* --- END UPDATED Input Field Styling --- */
+
 .formActions {
   display: flex;
-  justify-content: flex-end; /* Align buttons right */
+  justify-content: flex-end;
   align-items: center;
-  gap: 1rem; /* Space between buttons */
+  gap: 1rem;
   margin-top: 1.5rem;
 }
 .backButton {
   background: none;
-  border: 1px solid #d1d5db; /* Gray-300 */
-  color: #4b5563; /* Gray-600 */
+  border: 1px solid #d1d5db;
+  color: #4b5563;
   padding: 10px 20px;
   border-radius: 8px;
   font-weight: 600;
@@ -205,13 +214,13 @@
   transition: all 0.2s ease;
 }
 .backButton:hover {
-  background-color: #f3f4f6; /* Gray-100 */
-  border-color: #9ca3af; /* Gray-400 */
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
 }
 .confirmButton {
   background-color: var(--primary-orange);
   color: white;
-  padding: 11px 24px; /* Align vertical padding with back button */
+  padding: 11px 24px;
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -227,16 +236,134 @@
   cursor: not-allowed;
 }
 
+/* --- Right Column (Order Summary) --- */
+.summaryColumn {
+  position: sticky;
+  top: calc(70px + 2rem); /* Adjust based on your actual header height + desired gap */
+}
+@media (max-width: 1023px) {
+  .summaryColumn {
+    position: static;
+    grid-row: 1; /* Moves summary to top on mobile */
+  }
+}
+
+.summaryBox {
+  background-color: #fff; /* White background like screenshot */
+  border: 1px solid #e5e7eb; /* Gray-200 */
+  border-radius: 16px;
+  padding: 2rem; /* Match address box padding */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Match address box shadow */
+}
+
+.summaryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e7eb; /* Gray-200 */
+}
+
+.summaryHeader h2 {
+  font-size: 1.5rem; /* Match address box title */
+  font-weight: 700;
+  margin: 0;
+  color: #111827;
+}
+
+/* --- REMOVED: Edit Button Styling in Header --- */
+/* The edit button styling has been removed as requested */
+
+/* --- NEW Styles for Order Summary Details --- */
+.summaryDetailsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem; /* Spacing between rows */
+  margin-bottom: 1.5rem; /* Space before total */
+  font-size: 1rem; /* Base font size for summary */
+}
+
+.summaryDetailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summaryDetailLabel {
+  color: #6b7280; /* Gray-500 */
+  font-weight: 500; /* Regular weight */
+}
+
+.summaryDetailValue {
+  color: #111827; /* Darker text */
+  font-weight: 600; /* Bolder */
+  text-align: right;
+}
+/* --- END NEW Summary Styles --- */
+
+/* --- Total Amount Row (Updated with Yellow Color) --- */
+.totalAmountRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline; /* Align text baselines */
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb; /* Gray-200 */
+  margin-top: 1.5rem;
+}
+
+.summaryTotalLabel {
+  font-weight: 700; /* Bold */
+  font-size: 1.1rem; /* Slightly larger */
+  color: #111827; /* Gray-900 */
+}
+
+.summaryTotalPrice {
+  font-weight: 800; /* Extra Bold */
+  font-size: 1.75rem; /* Larger font size like screenshot */
+  color: #f59e0b; /* Yellow-500 - Changed from orange to yellow */
+}
+
+/* --- Final Action Button & Text --- */
+.paymentButton {
+  background-color: #65D072; /* Green from screenshot */
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  padding: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 1.1rem;
+  margin-top: 1.5rem;
+  transition: background-color 0.2s ease;
+}
+.paymentButton:hover:not(:disabled) {
+  background-color: #4CAF50; /* Darker Green */
+}
+.paymentButton:disabled {
+  background-color: #a5d6a7; /* Lighter Green */
+  cursor: not-allowed;
+}
+
+.terms {
+  font-size: 0.8rem;
+  color: #9ca3af; /* Gray-400 */
+  text-align: center;
+  margin-top: 1rem;
+}
+
 /* --- Payment Method Styles --- */
 .paymentOptionsList {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
+
 .paymentOption {
-  display: flex;
-  align-items: flex-start; /* Align radio button with the top */
-  gap: 1rem;
+  display: flex; /* Keep flex */
+  align-items: flex-start; /* Align radio to the top of the text block */
+  gap: 0.75rem; /* Reduced gap slightly */
   border: 2px solid #e5e7eb; /* Gray-200 */
   padding: 1.25rem;
   border-radius: 12px;
@@ -252,72 +379,44 @@
   background-color: #fffaf0; /* Orange-50 */
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3);
 }
+
 .paymentOption input[type="radio"] {
-  margin-top: 4px; /* Align radio button vertically */
+  margin-top: 2px; /* Fine-tune vertical alignment */
   width: 18px;
   height: 18px;
-  accent-color: var(--primary-orange); /* Modern way to color radio buttons */
+  accent-color: var(--primary-orange);
   flex-shrink: 0;
 }
+
 .paymentDetails {
-  display: flex;
-  flex-direction: column;
+  display: block; /* Change from flex to block for normal text flow */
 }
+
 .paymentTitle {
+  display: block; /* Ensure title is on its own line */
   font-weight: 700;
   margin-bottom: 0.25rem;
   color: #111827; /* Gray-900 */
 }
+
 .paymentDesc {
+  display: block; /* Ensure description is on its own line */
   font-size: 0.9rem;
   color: #6b7280; /* Gray-500 */
+  line-height: 1.4; /* Improve readability */
 }
 
-/* --- Right Column (Order Summary) --- */
-.summaryColumn {
-  position: sticky;
-  top: 2rem; /* Adjusted sticky position */
-}
-/* Move summary to top on mobile */
-@media (max-width: 1023px) {
-  .summaryColumn {
-    position: static;
-    grid-row: 1;
-  }
-}
-
-.summaryBox {
-  background-color: #f9fafb; /* Gray-50 */
-  border: 1px solid #e5e7eb; /* Gray-200 */
-  border-radius: 16px;
-  padding: 1.5rem; /* Slightly reduced padding */
-}
-
-.summaryHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 1rem;
-  margin-bottom: 1.5rem; /* Added margin */
-  border-bottom: 1px solid #e5e7eb; /* Gray-200 */
-}
-
-.summaryHeader h2 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin: 0;
-}
-
-/* --- Item-Specific Action Buttons & Layout --- */
+/* --- Summary Item Styles (For multi-item layout) --- */
 .summaryItem {
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid #e5e7eb; /* Gray-200 */
   margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
 }
-.summaryItem:last-of-type {
-  border-bottom: none;
-  padding-bottom: 0;
+
+.summaryItem:last-child {
   margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
 .summaryItemHeader {
@@ -330,11 +429,9 @@
 .summaryMealTypeLabel {
   font-weight: 700;
   color: var(--primary-orange);
-  background-color: #fff7ed; /* Orange-100 */
-  padding: 0.25rem 0.75rem;
-  border-radius: 6px;
-  border: 1px solid var(--primary-orange);
-  font-size: 0.9rem; /* Slightly larger */
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .itemActions {
@@ -342,52 +439,48 @@
   gap: 0.75rem;
 }
 
-/* Generic button style for Edit/Remove */
-.editItemButton,
-.removeItemButton {
+.editItemButton {
   background: none;
   border: none;
+  color: var(--primary-orange);
+  font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  font-size: 0.85rem; /* Smaller text */
-  font-weight: 600;
-  padding: 0.25rem; /* Minimal padding */
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-.editItemButton:disabled,
-.removeItemButton:disabled {
-    color: #9ca3af; /* Gray-400 */
-    cursor: not-allowed;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
 }
 
-.editItemButton { color: #3b82f6; } /* Blue-500 */
 .editItemButton:hover:not(:disabled) {
-    color: #2563eb; /* Blue-600 */
-    background-color: rgba(59, 130, 246, 0.1); /* Light blue bg */
+  background-color: rgba(249, 115, 22, 0.1);
 }
 
-.removeItemButton { color: #ef4444; } /* Red-500 */
+.removeItemButton {
+  background: none;
+  border: none;
+  color: #ef4444; /* Red-500 */
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
 .removeItemButton:hover:not(:disabled) {
-    color: #dc2626; /* Red-600 */
-    background-color: rgba(239, 68, 68, 0.1); /* Light red bg */
+  background-color: rgba(239, 68, 68, 0.1);
 }
 
-.summaryDivider {
-  height: 1px;
-  background-color: #e5e7eb; /* Gray-200 */
-  margin: 1.5rem 0; /* Add vertical margin for separation */
-}
-
-/* --- Summary Details Grid --- */
 .summaryGrid {
   display: grid;
-  grid-template-columns: auto 1fr; /* Label takes auto width, value takes rest */
-  row-gap: 0.75rem; /* Increased row gap */
-  column-gap: 1rem;
-  font-size: 0.9rem; /* Adjusted font size */
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
 }
 
 .summaryLabel {
@@ -396,58 +489,13 @@
 }
 
 .summaryValue {
+  color: #111827; /* Gray-900 */
   font-weight: 600;
   text-align: right;
-  color: #111827; /* Gray-900 */
 }
 
-/* --- Total Amount Row --- */
-.totalAmountRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding-top: 1.5rem; /* Increased padding */
-  border-top: 1px solid #e5e7eb; /* Gray-200 */
-  margin-top: 1.5rem; /* Increased margin */
-}
-
-.summaryTotalLabel {
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: #111827; /* Gray-900 */
-}
-
-.summaryTotalPrice {
-  font-weight: 800;
-  font-size: 1.5rem;
-  color: var(--primary-orange);
-}
-
-/* --- Final Action Button & Text --- */
-.paymentButton {
-  background-color: #22c55e; /* Green-500 */
-  color: #fff;
-  font-weight: 700;
-  border: none;
-  padding: 1rem;
-  border-radius: 10px;
-  cursor: pointer;
-  width: 100%;
-  font-size: 1.1rem;
-  margin-top: 1.5rem; /* Increased margin */
-  transition: background-color 0.2s ease;
-}
-.paymentButton:hover:not(:disabled) {
-  background-color: #16a34a; /* Green-600 */
-}
-.paymentButton:disabled {
-  background-color: #9ca3af; /* Gray-400 */
-  cursor: not-allowed;
-}
-
-.terms {
-  font-size: 0.8rem;
-  color: #9ca3af; /* Gray-400 */
-  text-align: center;
-  margin-top: 1rem;
+.summaryDivider {
+  height: 1px;
+  background-color: #e5e7eb; /* Gray-200 */
+  margin: 1.5rem 0;
 }

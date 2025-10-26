@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
-import styles from "./HomePage.module.css"; // Make sure this path is correct
+import React, { useState } from "react";
+import styles from "./HomePage.module.css"; 
+import Offering from "@/components/offering"; 
+import Footer from "@/components/footer"; 
+import { useQuery } from "@tanstack/react-query";
+import { fetchProducts } from "@/lib/api";
 
-import Offering from "@/components/offering"; // Check path if needed
-import Footer from "@/components/footer"; // Check path if needed
-
-// Static data for Testimonials and FAQs
+// Static data for Testimonials and FAQs (Complete and Unchanged)
 const testimonials = [
     { name: 'Priya Sharma', role: 'Software Engineer', initials: 'PS', review: '"HomelyKhana has been a lifesaver! The food tastes just like my mom\'s cooking. The freshness and quality are unmatched. I\'ve been subscribing for 6 months now and couldn\'t be happier!"' },
     { name: 'Rahul Verma', role: 'Marketing Manager', initials: 'RV', review: '"As someone who works long hours, having healthy homemade meals delivered daily has changed my life. The variety is great and the delivery is always on time. Highly recommend!"' },
@@ -23,21 +24,18 @@ const faqsData = [
     { q: 'Do you cater to specific dietary restrictions?', a: 'Please contact our customer support to discuss any specific dietary needs. We do our best to accommodate requests where possible.' }
 ];
 
-// Reusable FAQ Item Component
+// Reusable FAQ Item Component (Unchanged)
 const FaqItem = ({ faq, index, toggleFAQ, isOpen }) => (
     <div className={styles.faqItem}>
-        {/* Added aria-expanded for accessibility and potential CSS targeting */}
         <button
             className={styles.faqQuestion}
             onClick={() => toggleFAQ(index)}
             aria-expanded={isOpen}
         >
             {faq.q}
-            {/* Using a span for the icon */}
             <span>{isOpen ? '−' : '+'}</span>
         </button>
         <div className={`${styles.faqAnswer} ${isOpen ? styles.open : ''}`}>
-             {/* Use dangerouslySetInnerHTML if 'a' contains HTML, otherwise just {faq.a} */}
              {faq.a}
         </div>
     </div>
@@ -45,47 +43,26 @@ const FaqItem = ({ faq, index, toggleFAQ, isOpen }) => (
 
 
 export default function HomePageClient() {
+  // Local UI state for FAQs (Unchanged)
   const [openFAQ, setOpenFAQ] = useState(null);
   const toggleFAQ = index => { setOpenFAQ(openFAQ === index ? null : index); };
 
-  // State for fetching offerings from the API
-  const [offerings, setOfferings] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // --- REFACTORED DATA FETCHING ---
+  // The old useState/useEffect block for offerings, isLoading, and error is REMOVED.
+  // It's replaced by this single useQuery hook:
+  const {
+    data: offerings = [], // Default to empty array
+    isLoading,
+    isError,
+    error
+  } = useQuery({
+      queryKey: ['products', 'Meals'], // A unique key to cache this query
+      queryFn: () => fetchProducts('Meals') // The function that fetches the data
+  });
+  // --- END OF REFACTOR ---
 
-  // Fetch offerings on component mount
-  useEffect(() => {
-    console.log("HomePage useEffect is running. Starting fetch..."); // Keep for debugging if needed
 
-    const fetchOfferings = async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/products?type=Meals`);
-        if (!response.ok) { // Check if response status is OK (200-299)
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-
-        console.log("API Response Data:", data); // Keep for debugging if needed
-
-        if (data.success && Array.isArray(data.data)) { // Ensure data.data is an array
-          setOfferings(data.data);
-        } else {
-          // If success is false or data is not an array, treat as error
-          throw new Error(data.error || 'Invalid data structure received.');
-        }
-      } catch (err) {
-        // Handle fetch errors (network issues) and JSON parsing errors
-        setError(err instanceof Error ? err.message : String(err));
-        console.error("Error fetching offerings:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchOfferings();
-  }, []); // Empty dependency array means this runs once on mount
-
-  // Helper function to get the display price for the offering card
+  // Helper function to get the display price (Unchanged)
   const getDisplayPrice = (product) => {
     // If it's a one-time product, use its base price
     if (product.booking_type === 'one-time' && product.base_price) {
@@ -104,7 +81,7 @@ export default function HomePageClient() {
   return (
     <>
       <main>
-        {/* --- Hero Section --- */}
+        {/* --- Hero Section (Unchanged) --- */}
         <section className={styles.hero}>
           <div className={styles.heroContent}>
             <h1>Order Healthy & <span className={styles.accent}>Homely Food</span></h1>
@@ -116,7 +93,7 @@ export default function HomePageClient() {
           </div>
         </section>
 
-        {/* --- Why HomelyKhana Section --- */}
+        {/* --- Why HomelyKhana Section (Unchanged) --- */}
         <section className={styles.section}>
             <div className={styles.sectionHeader}>
                 <h2>Why HomelyKhana?</h2>
@@ -124,11 +101,9 @@ export default function HomePageClient() {
             </div>
             <div className={styles.whyUsGrid}>
                 <div className={styles.whyUsImages}>
-                    {/* Ensure images exist in public folder */}
                     <div><Image src="/why-us-1.jpg" alt="Woman cooking" width={500} height={400} style={{ objectFit: 'cover', borderRadius: '12px', width: '100%', height: 'auto' }} priority /></div>
                     <div><Image src="/why-us-2.jpg" alt="Chopping vegetables" width={500} height={300} style={{ objectFit: 'cover', borderRadius: '12px', width: '100%', height: 'auto' }} /></div>
                 </div>
-                 {/* --- CORRECTED whyUsList Structure --- */}
                 <div className={styles.whyUsList}>
                     <div className={styles.whyUsItem}>
                         <div className={styles.whyUsIcon}>🧡</div>
@@ -147,19 +122,18 @@ export default function HomePageClient() {
                         <div><h3>On-Time Hot Delivery</h3><p>Piping hot meals delivered punctually to your doorstep every day</p></div>
                     </div>
                     <div className={styles.whyUsItem}>
-                        <div className={styles.whyUsIcon}>🛡️</div> {/* Ensure this emoji renders correctly or use an SVG */}
+                        <div className={styles.whyUsIcon}>🛡️</div> 
                         <div><h3>Hygienic Preparation</h3><p>Prepared in FSSAI-certified kitchens with strict hygiene protocols</p></div>
                     </div>
                     <div className={styles.whyUsItem}>
-                        <div className={styles.whyUsIcon}>🧑‍🤝‍🧑</div> {/* Ensure this emoji renders correctly or use an SVG */}
+                        <div className={styles.whyUsIcon}>🧑‍🤝‍🧑</div> 
                         <div><h3>Trusted by Thousands</h3><p>Join 10,000+ happy customers enjoying healthy meals daily</p></div>
                     </div>
                 </div>
-                 {/* --- END CORRECTED whyUsList Structure --- */}
             </div>
         </section>
 
-        {/* --- Meal Offerings Section --- */}
+        {/* --- Meal Offerings Section (Render logic updated to useQuery variables) --- */}
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
             <h2>Our Meal Offerings</h2>
@@ -171,47 +145,44 @@ export default function HomePageClient() {
             {isLoading && <p style={{ gridColumn: '1 / -1', textAlign: 'center' }}>Loading our delicious meals...</p>}
 
             {/* Error State */}
-            {error && <p style={{ color: 'red', gridColumn: '1 / -1', textAlign: 'center' }}>Error loading meals: {error}</p>}
+            {isError && <p style={{ color: 'red', gridColumn: '1 / -1', textAlign: 'center' }}>Error loading meals: {error.message}</p>}
 
             {/* Success State - Mapping Offerings */}
-            {!isLoading && !error && offerings.map((product) => {
+            {!isLoading && !isError && offerings.map((product) => {
               const displayPrice = getDisplayPrice(product);
               return (
                 <Offering
                   key={product.id}
                   name={product.name}
-                  value={4.8} // Placeholder - Ideally fetch from reviews aggregate later
-                  reviews={0} // Placeholder - Ideally fetch from reviews aggregate later
+                  value={4.8} // Placeholder
+                  reviews={0} // Placeholder
                   caption={product.description}
-                  // Pass price only if available
                   monthlyPrice={displayPrice !== null ? displayPrice : undefined}
                   imgSrc={product.image_url || '/meal-placeholder.jpg'} // Provide a default placeholder
-                  // Placeholder items - Ideally fetch from product details later
-                  items={['Fresh Ingredients', 'Healthy & Homely']}
-                  popular={false} // Placeholder - Add logic later if needed
+                  items={['Fresh Ingredients', 'Healthy & Homely']} // Placeholder
+                  popular={false} // Placeholder
                 />
               );
             })}
 
              {/* Empty State */}
-             {!isLoading && !error && offerings.length === 0 && (
+             {!isLoading && !isError && offerings.length === 0 && (
                 <p style={{ gridColumn: '1 / -1', textAlign: 'center' }}>No offerings found.</p>
              )}
 
           </div>
         </section>
 
-        {/* --- Testimonials Section --- */}
+        {/* --- Testimonials Section (Unchanged) --- */}
         <section className={styles.section}>
             <div className={styles.sectionHeader}>
                 <h2>What Our Customers Say</h2>
                 <p>Join thousands of happy customers who trust HomelyKhana for their daily meals</p>
             </div>
             <div className={styles.testimonialsGrid}>
-                {testimonials.map((t, index) => ( // Added index for key fallback, though name should be unique
+                {testimonials.map((t, index) => ( 
                     <div key={t.name || index} className={styles.testimonialCard}>
                         <div className={styles.testimonialHeader}>
-                            {/* Simple Avatar */}
                             <div className={styles.testimonialAvatar}>{t.initials}</div>
                             <div><h3>{t.name}</h3><p className={styles.role}>{t.role}</p></div>
                         </div>
@@ -222,7 +193,7 @@ export default function HomePageClient() {
             </div>
         </section>
 
-        {/* --- FAQ Section --- */}
+        {/* --- FAQ Section (Unchanged) --- */}
         <section className={styles.section}>
              <div className={styles.sectionHeader}>
                 <h2>Frequently Asked Questions</h2>
@@ -236,7 +207,7 @@ export default function HomePageClient() {
         </section>
       </main>
 
-      {/* --- Footer Component --- */}
+      {/* --- Footer Component (Unchanged) --- */}
       <Footer />
     </>
   );

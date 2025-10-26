@@ -1,17 +1,31 @@
 'use client';
 
-import { useState, useContext } from "react";
+import { useState } from "react"; // Removed useContext
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { toast } from "sonner";
-import { AppContext } from "@/utils/AppContext";
-import { setCookie } from "@/utils/CookieManagement";
 import styles from "./AuthForm.module.css";
+
+// --- NEW IMPORTS ---
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useAuthStore } from '@/store/authStore';
+import { loginUser, signupUser } from '@/lib/api'; // Our API functions
+
+// --- REMOVED IMPORTS ---
+// import { AppContext } from "@/utils/AppContext";
+// import { setCookie } from "@/utils/CookieManagement";
 
 export default function AuthForm({ defaultTab = 'login' }) {
     const router = useRouter();
-    const { login } = useContext(AppContext);
+    const queryClient = useQueryClient();
+
+    // --- NEW: Get the setToken function from our Zustand store ---
+    const setToken = useAuthStore((state) => state.setToken);
+
+    // --- REMOVED APP CONTEXT ---
+    // const { login } = useContext(AppContext);
     
+    // --- LOCAL UI STATE (Unchanged) ---
     const [activeTab, setActiveTab] = useState(defaultTab);
     const [formData, setFormData] = useState({ 
         name: '', 
@@ -26,68 +40,64 @@ export default function AuthForm({ defaultTab = 'login' }) {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleLogin = async () => {
-        try {
-            // --- FIX: Added /api prefix ---
-            const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    phone: formData.phone, 
-                    password: formData.password 
-                }),
-            });
-            const json = await response.json();
-            if (json.success) {
-                setCookie(json.token);
-                login(json.user); 
-                toast.success("Login successful! Redirecting...");
-                router.push("/dashboard");
-            } else {
-                toast.error(json.error || "Login failed. Please check your credentials.");
-            }
-        } catch (error) {
-            toast.error("An error occurred while trying to log in.");
+    // --- NEW: Login Mutation ---
+    const { mutate: performLogin, isPending: isLoginPending } = useMutation({
+        mutationFn: loginUser, // Uses our api.js function
+        onSuccess: (data) => {
+            // data is { token, user } from our api.js handler
+            setToken(data.token); // 1. Save token to Zustand store
+            
+            // 2. Invalidate profile query to force Header/Profile pages to refetch
+            queryClient.invalidateQueries({ queryKey: ['profile'] }); 
+            
+            toast.success("Login successful! Redirecting...");
+            router.push("/dashboard"); // 3. Redirect
+        },
+        onError: (err) => {
+            toast.error(err.message || "Login failed. Please check your credentials.");
         }
-    };
+    });
 
-    const handleSignup = async () => {
-        if (formData.password !== formData.confirmPassword) {
-            toast.error("Passwords do not match.");
-            return;
+    // --- NEW: Signup Mutation ---
+    const { mutate: performSignup, isPending: isSignupPending } = useMutation({
+        mutationFn: signupUser, // Uses our api.js function
+        onSuccess: () => {
+            // Replicates your original flow: signup > toast > switch to login tab
+            toast.success("Account created successfully! Please log in.");
+            setActiveTab('login'); 
+        },
+        onError: (err) => {
+            toast.error(err.message || "Signup failed. Please try again.");
         }
-        try {
-            // --- FIX: Added /api prefix ---
-            const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/signup`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    name: formData.name,
-                    email: formData.email,
-                    phone: formData.phone,
-                    password: formData.password
-                })
-            });
-            const data = await response.json();
-            if (data.success) {
-                toast.success("Account created successfully! Please log in.");
-                setActiveTab('login'); 
-            } else {
-                toast.error(data.error || "Signup failed. Please try again.");
-            }
-        } catch (err) {
-            toast.error("An error occurred. Could not connect to the server.");
-        }
-    };
+    });
 
+    // --- REMOVED: Old handleLogin and handleSignup functions ---
+
+    // --- UPDATED: handleSubmit to use mutations ---
     const handleSubmit = (e) => {
         e.preventDefault();
+        
         if (activeTab === 'login') {
-            handleLogin();
+            performLogin({ 
+                phone: formData.phone, 
+                password: formData.password 
+            });
         } else {
-            handleSignup();
+            if (formData.password !== formData.confirmPassword) {
+                toast.error("Passwords do not match.");
+                return;
+            }
+            performSignup({
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone,
+                password: formData.password
+            });
         }
     };
+    
+    // Check if either mutation is running
+    const isPending = isLoginPending || isSignupPending;
 
     return (
         <div className={styles.pageContainer}>
@@ -147,8 +157,11 @@ export default function AuthForm({ defaultTab = 'login' }) {
                         </div>
                     )}
                     
-                    <button className={styles.submitButton} type="submit">
-                        {activeTab === 'login' ? 'Login' : 'Create Account'}
+                    {/* --- UPDATED: Submit button with loading state --- */}
+                    <button className={styles.submitButton} type="submit" disabled={isPending}>
+                        {isLoginPending ? 'Logging in...' : 
+                         isSignupPending ? 'Creating Account...' : 
+                         (activeTab === 'login' ? 'Login' : 'Create Account')}
                     </button>
 
                     {activeTab === 'login' && (

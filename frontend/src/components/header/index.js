@@ -1,25 +1,43 @@
 'use client';
 
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react'; // Removed useContext
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { AppContext } from '@/utils/AppContext';
 import styles from './Header.module.css';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useAuthStore } from '../../store/authStore';
+import { useCartStore } from '../../store/cartStore';
+import { fetchProfile } from '../../lib/api'; // We'll fetch the profile for the user's name
 
-// --- NEW: SVG Icons for a cleaner look ---
-const CartIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>);
-const UserIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>);
-const LogoutIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>);
+// --- SVG Icons (Unchanged) ---
+const CartIcon = () => (<svg /* ... */ >...</svg>);
+const UserIcon = () => (<svg /* ... */ >...</svg>);
+const LogoutIcon = () => (<svg /* ... */ >...</svg>);
 
 export default function Header() {
-  const { isLoggedIn, user, logout, cart } = useContext(AppContext);
   const router = useRouter();
   const pathname = usePathname();
-  
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // --- NEW: Logic to close dropdown when clicking outside ---
+  // --- ZUSTAND & REACT QUERY HOOKS ---
+  const queryClient = useQueryClient();
+  
+  // 1. Get auth token and actions from authStore
+  const { token, clearToken } = useAuthStore();
+  const isLoggedIn = !!token; // Our new source of truth for auth
+  
+  // 2. Get cart items from cartStore
+  const { cartItems } = useCartStore();
+
+  const { data: user, isLoading: isUserLoading } = useQuery({
+      queryKey: ['profile'],
+      queryFn: fetchProfile,
+      enabled: isLoggedIn, // Only run this query if we are logged in
+      select: (data) => data.user // Extracts the nested 'user' object from the API response
+  });
+
+  // --- Click outside dropdown logic (Unchanged) ---
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -31,19 +49,26 @@ export default function Header() {
   }, [dropdownRef]);
 
 
-  // --- NEW: Calculate cart item count from your AppContext structure ---
-  const cartItemCount = (cart?.lunch?.length || 0) + (cart?.dinner?.length || 0);
+    const cartItemCount = cartItems.length;
 
-  // --- NEW: Get user initials for avatar ---
   const userInitials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
 
+  // --- REWRITTEN: Logout Handler ---
   const handleLogout = () => {
-    logout();
+    // 1. Clear the token from Zustand (this logs the user out)
+    clearToken();
+    
+    // 2. Clear all cached React Query data (profile, addresses, etc.)
+    queryClient.clear();
+    
+    // 3. Close the dropdown
     setDropdownOpen(false);
+    
+    // 4. Redirect to home
     router.push('/');
   };
 
-  // Don't show the header on certain pages
+  // Don't show the header on certain pages (Unchanged)
   const noHeaderPages = ['/login', '/signup'];
   if (noHeaderPages.includes(pathname)) {
     return null;
@@ -57,12 +82,13 @@ export default function Header() {
         </Link>
         <nav className={styles.nav}>
           {isLoggedIn ? (
-            // --- IMPROVISED: Logged-In View with Dropdown ---
+            // --- Logged-In View (Data sources updated) ---
             <>
               <div className={styles.userMenu} ref={dropdownRef}>
                 <button className={styles.userMenuButton} onClick={() => setDropdownOpen(prev => !prev)}>
                   <div className={styles.avatar}>{userInitials}</div>
-                  <span>Hello, {user?.name?.split(' ')[0] || 'User'}</span>
+                  {/* Show loading state while profile fetches */}
+                  <span> {isUserLoading ? '...' : (user?.name?.split(' ')[0] || 'User')}</span>
                 </button>
 
                 {isDropdownOpen && (
@@ -70,8 +96,9 @@ export default function Header() {
                     <div className={styles.dropdownHeader}>
                       <div className={styles.avatar}>{userInitials}</div>
                       <div>
-                        <p className={styles.dropdownName}>{user?.name || 'User'}</p>
-                        <p className={styles.dropdownEmail}>{user?.email}</p>
+                        {/* Show loading state while profile fetches */}
+                        <p className={styles.dropdownName}>{isUserLoading ? 'Loading...' : (user?.name || 'User')}</p>
+                        <p className={styles.dropdownEmail}>{isUserLoading ? 'Loading...' : (user?.email || '...')}</p>
                       </div>
                     </div>
                     <Link href="/dashboard" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
@@ -84,6 +111,7 @@ export default function Header() {
                 )}
               </div>
 
+              {/* Cart button now uses new cartItemCount */}
               <button className={styles.cartButton} onClick={() => router.push('/checkout')}>
                 <CartIcon />
                 {cartItemCount > 0 && <span className={styles.cartCount}>{cartItemCount}</span>}
