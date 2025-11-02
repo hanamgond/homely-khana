@@ -1,12 +1,9 @@
-"use client"; // Must be at the top
+"use client";
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-/**
- * A simple fallback component to show on a critical error.
- */
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
     <div role="alert" style={{ padding: '20px', border: '1px solid red', borderRadius: '8px', backgroundColor: '#fff5f5' }}>
@@ -23,17 +20,12 @@ function ErrorFallback({ error, resetErrorBoundary }) {
 }
 
 export default function Providers({ children }) {
-  // --- ADD THIS LOG ---
-  console.log("--- Providers component is rendering ---");
-  // --------------------
-
   const [queryClient] = useState(() => new QueryClient({
-    // Default options for React Query
     defaultOptions: {
       queries: {
-        staleTime: 5 * 60 * 1000, // 5 minutes: how long data is considered fresh
-        retry: 2, // Retry failed queries 2 times before showing an error
-        refetchOnWindowFocus: true, // Optional: Refetch data when browser window is focused
+        staleTime: 5 * 60 * 1000,
+        retry: 2,
+        refetchOnWindowFocus: false, // Better for performance
       },
     },
   }));
@@ -43,9 +35,6 @@ export default function Providers({ children }) {
       <ErrorBoundary
         FallbackComponent={ErrorFallback}
         onReset={() => {
-          // Logic to run when the reset button in ErrorFallback is clicked
-          // Optional: You could clear specific queries or all queries
-          // queryClient.clear();
           console.log("Error boundary reset triggered.");
         }}
       >

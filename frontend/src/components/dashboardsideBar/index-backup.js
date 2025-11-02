@@ -1,15 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter, usePathname } from "next/navigation";
-import { useAuthStore } from '@/stores/authStore';
+import { useRouter, usePathname } from "next/navigation"; // 1. CORRECTED Router Hooks
+// import { AppContext } from '@/utils/AppContext'; // 2. Import AppContext
 
-// styles
+// styles (assuming colocation)
 import styles from "./DashboardSideBar.module.css";
 
-// assets
+// assets (using the '@/' alias)
 import hamburger from "@/assets/hamburger.svg";
 
 export default function DashboardSideBar() {
@@ -17,10 +17,8 @@ export default function DashboardSideBar() {
     const [slide, setSlide] = useState(false);
 
     const router = useRouter();
-    const pathname = usePathname();
-    
-    // Migrated to Zustand
-    const { user, logout } = useAuthStore();
+    const pathname = usePathname(); // 3. Hook to get the current URL path
+    // AppContext temporarily disabled // 4. Get user and logout from context
 
     const openSidebar = () => {
         setShowSidebar(true);
@@ -33,10 +31,13 @@ export default function DashboardSideBar() {
     };
 
     const handleLogout = () => {
-        logout();
+        if (logout) {
+            logout(); // Use the global logout function
+        }
         router.push("/");
     };
 
+    // 5. Array of links for easier management
     const navLinks = [
         { href: "/dashboard", text: "Home" },
         { href: "/dashboard/add-ons", text: "Add-Ons" },
@@ -51,10 +52,12 @@ export default function DashboardSideBar() {
             <aside className={styles.mainDesktop}>
                 <div className={styles.ctnDesktop}>
                     <Link className={styles.companyName} href="/">HomelyKhana</Link>
-                    <p className={styles.userName}>Welcome, {user?.name || 'User'}</p>
+                    {/* 6. Display dynamic user name */}
+                    <p className={styles.userName}>Welcome, User</p>
 
                     <nav className={styles.btnCtn}>
                         {navLinks.map(link => (
+                            // 7. Conditionally apply 'active' class
                             <Link key={link.href} className={`${styles.buttonLink} ${pathname === link.href ? styles.active : ''}`} href={link.href}>
                                 {link.text}
                             </Link>
@@ -75,7 +78,7 @@ export default function DashboardSideBar() {
                 {showSidebar && (
                     <div className={styles.blurCtn} onClick={closeSidebar}>
                         <aside className={`${styles.ctnMobile} ${slide ? styles.ctnMobileSlide : ''}`} onClick={(e) => e.stopPropagation()}>
-                            <p className={styles.userNameMobile}>Welcome, {user?.name || 'User'}</p>
+                            <p className={styles.userNameMobile}>Welcome, User</p>
                             <nav className={styles.btnCtn}>
                                 {navLinks.map(link => (
                                     <Link key={link.href} className={`${styles.mobileBtnLink} ${pathname === link.href ? styles.active : ''}`} href={link.href} onClick={closeSidebar}>

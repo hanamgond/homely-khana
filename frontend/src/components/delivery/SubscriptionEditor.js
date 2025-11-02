@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { toast } from 'sonner';
-
+import { useSubscriptionStore } from '@/stores/subscriptionStore';
+import { useCartStore } from '@/stores/cartStore';
 import styles from "./DeliveryFrequency.module.css";
-import { AppContext } from '@/utils/AppContext';
 import veg from "@/assets/veg.svg";
 import arrow from "@/assets/arrow.svg";
 
@@ -17,7 +17,9 @@ const mealsData = [
 ];
 
 export default function SubscriptionEditor({ mealType, initialData, onMealChange }) {
-    const { addSubscription, removeSubscription, updateQuantity } = useContext(AppContext);
+    // Migrated to Zustand
+    const { addSubscription, removeSubscription, updateQuantity } = useSubscriptionStore();
+    const { addToCart, removeFromCart } = useCartStore();
 
     const [isOpen, setIsOpen] = useState(true);
     const [mealDetails, setMealDetails] = useState(initialData ? mealsData.find(m => m.menu_id === initialData.menu_id) : mealsData[0]);
@@ -28,61 +30,207 @@ export default function SubscriptionEditor({ mealType, initialData, onMealChange
     const [isInCart, setIsInCart] = useState(!!initialData);
 
     const handleAddToCart = () => {
-        const priceMap = { 30: mealDetails.monthlyPrice, 7: mealDetails.weeklyPrice, 3: mealDetails.trialPrice };
-        const totalAmount = quantity * priceMap[plan] * (plan === 30 ? 4 : 1) * deliveryDays.filter(Boolean).length;
+        if (!mealDetails) {
+            toast.error("Please select a meal first");
+            return;
+        }
 
-        const subscription = {
-            name: mealDetails.name,
-            quantity,
+        const subscriptionData = {
+            subs_id: Date.now(), // Generate unique ID
             menu_id: mealDetails.menu_id,
-            mealNum: plan,
-            deliveryDays,
-            startDate,
-            price: totalAmount,
-            mealType: mealType, // 'lunch' or 'dinner'
+            name: mealDetails.name,
+            meal_num: plan,
+            price: getPrice(),
+            quantity: quantity,
+            deliveryDays: deliveryDays,
+            startDate: startDate,
+            mealType: mealType
         };
 
-        if (addSubscription) {
-            addSubscription(subscription);
-            setIsInCart(true);
-            toast.success(`${mealType.charAt(0).toUpperCase() + mealType.slice(1)} meal added to cart!`);
+        // Use Zustand store
+        addSubscription(mealType, subscriptionData);
+        
+        // Also add to cart store if needed
+        addToCart({
+            ...subscriptionData,
+            id: Date.now(),
+            type: 'subscription'
+        });
+
+        setIsInCart(true);
+        toast.success(`${mealDetails.name} added to cart!`);
+        
+        if (onMealChange) {
+            onMealChange(subscriptionData);
         }
     };
 
-    // ... (other handlers like handleRemoveFromCart, handleQuantityChange would go here)
+    const handleRemoveFromCart = () => {
+        if (initialData?.subs_id) {
+            removeSubscription(mealType, initialData.subs_id);
+            removeFromCart(initialData.subs_id);
+        }
+        setIsInCart(false);
+        toast.success("Subscription removed from cart");
+        
+        if (onMealChange) {
+            onMealChange(null);
+        }
+    };
+
+    const handleUpdateQuantity = (newQuantity) => {
+        if (newQuantity < 1) {
+            handleRemoveFromCart();
+            return;
+        }
+
+        setQuantity(newQuantity);
+        
+        if (initialData?.subs_id) {
+            updateQuantity(mealType, initialData.subs_id, newQuantity);
+        }
+        
+        if (onMealChange && initialData) {
+            onMealChange({
+                ...initialData,
+                quantity: newQuantity
+            });
+        }
+    };
+
+    const getPrice = () => {
+        if (!mealDetails) return 0;
+        switch (plan) {
+            case 30: return mealDetails.monthlyPrice;
+            case 7: return mealDetails.weeklyPrice;
+            case 3: return mealDetails.trialPrice;
+            default: return mealDetails.monthlyPrice;
+        }
+    };
+
+    const toggleDay = (index) => {
+        const newDays = [...deliveryDays];
+        newDays[index] = !newDays[index];
+        setDeliveryDays(newDays);
+    };
+
+    const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
     return (
-        <div className={`${styles["parent"]} ${isOpen ? styles["parentExpand"] : ""}`}>
-            <div className={styles.mealTypeParent}>
-                <div className={styles.mealTypeDiv}>
-                    <Image src={veg} alt="Veg icon" />
-                    {mealType.charAt(0).toUpperCase() + mealType.slice(1)}
-                    <p>({mealType === 'lunch' ? '12:00-14:00' : '19:00-21:00'})</p>
-                </div>
-                <button className={styles.expandBtn} onClick={() => setIsOpen(prev => !prev)}>
-                    <Image src={arrow} alt="Toggle view" className={`${styles["arrow"]} ${isOpen ? styles["active"] : ""}`} />
+        <div className={styles.subscriptionEditor}>
+            <div className={styles.editorHeader}>
+                <h3 className={styles.mealTypeTitle}>
+                    {mealType === 'lunch' ? 'Lunch' : 'Dinner'} Subscription
+                </h3>
+                <button 
+                    onClick={() => setIsOpen(!isOpen)}
+                    className={`${styles.toggleButton} ${isOpen ? styles.open : ''}`}
+                >
+                    <Image src={arrow} alt="Toggle" width={16} height={16} />
                 </button>
             </div>
 
             {isOpen && (
-                <div>
-                    {/* (All the form JSX for choosing meal, plan, frequency, etc. goes here) */}
-                    {/* This is a simplified version */}
-                    <p className={styles.innerTitle}>Chosen Meal:</p>
-                    <div className={styles.mealNameCtn}>
-                         <Image src={mealDetails.imagePath} className={styles.mealImg} alt={mealDetails.name} width={80} height={80} />
-                         <div className={styles.mealInfo}>
-                            {mealDetails.name}
-                            <p className={styles.mealCaption}>{mealDetails.content}</p>
-                         </div>
+                <div className={styles.editorContent}>
+                    {/* Meal Selection */}
+                    <div className={styles.mealSelection}>
+                        <label className={styles.label}>Select Meal:</label>
+                        <select 
+                            value={mealDetails?.menu_id || ''}
+                            onChange={(e) => setMealDetails(mealsData.find(m => m.menu_id === e.target.value))}
+                            className={styles.select}
+                        >
+                            {mealsData.map(meal => (
+                                <option key={meal.menu_id} value={meal.menu_id}>
+                                    {meal.name} - ₹{getPrice()} per meal
+                                </option>
+                            ))}
+                        </select>
                     </div>
-                    {/* ... other form elements ... */}
 
-                    <div className={styles.endBtnCtn}>
-                        {isInCart ? (
-                            <button className={styles.removeButton} onClick={() => { /* remove logic */ }}>In Cart</button>
+                    {/* Plan Selection */}
+                    <div className={styles.planSelection}>
+                        <label className={styles.label}>Plan:</label>
+                        <div className={styles.planOptions}>
+                            <button 
+                                className={`${styles.planButton} ${plan === 30 ? styles.active : ''}`}
+                                onClick={() => setPlan(30)}
+                            >
+                                Monthly (30 days)
+                            </button>
+                            <button 
+                                className={`${styles.planButton} ${plan === 7 ? styles.active : ''}`}
+                                onClick={() => setPlan(7)}
+                            >
+                                Weekly (7 days)
+                            </button>
+                            <button 
+                                className={`${styles.planButton} ${plan === 3 ? styles.active : ''}`}
+                                onClick={() => setPlan(3)}
+                            >
+                                Trial (3 days)
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Delivery Days */}
+                    <div className={styles.deliveryDays}>
+                        <label className={styles.label}>Delivery Days:</label>
+                        <div className={styles.daysGrid}>
+                            {dayNames.map((day, index) => (
+                                <button
+                                    key={day}
+                                    className={`${styles.dayButton} ${deliveryDays[index] ? styles.active : ''}`}
+                                    onClick={() => toggleDay(index)}
+                                >
+                                    {day}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Quantity */}
+                    <div className={styles.quantitySection}>
+                        <label className={styles.label}>Quantity:</label>
+                        <div className={styles.quantityControls}>
+                            <button 
+                                onClick={() => handleUpdateQuantity(quantity - 1)}
+                                className={styles.quantityButton}
+                            >
+                                -
+                            </button>
+                            <span className={styles.quantityDisplay}>{quantity}</span>
+                            <button 
+                                onClick={() => handleUpdateQuantity(quantity + 1)}
+                                className={styles.quantityButton}
+                            >
+                                +
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Start Date */}
+                    <div className={styles.startDate}>
+                        <label className={styles.label}>Start Date:</label>
+                        <input
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            className={styles.dateInput}
+                            min={new Date(Date.now() + 86400000).toISOString().split("T")[0]}
+                        />
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className={styles.actionButtons}>
+                        {!isInCart ? (
+                            <button onClick={handleAddToCart} className={styles.addButton}>
+                                Add to Cart - ₹{getPrice() * quantity}
+                            </button>
                         ) : (
-                            <button className={styles.subscribeButton} onClick={handleAddToCart}>Add to Cart</button>
+                            <button onClick={handleRemoveFromCart} className={styles.removeButton}>
+                                Remove from Cart
+                            </button>
                         )}
                     </div>
                 </div>

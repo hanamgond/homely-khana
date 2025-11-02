@@ -1,21 +1,19 @@
 'use client';
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { useRouter } from "next/navigation";
-import { useCartStore } from '@/stores/cartStore';
+
 import styles from "./DeliveryFrequency.module.css";
 import SubscriptionEditor from './SubscriptionEditor';
+// import { AppContext } from '@/utils/AppContext';
 
 export default function DeliveryFrequency() {
     const router = useRouter();
-    
-    // Migrated to Zustand
-    const { items: cart } = useCartStore();
+    // AppContext temporarily disabled
 
     // Find if there's already a lunch or dinner subscription in the cart
-    // Note: You might need to adjust this logic based on your cart structure
-    const lunchSub = cart.filter(item => item.mealType === 'lunch').length > 0 ? cart.filter(item => item.mealType === 'lunch')[0] : null;
-    const dinnerSub = cart.filter(item => item.mealType === 'dinner').length > 0 ? cart.filter(item => item.mealType === 'dinner')[0] : null;
+    const lunchSub = cart.lunch.length > 0 ? cart.lunch[0] : null;
+    const dinnerSub = cart.dinner.length > 0 ? cart.dinner[0] : null;
 
     return (
         <div>

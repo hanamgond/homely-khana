@@ -4,7 +4,7 @@ import Image from "next/image";
 import React, { useState } from 'react'; // Removed useEffect and useContext
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import styles from "@/styles/DashboardProfile.module.css"; 
+import styles from "@/components/dashboard/DashboardProfile.module.css"; 
 
 // --- UPDATED IMPORTS ---
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';

@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from 'react';
 
 //styles - using the alias path for consistency
-import styles from "@/styles/Admin.module.css";
+import styles from "@/components/admin/Admin.module.css";
 
 // This is a Server Component, so we can export metadata directly
 export const metadata = {

@@ -12,11 +12,11 @@ import DashboardSideBar from "@/components/dashboardsideBar";
 import styles from "./DashboardSubscriptions.module.css"; // CORRECTED PATH
 
 //utils
-import { AppContext } from "@/utils/AppContext"; // Import AppContext
+// import { AppContext } from "@/utils/AppContext"; // Import AppContext
 
 export default function SubscriptionsClient() { // Renamed component
     const router = useRouter();
-    const { logout } = useContext(AppContext); // Get logout from context
+    const logout = () => {}; // Get logout from context
 
     const handleLogout = () => {
         logout(); // Use the logout function from context

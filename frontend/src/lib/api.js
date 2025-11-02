@@ -187,3 +187,25 @@ export const changePassword = async (passwordData) => {
   // Expects { success: true, message: '...' } -> returns { success: true, message: '...' }
   return handleResponse(response);
 };
+// Add missing API functions for dashboard
+export const fetchTodaysMeals = async () => {
+  try {
+    const response = await fetch('/api/products/today');
+    if (!response.ok) throw new Error('Failed to fetch meals');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching meals:', error);
+    return [];
+  }
+};
+
+export const fetchSubscriptionStatus = async () => {
+  try {
+    const response = await fetch('/api/subscriptions/status');
+    if (!response.ok) throw new Error('Failed to fetch subscription status');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching subscription status:', error);
+    return { active: false };
+  }
+};

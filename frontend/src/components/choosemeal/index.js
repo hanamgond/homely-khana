@@ -1,19 +1,15 @@
 'use client';
 
-import React, { useState, useContext } from 'react';
-import Image from 'next/image'; // 1. Use the optimized Image component
-
-// styles (assumes colocation)
+import React, { useState } from 'react';
+import Image from 'next/image';
+import { useSubscriptionStore } from '@/stores/subscriptionStore';
 import styles from "./ChooseMeal.module.css";
-
-// components (using the '@/' alias for robustness)
 import DetailsPopup from "@/components/DetailsPopup";
-import { AppContext } from '@/utils/AppContext';
 
-// 2. Destructure props for better readability
 export default function ChooseMeal({ menu_id, name, caption, monthlyPrice, weeklyPrice, trialPrice, imgSrc, items, details }) {
 
-    const { setMenuId, setSubStep } = useContext(AppContext);
+    // Migrated to Zustand
+    const { setMenuId, setSubStep } = useSubscriptionStore();
     const [showPopUp, setShowPopUp] = useState(false);
 
     const togglePopUp = (e) => {
@@ -29,42 +25,58 @@ export default function ChooseMeal({ menu_id, name, caption, monthlyPrice, weekl
     };
 
     return (
-        <>
-            <div className={styles.row} onClick={moveToNextStep}>
-                <div className={styles.rowBody}>
-                    <p className={styles.mealName}>{name}</p>
-                    <p className={styles.mealCaption}>{caption}</p>
-                    <div className={styles.mealPriceBody}>
-                        Starts @ <span className={styles.mealPrice}>₹{monthlyPrice}/-</span> per meal
+        <div className={styles.chooseMeal}>
+            <div className={styles.mealImageContainer}>
+                <Image 
+                    src={imgSrc} 
+                    alt={name}
+                    width={300}
+                    height={200}
+                    className={styles.mealImage}
+                />
+            </div>
+            
+            <div className={styles.mealInfo}>
+                <h3 className={styles.mealName}>{name}</h3>
+                <p className={styles.mealCaption}>{caption}</p>
+                
+                <div className={styles.pricing}>
+                    <div className={styles.priceOption}>
+                        <span className={styles.priceLabel}>Monthly:</span>
+                        <span className={styles.priceValue}>₹{monthlyPrice}/meal</span>
                     </div>
-                    <button className={styles.detailsBtn} onClick={togglePopUp}>View Details</button>
+                    <div className={styles.priceOption}>
+                        <span className={styles.priceLabel}>Weekly:</span>
+                        <span className={styles.priceValue}>₹{weeklyPrice}/meal</span>
+                    </div>
+                    <div className={styles.priceOption}>
+                        <span className={styles.priceLabel}>Trial:</span>
+                        <span className={styles.priceValue}>₹{trialPrice}/meal</span>
+                    </div>
                 </div>
 
-                <div className={styles.mealImgDiv}>
-                    {/* 3. Use the Next.js Image component with correct props */}
-                    <Image 
-                        src={imgSrc} 
-                        className={styles.mealImg} 
-                        alt={name} // 4. Add a dynamic, descriptive alt prop
-                        width={140} 
-                        height={140}
-                    />
-                    <button className={styles.addBtn}>SELECT</button>
+                <div className={styles.mealActions}>
+                    <button 
+                        onClick={moveToNextStep}
+                        className={styles.selectButton}
+                    >
+                        Select Plan
+                    </button>
+                    <button 
+                        onClick={togglePopUp}
+                        className={styles.detailsButton}
+                    >
+                        View Details
+                    </button>
                 </div>
             </div>
+
             {showPopUp && (
                 <DetailsPopup 
-                    imageSrc={imgSrc} 
-                    items={items} 
-                    details={details} 
-                    name={name} 
-                    monthlyPrice={parseFloat(monthlyPrice)} 
-                    weeklyPrice={parseFloat(weeklyPrice)} 
-                    trialPrice={parseFloat(trialPrice)} 
-                    toggleClose={togglePopUp}
+                    details={details}
+                    onClose={togglePopUp}
                 />
             )}
-        </>
+        </div>
     );
 }
-

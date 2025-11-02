@@ -6,7 +6,7 @@ import React, { useState, useRef } from 'react';
 import { toast } from 'sonner';
 
 // --- CORRECTED PATHS ---
-import styles from "@/styles/Admin.module.css";
+import styles from "@/components/admin/Admin.module.css";
 import searchIcon from "@/assets/search.svg";
 
 export default function AdminClient() {
