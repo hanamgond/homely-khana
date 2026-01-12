@@ -37,7 +37,8 @@ const addressRoutes = require("./routes/address");
 const bookingsRoutes = require("./routes/bookings");
 const paymentsRoutes = require("./routes/payment");
 const reviewsRoutes = require("./routes/reviews");
-const adminRoutes = require("./routes/admin"); // --- ADD THIS ---
+const adminRoutes = require("./routes/admin"); 
+const userDashboardRoutes = require("./routes/user-dashboard");// --- ADD THIS ---
 
 // --- REGISTER ALL THE ROUTES ---
 app.use("/api/auth", authRoutes);
@@ -46,7 +47,8 @@ app.use("/api/addresses", addressRoutes);
 app.use("/api/bookings", bookingsRoutes);
 app.use("/api/payment", paymentsRoutes);
 app.use("/api/reviews", reviewsRoutes);
-app.use("/api/admin", adminRoutes); // --- ADD THIS ---
+app.use("/api/admin", adminRoutes); 
+app.use('/api/user-dashboard', userDashboardRoutes);// --- ADD THIS ---
 
 // --- Start server ---
 const port = process.env.PORT || 5000; 

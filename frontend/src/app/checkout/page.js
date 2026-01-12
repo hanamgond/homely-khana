@@ -1,4 +1,4 @@
-// --- THIS IS THE CORRECTED IMPORT PATH ---
+// src/app/checkout/page.js
 import CheckoutClient from '@/components/checkout';
 
 // This is the Server Component part of the page.

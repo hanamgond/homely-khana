@@ -15,11 +15,11 @@ export default function KitchenLayout({ children }) {
             <Tabs value={activeTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-2 md:w-[300px]">
                     {/* --- FIX: Removed legacyBehavior --- */}
-                    <Link href="/kitchen" passHref>
-                         <TabsTrigger value="prep" asChild>
-                            <a>Prep Sheet</a>
-                         </TabsTrigger>
-                    </Link>
+                    <TabsTrigger value="prep" asChild>
+                        <Link href="/kitchen">
+                            Prep Sheet
+                        </Link>
+                    </TabsTrigger>
                      <Link href="/kitchen/dispatch" passHref>
                         <TabsTrigger value="dispatch" asChild>
                            <a>Dispatch Sheet</a>

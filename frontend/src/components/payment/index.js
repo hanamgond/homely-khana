@@ -1,3 +1,4 @@
+// src/components/payment/index.js
 'use client'; // Required for hooks like useEffect, useState, useContext
 
 import { useContext, useEffect, useState } from 'react';

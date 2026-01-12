@@ -1,3 +1,4 @@
+// src/app/payment/page.js
 import PaymentClient from '@/components/payment';
 
 // This is the Server Component part of the page.

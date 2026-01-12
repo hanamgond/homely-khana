@@ -1,115 +1,114 @@
-'use client'; // This component is interactive, so it MUST be a client component
+'use client';
 
-import { useState, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Image from 'next/image';
-import Countdown from 'react-countdown';
+import { fetchWithToken } from '@/utils/CookieManagement';
 import { AppContext } from '@/utils/AppContext';
-import styles from './Dashboard.module.css'; // CORRECTED PATH using alias
+import { Calendar, Package, Clock } from 'lucide-react';
 
-// --- Placeholder Components for different dashboard views ---
-const TodaysMeal = () => {
-  // In a real app, this data would come from your API
-  const nextMeal = {
-    type: "Today's Lunch",
-    name: "Paneer Butter Masala Meal",
-    items: "Paneer, 2 Rotis, Dal, Rice, Salad",
-    image: "/meal3.jpg" // Example image
-  };
+export default function DashboardClient() {
+  const { user } = useContext(AppContext);
+  const [nextMeal, setNextMeal] = useState(null);
+  const [stats, setStats] = useState({ activePlans: 0, mealsLeft: 0 });
+  const [loading, setLoading] = useState(true);
 
-  // Calculate skip deadline (e.g., 10 AM on the delivery day)
-  const skipDeadline = new Date();
-  skipDeadline.setHours(10, 0, 0, 0);
+  useEffect(() => {
+    const loadData = async () => {
+        try {
+            const [mealRes, subRes] = await Promise.all([
+                fetchWithToken(`${process.env.NEXT_PUBLIC_URL}/api/user-dashboard/next-delivery`),
+                fetchWithToken(`${process.env.NEXT_PUBLIC_URL}/api/user-dashboard/subscriptions`)
+            ]);
+            
+            const mealData = await mealRes.json();
+            const subData = await subRes.json();
+
+            if (mealData.success) setNextMeal(mealData.data);
+            if (subData.success) {
+                const active = subData.data.filter(s => s.remaining_meals > 0).length;
+                const left = subData.data.reduce((acc, curr) => acc + curr.remaining_meals, 0);
+                setStats({ activePlans: active, mealsLeft: left }); 
+            }
+        } catch (e) { console.error(e); } finally { setLoading(false); }
+    };
+    loadData();
+  }, []);
 
   return (
-    <div>
-      <h2 className={styles.contentHeader}>Dashboard</h2>
-      <div className={styles.mealCard}>
-        <div className={styles.mealCardHeader}>
-          <Image src={nextMeal.image} alt={nextMeal.name} width={100} height={100} className={styles.mealImage} />
-          <div>
-            <p style={{ color: 'var(--muted-text)', fontWeight: '700', margin: 0 }}>{nextMeal.type}</p>
-            <h3 className={styles.mealTitle}>{nextMeal.name}</h3>
-            <p className={styles.mealItems}>{nextMeal.items}</p>
-          </div>
+    <div style={{ maxWidth: '1000px', margin: '0 auto', paddingBottom:'2rem' }}>
+        {/* Header */}
+        <div style={{ marginBottom: '2rem' }}>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#1a1a1a', marginBottom:'0.5rem' }}>
+                Welcome, {user?.name?.split(' ')[0] || 'User'}! 👋
+            </h1>
+            <p style={{ color: '#666' }}>Here is what’s happening with your food today.</p>
         </div>
-        <div className={styles.mealCardBody}>
-          <div className={styles.skipSection}>
-            <button className={styles.skipButton}>Skip this Meal</button>
-            <div className={styles.countdown}>
-              <Countdown 
-                date={skipDeadline}
-                renderer={({ hours, minutes, seconds }) => (
-                  <span>{hours}h {minutes}m {seconds}s</span>
-                )}
-              />
-              <p>Time remaining to skip</p>
+
+        {/* Stats Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+            <div style={styles.statCard}>
+                <div style={styles.iconBox('#e0f2fe')}><Package color="#0284c7" size={24}/></div>
+                <div>
+                    <p style={styles.statLabel}>Active Plans</p>
+                    <h3 style={styles.statValue}>{stats.activePlans}</h3>
+                </div>
             </div>
-          </div>
-          <div className={styles.statusTracker}>
-            <div className={`${styles.statusStep} ${styles.active}`}>Order Received</div>
-            <div className={styles.statusStep}>In Kitchen</div>
-            <div className={styles.statusStep}>Ready For Pick-up</div>
-            <div className={styles.statusStep}>Out For Delivery</div>
-          </div>
+            <div style={styles.statCard}>
+                <div style={styles.iconBox('#dcfce7')}><Calendar color="#16a34a" size={24}/></div>
+                <div>
+                    <p style={styles.statLabel}>Meals Remaining</p>
+                    <h3 style={styles.statValue}>{stats.mealsLeft}</h3>
+                </div>
+            </div>
+            <div style={styles.statCard}>
+                <div style={styles.iconBox('#fef3c7')}><Clock color="#d97706" size={24}/></div>
+                <div>
+                    <p style={styles.statLabel}>Next Delivery</p>
+                    <h3 style={{...styles.statValue, fontSize:'1.1rem'}}>
+                        {nextMeal ? new Date(nextMeal.delivery_date).toLocaleDateString() : 'None'}
+                    </h3>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
-};
 
-// ... (Other view components would go here)
-
-export default function DashboardClient() { // Renamed to avoid confusion
-  const [activeView, setActiveView] = useState('dashboard');
-  const { user, logout } = useContext(AppContext);
-
-  const renderView = () => {
-    switch (activeView) {
-      case 'dashboard': return <TodaysMeal />;
-      // case 'subscription': return <MySubscription />;
-      // case 'history': return <OrderHistory />;
-      // case 'profile': return <ProfileSettings />;
-      default: return <TodaysMeal />;
-    }
-  };
-
-  return (
-    <div className={styles.pageContainer}>
-      {/* --- Left Column: Sidebar --- */}
-      <aside className={styles.sidebar}>
-        <div className={styles.sidebarHeader}>
-          <h3 className={styles.welcomeTitle}>Welcome, {user?.name || 'User'}!</h3>
-          <p className={styles.welcomeEmail}>{user?.email}</p>
-        </div>
-        <ul className={styles.sidebarNav}>
-          <li>
-            <button className={`${styles.navButton} ${activeView === 'dashboard' ? styles.active : ''}`} onClick={() => setActiveView('dashboard')}>
-              Dashboard
-            </button>
-          </li>
-          <li>
-            <button className={`${styles.navButton} ${activeView === 'subscription' ? styles.active : ''}`} onClick={() => setActiveView('subscription')}>
-              My Subscription
-            </button>
-          </li>
-           <li>
-            <button className={`${styles.navButton} ${activeView === 'history' ? styles.active : ''}`} onClick={() => setActiveView('history')}>
-              Order History
-            </button>
-          </li>
-           <li>
-            <button className={`${styles.navButton} ${activeView === 'profile' ? styles.active : ''}`} onClick={() => setActiveView('profile')}>
-              Profile Settings
-            </button>
-          </li>
-          <li><button className={styles.navButton} onClick={logout}>Logout</button></li>
-        </ul>
-      </aside>
-
-      {/* --- Right Column: Content --- */}
-      <main className={styles.contentBox}>
-        {renderView()}
-      </main>
+        {/* Next Meal Section */}
+        <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '1rem', color:'#333' }}>Your Next Meal</h3>
+        
+        {loading ? <p>Loading...</p> : nextMeal ? (
+            <div style={styles.mainCard}>
+               <div style={{display:'flex', gap:'1.5rem', alignItems:'center', flexWrap:'wrap'}}>
+                   <Image 
+                     src={nextMeal.image_url || "/meal-placeholder.jpg"} 
+                     width={120} height={120} 
+                     alt="Meal" 
+                     style={{borderRadius:'12px', objectFit:'cover'}} 
+                   />
+                   <div>
+                       <span style={styles.tag}>{nextMeal.meal_type}</span>
+                       <h3 style={{margin:'0.5rem 0 0.2rem', fontSize:'1.3rem'}}>{nextMeal.product_name}</h3>
+                       <p style={{color:'#666', fontSize:'0.9rem'}}>{nextMeal.items_description}</p>
+                   </div>
+               </div>
+            </div>
+        ) : (
+            <div style={{...styles.mainCard, textAlign:'center', padding:'3rem'}}>
+                <div style={{background:'#f3f4f6', width:'60px', height:'60px', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 1rem'}}>
+                    <Calendar color="#9ca3af" size={30} />
+                </div>
+                <h3 style={{color:'#374151', marginBottom:'0.5rem'}}>No meals scheduled</h3>
+                {/* FIXED THE ERROR BELOW */}
+                <p style={{color:'#6b7280', marginBottom:'1.5rem'}}>You don&apos;t have any deliveries scheduled for upcoming days.</p>
+            </div>
+        )}
     </div>
   );
 }
+
+const styles = {
+    statCard: { background: 'white', borderRadius: '16px', padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: '0 2px 10px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0' },
+    mainCard: { background: 'white', borderRadius: '16px', padding: '1.5rem', boxShadow: '0 4px 20px rgba(0,0,0,0.05)', border: '1px solid #eee' },
+    iconBox: (color) => ({ width: '50px', height: '50px', borderRadius: '12px', background: color, display: 'flex', alignItems: 'center', justifyContent: 'center' }),
+    statLabel: { color: '#64748b', fontSize: '0.9rem', margin: 0, fontWeight: '500' },
+    statValue: { color: '#0f172a', fontSize: '1.5rem', fontWeight: 'bold', margin: '0.2rem 0 0' },
+    tag: { background:'#FF9801', color:'white', padding:'4px 10px', borderRadius:'20px', fontSize:'0.75rem', fontWeight:'bold', textTransform:'uppercase' }
+};

@@ -6,7 +6,6 @@ import { Rating } from 'react-simple-star-rating';
 import styles from "./Offering.module.css";
 import veg from "@/assets/veg.svg";
 
-// A checkmark icon for the list items
 const CheckIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className={styles.checkIcon} viewBox="0 0 16 16">
         <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
@@ -20,12 +19,15 @@ const Offering = ({ name, value, reviews, caption, monthlyPrice, imgSrc, items }
         router.push('/subscribe');
     };
 
+    // Calculation Logic
+    const totalPrice = monthlyPrice ? parseFloat(monthlyPrice) : 0;
+    const perMealPrice = totalPrice > 0 ? (totalPrice / 3).toFixed(0) : 0;
+
     return (
         <div className={styles.offeringCard}>
             <div className={styles.imageContainer}>
                 <Image src={imgSrc} alt={name} className={styles.offeringImage} layout="fill" objectFit="cover" />
-                {/* NEW: Price Badge */}
-                <div className={styles.priceBadge}>₹{monthlyPrice}</div>
+                <div className={styles.trialBadge}></div>
             </div>
 
             <div className={styles.offeringContent}>
@@ -49,8 +51,16 @@ const Offering = ({ name, value, reviews, caption, monthlyPrice, imgSrc, items }
                 </ul>
             </div>
             
-            {/* NEW: Simplified Footer with just the button */}
             <div className={styles.footer}>
+                <div className={styles.pricingContainer}>
+                    <div>
+                        <span className={styles.currency}>₹</span>
+                        <span className={styles.bigPrice}>{perMealPrice}</span>
+                        <span className={styles.perLabel}> / meal</span>
+                    </div>
+                    {/* REMOVED the sub-total line here as requested */}
+                </div>
+
                 <button onClick={handleOrderNow} className={styles.orderButton}>
                     Order Now
                 </button>

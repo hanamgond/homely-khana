@@ -1,3 +1,4 @@
+// src/app/subscribe/page.js
 import SubscribeClient from '@/components/subscribe';
 
 // This is the Server Component part of the page.

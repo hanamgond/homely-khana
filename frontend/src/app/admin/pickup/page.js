@@ -1,3 +1,4 @@
+// src/app/admin/pickup/page.js
 import Link from "next/link";
 import React from 'react';
 

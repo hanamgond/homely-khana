@@ -1,103 +1,221 @@
 'use client';
 
-import { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { AppContext } from '@/utils/AppContext';
+import { 
+    Menu, X, ShoppingCart, User, ChevronDown, MapPin, 
+    Utensils, ShoppingBag, Building, ShieldCheck, Phone 
+} from 'lucide-react';
 import styles from './Header.module.css';
 
-// --- NEW: SVG Icons for a cleaner look ---
-const CartIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>);
-const UserIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>);
-const LogoutIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>);
-
 export default function Header() {
-  const { isLoggedIn, user, logout, cart } = useContext(AppContext);
-  const router = useRouter();
-  const pathname = usePathname();
-  
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
+    const { user, logout } = useContext(AppContext);
+    const pathname = usePathname();
 
-  // --- NEW: Logic to close dropdown when clicking outside ---
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
-      }
+    // State
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isMealDropdownOpen, setIsMealDropdownOpen] = useState(false);
+    
+    // --- NEW: Location State ---
+    const [isLocationOpen, setIsLocationOpen] = useState(false);
+    const [selectedCity, setSelectedCity] = useState("Navi Mumbai");
+    const cities = ["Navi Mumbai", "Mumbai", "Pune", "Bangalore", "Hyderabad"];
+
+    // Close menus when route changes
+    useEffect(() => {
+        setIsDrawerOpen(false);
+        setIsMealDropdownOpen(false);
+        setIsLocationOpen(false);
+    }, [pathname]);
+
+    // Prevent body scroll when drawer is open
+    useEffect(() => {
+        if (isDrawerOpen) document.body.style.overflow = 'hidden';
+        else document.body.style.overflow = 'unset';
+    }, [isDrawerOpen]);
+
+    const handleCitySelect = (city) => {
+        setSelectedCity(city);
+        setIsLocationOpen(false);
+        // Optional: Save to localStorage or Context here
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [dropdownRef]);
 
-
-  // --- NEW: Calculate cart item count from your AppContext structure ---
-  const cartItemCount = (cart?.lunch?.length || 0) + (cart?.dinner?.length || 0);
-
-  // --- NEW: Get user initials for avatar ---
-  const userInitials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
-
-  const handleLogout = () => {
-    logout();
-    setDropdownOpen(false);
-    router.push('/');
-  };
-
-  // Don't show the header on certain pages
-  const noHeaderPages = ['/login', '/signup'];
-  if (noHeaderPages.includes(pathname)) {
-    return null;
-  }
-
-  return (
-    <header className={styles.header}>
-      <div className={styles.container}>
-        <Link href="/" className={styles.logo}>
-          HomelyKhana
-        </Link>
-        <nav className={styles.nav}>
-          {isLoggedIn ? (
-            // --- IMPROVISED: Logged-In View with Dropdown ---
-            <>
-              <div className={styles.userMenu} ref={dropdownRef}>
-                <button className={styles.userMenuButton} onClick={() => setDropdownOpen(prev => !prev)}>
-                  <div className={styles.avatar}>{userInitials}</div>
-                  <span>Hello, {user?.name?.split(' ')[0] || 'User'}</span>
-                </button>
-
-                {isDropdownOpen && (
-                  <div className={styles.dropdown}>
-                    <div className={styles.dropdownHeader}>
-                      <div className={styles.avatar}>{userInitials}</div>
-                      <div>
-                        <p className={styles.dropdownName}>{user?.name || 'User'}</p>
-                        <p className={styles.dropdownEmail}>{user?.email}</p>
-                      </div>
+    return (
+        <>
+            <header className={styles.header}>
+                {/* FIX: Container is now full width to push items to edges */}
+                <div className={styles.container}>
+                    
+                    {/* LEFT: Burger & Logo */}
+                    <div className={styles.leftSection}>
+                        <button className={styles.burgerBtn} onClick={() => setIsDrawerOpen(true)}>
+                            <Menu size={26} color="#374151" />
+                        </button>
+                        <Link href="/" className={styles.logo}>
+                            Homely<span className={styles.accent}>Khana</span>
+                        </Link>
                     </div>
-                    <Link href="/dashboard" className={styles.dropdownItem} onClick={() => setDropdownOpen(false)}>
-                      <UserIcon /> My Dashboard
-                    </Link>
-                    <button onClick={handleLogout} className={`${styles.dropdownItem} ${styles.logoutButton}`}>
-                      <LogoutIcon /> Logout
-                    </button>
-                  </div>
-                )}
-              </div>
 
-              <button className={styles.cartButton} onClick={() => router.push('/checkout')}>
-                <CartIcon />
-                {cartItemCount > 0 && <span className={styles.cartCount}>{cartItemCount}</span>}
-              </button>
-            </>
-          ) : (
-            // --- Logged-Out View (Unchanged) ---
-            <>
-              <Link href="/login" className={styles.loginButton}>Login</Link>
-              <Link href="/subscribe" className={`${styles.subscribeButton} ${styles.primary}`}>Subscribe</Link>
-            </>
-          )}
-        </nav>
-      </div>
-    </header>
-  );
-};
+                    {/* CENTER: Desktop Navigation */}
+                    <nav className={styles.desktopNav}>
+                        <div 
+                            className={styles.navItem} 
+                            onMouseEnter={() => setIsMealDropdownOpen(true)}
+                            onMouseLeave={() => setIsMealDropdownOpen(false)}
+                        >
+                            <Link href="/subscribe" className={styles.navLink}>
+                                Meal Plans <ChevronDown size={14} />
+                            </Link>
+                            {isMealDropdownOpen && (
+                                <div className={styles.dropdownMenu}>
+                                    <Link href="/subscribe?plan=trial" className={styles.dropdownLink}>3-Day Trial Pack</Link>
+                                    <Link href="/subscribe?plan=monthly" className={styles.dropdownLink}>Monthly Subscription</Link>
+                                </div>
+                            )}
+                        </div>
+
+                        <Link href="/menu" className={styles.navLink}>Weekly Menu</Link>
+                        
+                        <Link href="/pantry" className={styles.navLink}>
+                            The Pantry <span className={styles.newBadge}>NEW</span>
+                        </Link>
+                        
+                        <Link href="/corporate" className={styles.navLink}>Corporate</Link>
+                    </nav>
+
+                    {/* RIGHT: Utilities */}
+                    <div className={styles.rightSection}>
+                        
+                        {/* --- NEW: Location Dropdown --- */}
+                        <div 
+                            className={styles.locationWrapper}
+                            onClick={() => setIsLocationOpen(!isLocationOpen)}
+                            // Close when mouse leaves to prevent it getting stuck open
+                            onMouseLeave={() => setIsLocationOpen(false)}
+                        >
+                            <div className={styles.locationBadge}>
+                                <MapPin size={16} color="#FF9801" />
+                                <span>{selectedCity}</span>
+                                <ChevronDown size={14} color="#d97706" />
+                            </div>
+
+                            {/* City List Dropdown */}
+                            {isLocationOpen && (
+                                <div className={styles.locationDropdown}>
+                                    {cities.map((city) => (
+                                        <div 
+                                            key={city} 
+                                            className={`${styles.cityItem} ${selectedCity === city ? styles.activeCity : ''}`}
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent closing immediately
+                                                handleCitySelect(city);
+                                            }}
+                                        >
+                                            {city}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        <Link href="/cart" className={styles.iconBtn}>
+                            <ShoppingCart size={22} color="#374151" />
+                        </Link>
+
+                        {user ? (
+                            <Link href="/dashboard" className={styles.profileBtn}>
+                                <div className={styles.avatar}>{user.name[0]}</div>
+                                <span className={styles.userName}>{user.name.split(' ')[0]}</span>
+                            </Link>
+                        ) : (
+                            <Link href="/login" className={styles.loginBtn}>
+                                Login
+                            </Link>
+                        )}
+                    </div>
+                </div>
+            </header>
+
+            {/* --- MOBILE DRAWER (Kept same as before) --- */}
+            <div className={`${styles.overlay} ${isDrawerOpen ? styles.showOverlay : ''}`} onClick={() => setIsDrawerOpen(false)} />
+
+            <div className={`${styles.drawer} ${isDrawerOpen ? styles.openDrawer : ''}`}>
+                <div className={styles.drawerHeader}>
+                    {user ? (
+                        <Link href="/dashboard" className={styles.drawerProfile}>
+                            <div className={styles.avatarLarge}>{user.name[0]}</div>
+                            <div>
+                                <p className={styles.welcomeText}>Hello, {user.name.split(' ')[0]}</p>
+                                <p className={styles.viewProfile}>Go to Dashboard</p>
+                            </div>
+                        </Link>
+                    ) : (
+                        <div className={styles.authBox}>
+                            <p className={styles.authTitle}>Welcome to HomelyKhana!</p>
+                            <Link href="/login" className={styles.drawerLoginBtn}>Login / Sign Up</Link>
+                        </div>
+                    )}
+                    <button className={styles.closeBtn} onClick={() => setIsDrawerOpen(false)}>
+                        <X size={24} />
+                    </button>
+                </div>
+
+                <div className={styles.drawerScrollable}>
+                    <div className={styles.drawerSection}>
+                        <h4 className={styles.sectionTitle}>Eat Daily</h4>
+                        <Link href="/subscribe" className={styles.drawerItem}>
+                            <Utensils size={18} className={styles.itemIcon} />
+                            Subscribe to Meals
+                        </Link>
+                        <Link href="/menu" className={styles.drawerItem}>
+                            <span style={{fontSize:'1.1rem'}}>📅</span>
+                            Weekly Menu
+                        </Link>
+                    </div>
+
+                    <div className={styles.drawerSection}>
+                        <h4 className={styles.sectionTitle}>The Pantry</h4>
+                        <Link href="/pantry" className={styles.drawerItem}>
+                            <ShoppingBag size={18} className={styles.itemIcon} />
+                            Pickles & Podis
+                            <span className={styles.comingSoon}>Coming Soon</span>
+                        </Link>
+                        <Link href="/pantry" className={styles.drawerItem}>
+                            <span style={{fontSize:'1.1rem'}}>🥨</span>
+                            Healthy Snacks
+                            <span className={styles.comingSoon}>Coming Soon</span>
+                        </Link>
+                    </div>
+
+                    <div className={styles.drawerSection}>
+                        <h4 className={styles.sectionTitle}>Partner with Us</h4>
+                        <Link href="/corporate" className={styles.drawerItem}>
+                            <Building size={18} className={styles.itemIcon} />
+                            Corporate Catering
+                        </Link>
+                    </div>
+
+                    <div className={styles.drawerSection}>
+                        <h4 className={styles.sectionTitle}>Support</h4>
+                        <Link href="/about" className={styles.drawerItem}>
+                            <ShieldCheck size={18} className={styles.itemIcon} />
+                            Our Kitchen & Hygiene
+                        </Link>
+                        <Link href="/contact" className={styles.drawerItem}>
+                            <Phone size={18} className={styles.itemIcon} />
+                            Contact Support
+                        </Link>
+                    </div>
+
+                    {user && (
+                        <button onClick={() => { logout(); setIsDrawerOpen(false); }} className={styles.logoutBtn}>
+                            Logout
+                        </button>
+                    )}
+                </div>
+            </div>
+        </>
+    );
+}

@@ -1,125 +1,151 @@
-/* src/components/offering/Offering.module.css */
 .offeringCard {
     background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05); /* Softer shadow */
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     transition: all 0.3s ease;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #f0f0f0;
+    height: 100%; /* Ensure full height */
 }
 
 .offeringCard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Softer hover shadow */
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.1);
 }
 
-/* Image Styles */
 .imageContainer {
     position: relative;
     width: 100%;
-    /* --- FIX: Use aspect-ratio instead of fixed height --- */
-    aspect-ratio: 16 / 10;
-    background-color: #f3f4f6; /* Placeholder color while image loads */
+    aspect-ratio: 16 / 9; /* Shorter image height */
+    background-color: #f3f4f6;
 }
 
-.offeringImage {
-    /* layout='fill' and objectFit='cover' in the component handle the rest */
-}
-
-/* Price Badge Styles */
-.priceBadge {
+.trialBadge {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: rgba(0, 0, 0, 0.5);
+    top: 8px;
+    right: 8px;
+    background-color: rgba(0, 0, 0, 0.75);
     color: white;
-    padding: 4px 10px;
-    font-size: 0.8rem;
-    font-weight: 600;
+    padding: 3px 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
     border-radius: 20px;
     backdrop-filter: blur(4px);
 }
 
-/* Content Styles */
+/* COMPACT CONTENT STYLES */
 .offeringContent {
-    padding: 1rem; /* Reduced padding */
+    padding: 1rem; /* Reduced from 1.25rem */
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    gap: 0.5rem; /* Manage vertical rhythm */
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 0.5rem;
 }
 
 .title {
-    font-size: 1.1rem; /* Slightly smaller */
-    font-weight: 600;
+    font-size: 1.1rem;
+    font-weight: 700;
     color: #111827;
     margin: 0;
+    line-height: 1.2;
 }
 
 .rating {
     display: flex;
     align-items: center;
-    gap: 6px;
-    margin-bottom: 0.75rem;
+    gap: 4px;
 }
 
 .reviews {
-    font-size: 0.75rem; /* Smaller */
+    font-size: 0.75rem;
     color: #6b7280;
+    margin-top: 1px;
 }
 
 .caption {
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     color: #4b5563;
-    margin: 0 0 1rem 0; /* Reduced margin */
-    line-height: 1.5;
-    flex-grow: 1; /* This pushes the footer down */
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit description to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-/* List of Items */
 .itemsList {
     list-style: none;
     padding: 0;
-    margin: 0 0 1rem 0; /* Add margin at the bottom */
+    margin: 0.5rem 0 0 0;
 }
 
 .itemsList li {
     display: flex;
     align-items: center;
-    gap: 8px; /* Reduced gap */
-    font-size: 0.85rem; /* Smaller */
+    gap: 6px;
+    font-size: 0.8rem;
     color: #374151;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .checkIcon {
-    color: #22c55e;
-    flex-shrink: 0;
+    color: #16a34a; /* Darker green for visibility */
+    width: 14px;
+    height: 14px;
 }
 
-/* Footer Styles */
+/* COMPACT FOOTER */
 .footer {
-    padding: 0 1rem 1rem 1rem; /* Reduced padding, removed top padding */
-    margin-top: auto; /* Pushes the footer to the bottom */
+    padding: 0.8rem 1rem 1rem 1rem;
+    margin-top: auto;
+    border-top: 1px solid #f9fafb;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
 }
 
-/* Order Button Styles */
+.pricingContainer {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.currency {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.bigPrice {
+    font-size: 1.4rem; /* Slightly smaller to fit better */
+    font-weight: 800;
+    color: #111827;
+    line-height: 1;
+}
+
+.perLabel {
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
 .orderButton {
-    background-color: #10b981; /* Brighter green from design */
+    background-color: #10b981;
     color: white;
     border: none;
     border-radius: 8px;
-    padding: 10px; /* Reduced padding */
-    font-size: 0.9rem; /* Smaller font */
-    font-weight: 600;
+    padding: 10px; /* Reduced button height */
+    font-size: 0.95rem;
+    font-weight: 700;
     cursor: pointer;
     width: 100%;
     transition: background-color 0.2s ease;
@@ -127,5 +153,5 @@
 }
 
 .orderButton:hover {
-    background-color: #059669; /* Darker green */
+    background-color: #059669;
 }

@@ -1,3 +1,4 @@
+// src/app/AppWrapper.js
 'use client'; // This directive is essential. It marks this as a Client Component.
 
 import { usePathname } from 'next/navigation'; // The new App Router hook for getting the URL

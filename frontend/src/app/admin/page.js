@@ -1,3 +1,4 @@
+// src/app/admin/page.js
 'use client'; // Essential for pages using hooks (useState, useRef)
 
 import Image from "next/image";

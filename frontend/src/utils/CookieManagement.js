@@ -1,3 +1,4 @@
+//src/utils/CookieManagement.js
 import { toast } from 'sonner';
 
 // Helper to set a cookie

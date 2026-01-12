@@ -1,0 +1,140 @@
+.container {
+  display: flex;
+  min-height: calc(100vh - 80px); /* Adjusts for your main Header */
+  background-color: #f8f9fa;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  gap: 2rem;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 280px;
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  height: fit-content;
+  position: sticky;
+  top: 100px; /* Sticks the sidebar when scrolling */
+  flex-shrink: 0;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  background-color: #FF9801; /* HomelyKhana Orange */
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.userDetails {
+  overflow: hidden;
+}
+
+.userName {
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.userEmail {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  color: #555;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.navItem:hover {
+  background-color: #fff8f0;
+  color: #FF9801;
+}
+
+.navItem.active {
+  background-color: #FF9801;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(255, 152, 1, 0.2);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.divider {
+  height: 1px;
+  background-color: #eee;
+  margin: 0.5rem 0;
+}
+
+.logoutBtn {
+  color: #ef4444;
+}
+
+.logoutBtn:hover {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+/* Main Content Area */
+.content {
+  flex: 1;
+  min-width: 0; /* Prevents overflow issues */
+  /* The children will determine their own background/styling */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  .sidebar {
+    width: 100%;
+    position: static;
+  }
+}

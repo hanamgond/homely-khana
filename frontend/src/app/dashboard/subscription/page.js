@@ -1,3 +1,4 @@
+//src/app/dashboard/subscription/page.js
 import SubscriptionsClient from '@/components/dashboard/SubscriptionsClient';
 
 // This is the Server Component part of the page.

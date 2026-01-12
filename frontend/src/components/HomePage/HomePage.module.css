@@ -1,20 +1,22 @@
 /* styles/HomePage.module.css */
 .hero {
   position: relative; display: flex; align-items: center; justify-content: center; text-align: center;
-  padding: 100px 20px; min-height: 50vh; color: white;
+  padding: 80px 20px; /* Reduced from 100px */
+  min-height: 50vh; color: white;
   background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('/background.jpg');
   background-size: cover; background-position: center;
 }
 .heroContent { max-width: 800px; z-index: 2; }
 .hero h1 {
-  font-family: 'Lancelot', serif; font-size: clamp(2.5rem, 6vw, 4.5rem);
-  font-weight: 400; line-height: 1.1; margin-bottom: 1rem;
+  font-family: 'Lancelot', serif; font-size: clamp(2.5rem, 6vw, 4rem); /* Slightly smaller max size */
+  font-weight: 400; line-height: 1.1; margin-bottom: 0.8rem;
 }
-.accent { color: var(--primary-orange); } /* For "Homely Food" */
-.hero p { font-size: 1.125rem; max-width: 600px; margin: 0 auto 2rem auto; opacity: 0.95; }
+.accent { color: var(--primary-orange); }
+.hero p { font-size: 1.1rem; max-width: 600px; margin: 0 auto 1.5rem auto; opacity: 0.95; }
 .ctaGroup { display: flex; gap: 1rem; justify-content: center; }
 .ctaButton {
-  padding: 12px 28px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700;
+  padding: 10px 24px; /* Slightly compacted buttons */
+  border: none; border-radius: 8px; font-size: 1rem; font-weight: 700;
   cursor: pointer; text-decoration: none; display: inline-block;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -22,180 +24,197 @@
 .primary { background-color: var(--primary-orange); color: white; }
 .secondary { background-color: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.4); }
 
-.section { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
-.sectionHeader { text-align: center; margin-bottom: 50px; }
-.sectionHeader h2 { font-size: clamp(2rem, 5vw, 2.75rem); margin-bottom: 0.5rem; font-weight: 800; }
-.sectionHeader p { font-size: 1.1rem; color: var(--muted-text); max-width: 700px; margin: 0 auto; }
+/* --- SECTION SPACING IMPROVEMENTS --- */
+.section { 
+  padding: 50px 20px; /* Reduced from 80px to tighten whitespace */
+  max-width: 1200px; margin: 0 auto; 
+}
 
+.sectionHeader { 
+  text-align: center; 
+  margin-bottom: 30px; /* Reduced from 50px */
+}
+.sectionHeader h2 { font-size: clamp(1.8rem, 4vw, 2.4rem); margin-bottom: 0.25rem; font-weight: 800; color: #1f2937; }
+.sectionHeader p { font-size: 1rem; color: var(--muted-text); max-width: 700px; margin: 0 auto; }
+
+/* --- WHY US COMPACT LAYOUT --- */
 .whyUsGrid { 
   display: grid; 
-  grid-template-columns: 1fr 1.2fr; 
-  gap: 3rem; 
-  align-items: stretch;
+  grid-template-columns: 1fr 1.1fr; /* Adjusted ratio */
+  gap: 2rem; /* Reduced from 3rem */
+  align-items: center; /* Center align vertically */
 }
 .whyUsImages { 
   display: flex; 
   flex-direction: column; 
-  gap: 1rem; 
+  gap: 0.8rem; /* Reduced gap between images */
 }
 .whyUsImages > div { 
   transition: transform 0.2s ease, box-shadow 0.2s ease; 
   border-radius: 12px; 
 }
-.whyUsImages > div:hover { 
-  transform: translateY(-8px); 
-  box-shadow: 0 10px 20px rgba(0,0,0,0.12); 
-}
 .whyUsList { 
   display: flex; 
   flex-direction: column; 
-  gap: 1rem; 
-  justify-content: space-between;
+  gap: 0.8rem; /* Reduced gap between list items */
 }
 .whyUsItem {
-  display: flex; align-items: center; gap: 1.5rem; padding: 1.25rem;
-  background-color: #fff; border-radius: 12px; border: 1px solid #f0f0f0;
+  display: flex; align-items: center; gap: 1rem; 
+  padding: 1rem; /* Reduced from 1.25rem */
+  background-color: #fff; border-radius: 12px; border: 1px solid #f3f4f6;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.whyUsItem:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.08); }
+.whyUsItem:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 .whyUsIcon {
-  background-color: #fff5e6; color: var(--primary-orange); padding: 12px;
-  border-radius: 50%; display: flex; font-size: 1.5rem;
+  background-color: #fff7ed; color: var(--primary-orange); 
+  padding: 10px; /* Smaller icon padding */
+  border-radius: 50%; display: flex; font-size: 1.25rem; /* Smaller icon */
 }
-.whyUsItem h3 { margin: 0 0 0.25rem 0; font-size: 1.1rem; font-weight: 700; }
-.whyUsItem p { margin: 0; color: var(--muted-text); font-size: 0.95rem; }
+.whyUsItem h3 { margin: 0 0 0.1rem 0; font-size: 1rem; font-weight: 700; color: #111827; }
+.whyUsItem p { margin: 0; color: #6b7280; font-size: 0.9rem; line-height: 1.4; }
 
-.offeringsGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+/* Offerings Grid */
+.offeringsGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
 
+/* Testimonials */
 .testimonialsGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
-.testimonialCard { background: white; padding: 2rem; border-radius: var(--card-radius); border: 1px solid #f0f0f0; box-shadow: var(--card-shadow); }
-.testimonialHeader { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.testimonialCard { background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid #f0f0f0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.testimonialHeader { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.8rem; }
 .testimonialAvatar {
-  width: 50px; height: 50px; border-radius: 50%; 
-  background: #d1fae5;
-  color: #065f46;
+  width: 40px; height: 40px; border-radius: 50%; /* Smaller Avatar */
+  background: #ecfdf5; color: #047857;
   display: flex; align-items: center; justify-content: center; 
-  font-weight: 700; font-size: 1.2rem;
+  font-weight: 700; font-size: 1rem;
 }
-.testimonialCard h3 { margin: 0; font-size: 1.1rem; font-weight: 700; }
-.testimonialCard .role { color: var(--muted-text); font-size: 0.9rem; }
-.testimonialStars { color: #f59e0b; margin-bottom: 1rem; }
-.testimonialCard p { color: var(--muted-text); line-height: 1.6; font-style: italic; }
+.testimonialCard h3 { margin: 0; font-size: 1rem; font-weight: 700; }
+.testimonialCard .role { color: var(--muted-text); font-size: 0.85rem; }
+.testimonialStars { color: #f59e0b; margin-bottom: 0.5rem; font-size: 0.9rem; }
+.testimonialCard p { color: var(--muted-text); line-height: 1.5; font-style: italic; font-size: 0.95rem; }
 
-/* --- START: IMPROVED FAQ SECTION STYLES --- */
-.faqSearch {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto 3rem auto;
-  padding: 1rem 1.5rem;
-  font-size: 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  display: block; /* Ensures it behaves correctly with margin auto */
+/* FAQ Section */
+.faqContainer { max-width: 800px; margin: 0 auto; }
+.faqItem { background: white; margin-bottom: 8px; border-radius: 8px; border: 1px solid #e5e7eb; overflow: hidden; }
+.faqQuestion {
+  width: 100%; display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 1.25rem; background: none; border: none; 
+  font-size: 1rem; font-weight: 600; text-align: left; cursor: pointer; color: #1f2937;
 }
+.faqAnswer { 
+  padding: 0 1.25rem; color: #4b5563; line-height: 1.6; font-size: 0.95rem;
+  max-height: 0; opacity: 0; overflow: hidden; 
+  transition: all 0.3s ease;
+}
+.faqAnswer.open { max-height: 500px; opacity: 1; padding-bottom: 1.25rem; }
 
-.faqCategoryTitle {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #374151;
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #e5e7eb;
+/* Responsive adjustments */
+@media (max-width: 992px) { 
+  .whyUsGrid { grid-template-columns: 1fr; gap: 2rem; } 
+  .offeringsGrid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); } 
 }
 
-.faqContainer { 
-  max-width: 800px; 
+/* ... existing hero styles ... */
+
+.section { 
+  padding: 40px 20px; /* Reduced padding */
+  max-width: 1200px; 
   margin: 0 auto; 
 }
 
-.faqItem { 
-  background: white; 
-  margin-bottom: 10px; 
-  border-radius: 10px; 
-  border: 1px solid #f0f0f0; 
-  overflow: hidden;
-  transition: box-shadow 0.2s ease;
+.sectionHeader { 
+  text-align: center; 
+  margin-bottom: 30px; 
 }
 
-.faqItem:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+/* --- BALANCED LAYOUT FIX --- */
+.whyUsGrid { 
+  display: grid; 
+  grid-template-columns: 0.8fr 1.2fr; /* Give more width to the list */
+  gap: 2rem; 
+  align-items: start; /* Align to top */
 }
 
-.faqQuestion {
-  width: 100%; 
+.whyUsImages { 
   display: flex; 
-  justify-content: space-between; 
-  align-items: center;
-  padding: 1.25rem; 
-  background: none; 
-  border: none; 
-  font-size: 1.05rem;
-  font-weight: 700; 
-  text-align: left; 
-  cursor: pointer;
-  color: #111827;
+  flex-direction: column; 
+  gap: 1.5rem; 
+  position: sticky; 
+  top: 100px; /* Sticks nicely as you scroll */
 }
 
-.faqIcon {
-  font-size: 1.2rem;
-  color: var(--primary-orange);
+/* FIX: Force images to be shorter rectangles */
+.whyUsImages > div { 
+  position: relative;
+  width: 100%;
+  height: 240px; /* Fixed height creates a uniform look */
+  border-radius: 16px; 
+  overflow: hidden; /* Crops the image */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   transition: transform 0.3s ease;
 }
 
-.faqAnswer { 
-  padding: 0 1.25rem;
-  color: var(--muted-text); 
-  line-height: 1.6; 
-  max-height: 0; 
-  overflow: hidden; 
-  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+/* Ensure the Next.js Image fills the box perfectly */
+.whyUsImages img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 }
 
-.faqAnswer.open { 
-  max-height: 200px; /* Adjust if answers are longer */
-  padding-bottom: 1.25rem;
+.whyUsImages > div:hover { 
+  transform: scale(1.02); 
 }
 
-.contactCta {
-  text-align: center;
-  margin-top: 4rem;
-  padding: 2.5rem;
-  background-color: #fffaf0; /* Light orange background */
-  border-radius: var(--card-radius);
-  border: 1px solid #ffe8c7;
+/* CHANGE: Turn the list into a compact Grid */
+.whyUsList { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; /* Two items per row */
+  gap: 1rem; 
 }
 
-.contactCta h3 {
-  font-size: 1.5rem;
-  font-weight: 800;
-  margin: 0 0 0.5rem 0;
+.whyUsItem {
+  display: flex; 
+  flex-direction: column; /* Stack Icon top, text bottom for compactness */
+  align-items: flex-start; 
+  gap: 0.8rem; 
+  padding: 1.2rem; 
+  background-color: #fff; 
+  border-radius: 12px; 
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  transition: transform 0.2s ease;
 }
 
-.contactCta p {
-  color: var(--muted-text);
-  margin-bottom: 1.5rem;
+.whyUsItem:hover { 
+  transform: translateY(-2px); 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+  border-color: #e5e7eb;
 }
 
-.contactButton {
-  background-color: var(--primary-orange);
-  color: white;
-  font-weight: 700;
-  padding: 12px 28px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  text-decoration: none;
-  transition: background-color 0.2s ease;
+.whyUsIcon {
+  background-color: #fff7ed; 
+  color: var(--primary-orange); 
+  padding: 10px; 
+  border-radius: 10px; /* Square with rounded corners looks more modern */
+  font-size: 1.2rem; 
+  display: inline-flex;
 }
 
-.contactButton:hover {
-  background-color: #e68a00;
+.whyUsItem h3 { 
+  margin: 0 0 0.3rem 0; 
+  font-size: 1rem; 
+  font-weight: 700; 
+  color: #111827; 
 }
-/* --- END: IMPROVED FAQ SECTION STYLES --- */
 
+.whyUsItem p { 
+  margin: 0; 
+  color: #6b7280; 
+  font-size: 0.9rem; 
+  line-height: 1.4; 
+}
+
+/* Responsive: Stack them on mobile */
 @media (max-width: 992px) { 
   .whyUsGrid { grid-template-columns: 1fr; } 
-  .offeringsGrid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); } 
+  .whyUsList { grid-template-columns: 1fr; } /* Back to 1 column on mobile */
+  .whyUsItem { flex-direction: row; align-items: center; } /* Horizontal on mobile */
 }

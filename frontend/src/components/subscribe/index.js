@@ -1,64 +1,59 @@
 'use client';
 
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Image from 'next/image';
-import { DayPicker } from 'react-day-picker';
-import 'react-day-picker/dist/style.css';
-import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { AppContext } from '@/utils/AppContext';
 import styles from './Subscribe.module.css';
 import { toast } from 'sonner';
+import { Check, Clock, Calendar, ArrowRight, Edit2, Info, ShieldCheck } from 'lucide-react';
 
+// --- CONSTANTS ---
 const mealTypes = [
-  { id: 'lunch', name: 'Lunch', delivery: 'Delivery between 12:00 to 14:00' },
-  { id: 'dinner', name: 'Dinner', delivery: 'Delivery between 19:00 to 21:00' },
+  { id: 'lunch', name: 'Lunch', timeRange: '12:00 PM - 02:00 PM' },
+  { id: 'dinner', name: 'Dinner', timeRange: '07:30 PM - 09:30 PM' },
 ];
+
 const deliveryFrequencies = [
   { id: 'mon-fri', name: 'Mon - Fri', days: 5 },
   { id: 'mon-sat', name: 'Mon - Sat', days: 6 },
   { id: 'mon-sun', name: 'Mon - Sun', days: 7 },
   { id: 'custom', name: 'Custom', days: 0 }, 
 ];
+
 const daysOfWeek = [
-  { key: 'mon', label: 'Mon' }, { key: 'tue', label: 'Tue' }, { key: 'wed', label: 'Wed' },
-  { key: 'thu', label: 'Thu' }, { key: 'fri', label: 'Fri' }, { key: 'sat', label: 'Sat' }, { key: 'sun', label: 'Sun' }
+  { key: 'mon', label: 'M' }, { key: 'tue', label: 'T' }, { key: 'wed', label: 'W' },
+  { key: 'thu', label: 'Th' }, { key: 'fri', label: 'F' }, { key: 'sat', label: 'Sa' }, { key: 'sun', label: 'Su' }
 ];
 
-// --- UPDATED: Rules now ONLY control discounts ---
 const planRules = {
-  'Monthly': { discount: 0.20 },
-  'Weekly':  { discount: 0.10 },
-  'Trial':   { discount: 0.00 }
+  'Monthly': { discount: 0.20, label: 'Best Value', isTrial: false },
+  'Weekly':  { discount: 0.10, label: 'Popular', isTrial: false },
+  'Trial':   { discount: 0.00, label: null, isTrial: true }
 };
-// --------------------------------------------------
-
-const tomorrow = new Date();
-tomorrow.setDate(tomorrow.getDate() + 1);
-const next15Days = new Date();
-next15Days.setDate(tomorrow.getDate() + 14); 
 
 export default function SubscribeClient() {
   const router = useRouter();
   const { addSubscription } = useContext(AppContext);
 
-  // --- State for fetched data ---
+  // --- STATE ---
+  const [currentStep, setCurrentStep] = useState(1);
+  const [minDateStr, setMinDateStr] = useState('');
+  const [maxDateStr, setMaxDateStr] = useState('');
+
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
   
-  // --- State for user selections ---
-  const [selectedMealType, setSelectedMealType] = useState(mealTypes[0]);
-  const [selectedProduct, setSelectedProduct] = useState(null); 
-  const [selectedPlan, setSelectedPlan] = useState(null); 
-  const [selectedFrequency, setSelectedFrequency] = useState(deliveryFrequencies[0]);
-  const [startDate, setStartDate] = useState(tomorrow);
-  const [customDays, setCustomDays] = useState({
-    mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false
+  const [selections, setSelections] = useState({
+    mealType: null,
+    product: null,
+    plan: null,
+    frequency: deliveryFrequencies[0],
+    customDays: { mon: false, tue: false, wed: false, thu: false, fri: false, sat: false, sun: false },
+    startDate: '',
+    quantity: 1
   });
-  const [quantity, setQuantity] = useState(1);
-  
-  // --- UPDATED: Summary state ---
+
   const [summary, setSummary] = useState({
     totalMeals: 0,
     originalAmount: 0,
@@ -66,376 +61,366 @@ export default function SubscribeClient() {
     totalAmount: 0,
     deliveryDaysText: ''
   });
-  // ------------------------------
-  
-  const [isCalendarOpen, setCalendarOpen] = useState(false);
-  const calendarRef = useRef(null);
 
-  // --- Fetch Products from API (No changes) ---
+  // --- 1. INITIALIZATION ---
   useEffect(() => {
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const fmt = (d) => d.toISOString().split('T')[0];
+    const minStr = fmt(tomorrow);
+
+    const maxDate = new Date(tomorrow);
+    maxDate.setDate(maxDate.getDate() + 14);
+
+    setMinDateStr(minStr);
+    setMaxDateStr(fmt(maxDate));
+    
+    setSelections(prev => ({ ...prev, startDate: minStr }));
+
     const fetchProducts = async () => {
-      setIsLoading(true);
-      setError(null);
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/products?type=Meals`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
-
         if (data.success && Array.isArray(data.data)) {
-          const subscriptionProducts = data.data.filter(p =>
-            (p.booking_type === 'subscription' || p.booking_type === 'both') && p.plans && p.plans.length > 0
+          const validProducts = data.data.filter(p =>
+            (p.booking_type === 'subscription' || p.booking_type === 'both') && p.plans?.length > 0
           );
-          setProducts(subscriptionProducts);
-          if (subscriptionProducts.length > 0) {
-            setSelectedProduct(subscriptionProducts[0]);
-            const firstValidPlan = subscriptionProducts[0].plans.find(p => planRules[p.plan_name]);
-            if (firstValidPlan) {
-                setSelectedPlan(firstValidPlan); 
-            }
-          }
-        } else {
-          throw new Error(data.error || 'Failed to fetch subscription meals.');
+          setProducts(validProducts);
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
-        console.error("Error fetching products:", err);
-        toast.error("Could not load meals. Please try again later.");
+        toast.error("Could not load meals.");
       } finally {
         setIsLoading(false);
       }
     };
     fetchProducts();
   }, []);
-  
-  // --- Calendar Click Outside (No changes) ---
+
+  // --- 2. CALCULATIONS ---
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (calendarRef.current && !calendarRef.current.contains(event.target)) {
-        setCalendarOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [calendarRef]);
+    const { product, plan, frequency, customDays, quantity } = selections;
+    if (!product || !plan) return;
 
-  // --- MAJOR UPDATE: Combined calculation logic ---
-  useEffect(() => {
-    if (!selectedProduct || !selectedPlan) {
-      setSummary({ totalMeals: 0, originalAmount: 0, discountAmount: 0, totalAmount: 0, deliveryDaysText: '' });
-      return;
-    }
-
-    // 1. Get the discount rule (e.g., {discount: 0.20})
-    const rule = planRules[selectedPlan.plan_name];
-
-    if (!rule) {
-      console.error(`No plan rule found for: ${selectedPlan.plan_name}`);
-      setSummary({ totalMeals: 0, originalAmount: 0, discountAmount: 0, totalAmount: 0, deliveryDaysText: 'N/A' });
-      return;
-    }
-
-    // 2. Get Delivery Days Text (Original Logic)
+    const rule = planRules[plan.plan_name] || { discount: 0, isTrial: false };
+    
     let daysPerWeek = 0;
     let deliveryDaysText = '';
-    if (selectedFrequency.id === 'custom') {
-      const selectedDays = Object.keys(customDays).filter(key => customDays[key]);
-      daysPerWeek = selectedDays.length;
-      deliveryDaysText = selectedDays.length > 0
-        ? selectedDays.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ') 
-        : 'None selected';
+
+    if (rule.isTrial) {
+        daysPerWeek = 7;
+        deliveryDaysText = 'Consecutive Days';
     } else {
-      daysPerWeek = selectedFrequency.days;
-      deliveryDaysText = selectedFrequency.name;
+        if (frequency.id === 'custom') {
+            const selectedDays = Object.keys(customDays).filter(key => customDays[key]);
+            daysPerWeek = selectedDays.length;
+            deliveryDaysText = selectedDays.length > 0
+                ? selectedDays.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ') 
+                : 'None selected';
+        } else {
+            daysPerWeek = frequency.days;
+            deliveryDaysText = frequency.name;
+        }
     }
     
-    // 3. Calculate Total Meals (REVERTED to Original Logic)
-    const totalWeeks = selectedPlan.duration_days / 7;
-    const totalMeals = Math.round(totalWeeks * daysPerWeek) * quantity;
+    const totalWeeks = plan.duration_days / 7;
+    const calculatedMeals = Math.round(totalWeeks * daysPerWeek) * quantity;
     
-    // 4. Calculate Pricing (NEW Logic)
-    const originalAmount = parseFloat(selectedPlan.price) * quantity;
+    const originalAmount = parseFloat(plan.price) * quantity;
     const discountAmount = originalAmount * rule.discount;
     const totalAmount = originalAmount - discountAmount;
 
-    setSummary({ totalMeals, originalAmount, discountAmount, totalAmount, deliveryDaysText });
+    setSummary({ totalMeals: calculatedMeals, originalAmount, discountAmount, totalAmount, deliveryDaysText });
+  }, [selections]);
 
-  }, [selectedProduct, selectedPlan, selectedFrequency, quantity, customDays]);
-  // -----------------------------------------------------
+  // --- HANDLERS ---
+  const handleTypeSelect = (type) => {
+    setSelections(prev => ({ ...prev, mealType: type }));
+    setCurrentStep(2);
+  };
 
-  // --- Handler for custom day toggle (No changes) ---
+  const handleProductSelect = (product) => {
+    const firstValidPlan = product.plans.find(p => planRules[p.plan_name]) || product.plans[0];
+    setSelections(prev => ({ ...prev, product: product, plan: firstValidPlan }));
+    setCurrentStep(3);
+  };
+
+  const handlePlanSelect = (plan) => {
+      setSelections(prev => ({ ...prev, plan: plan }));
+  };
+
   const handleCustomDayToggle = (dayKey) => {
-    setCustomDays(prev => ({
+    setSelections(prev => ({
       ...prev,
-      [dayKey]: !prev[dayKey]
+      customDays: { ...prev.customDays, [dayKey]: !prev.customDays[dayKey] }
     }));
   };
-  
-  // --- UPDATED: Proceed to Checkout (with new summary fields) ---
-  const handleProceedToCheckout = () => {
-    if (!selectedProduct || !selectedPlan || !startDate) {
-        toast.error("Please select a meal, plan, and start date.");
-        return;
-    }
 
-    if (selectedFrequency.id === 'custom' && Object.values(customDays).filter(Boolean).length === 0) {
-      toast.error("Please select at least one delivery day for your custom plan.");
-      return;
+  const handleProceedToCheckout = () => {
+    const { product, mealType, plan, startDate, quantity } = selections;
+    const rule = planRules[plan?.plan_name];
+
+    if (!product || !plan || !startDate) return toast.error("Please complete all steps.");
+    
+    if (!rule?.isTrial && selections.frequency.id === 'custom' && summary.deliveryDaysText === 'None selected') {
+      return toast.error("Please select at least one delivery day.");
     }
     
-    const orderDetails = {
-      id: selectedProduct.id,
-      name: selectedProduct.name, 
-      mealType: selectedMealType.name,
-      plan: selectedPlan, 
+    addSubscription({
+      id: product.id,
+      name: product.name, 
+      mealType: mealType.name,
+      plan: plan, 
       frequency: summary.deliveryDaysText, 
-      startDate: format(startDate, 'yyyy-MM-dd'), 
+      startDate: startDate, 
       totalMeals: summary.totalMeals, 
-      
-      // Pass all price components to checkout
       originalAmount: summary.originalAmount,
       discountAmount: summary.discountAmount,
-      totalPrice: summary.totalAmount, // This is the final, discounted price
-      
+      totalPrice: summary.totalAmount,
       quantity: quantity,
-      booking_type: selectedProduct.booking_type,
-      base_price: selectedProduct.base_price,
-      image_url: selectedProduct.image_url
-    };
-
-    console.log("Adding to cart:", orderDetails);
-    addSubscription(orderDetails);
+      booking_type: product.booking_type,
+      base_price: product.base_price,
+      image_url: product.image_url
+    });
     router.push('/checkout');
   };
-  
-  // --- Helper to calculate price per meal (No changes) ---
+
   const getPricePerMeal = (plan) => {
-    if (!plan || !plan.price || !plan.duration_days) return 0;
+    if (!plan?.price || !plan?.duration_days) return 0;
     const mealsInPlan = plan.duration_days * (plan.meals_per_day || 1);
     return mealsInPlan > 0 ? (parseFloat(plan.price) / mealsInPlan).toFixed(0) : 0;
   };
 
-  // --- Render ---
+  const isTrialSelected = planRules[selections.plan?.plan_name]?.isTrial;
+
   return (
     <div className={styles.pageContainer}>
-      <div className={styles.header}>
-        <h1>Build Your Subscription</h1>
-        <p>Customize your meal plan in 4 easy steps</p>
-      </div>
-
-      {/* --- Step 1: Meal Type (No changes) --- */}
-      <div className={styles.stepBox}>
-        {/* ... same as before ... */}
-        <div className={styles.stepHeader}>
-          <div className={styles.stepNumber}>1</div>
-          <h2>Choose Meal Type</h2>
+      
+      {/* --- HERO SECTION --- */}
+      <div className={styles.heroSection}>
+        <div className={styles.heroBg}>
+            {/* FORCE FIX: Using standard HTML img tag to bypass Next.js blocking */}
+            <img 
+                src="https://images.unsplash.com/photo-1505253758473-96b701d2cd03?q=80&w=3200&auto=format&fit=crop"
+                alt="Organic Ingredients"
+                className={styles.heroImgHTML} 
+            />
+            <div className={styles.heroOverlay}></div>
         </div>
-        <div className={styles.buttonGroup}>
-          {mealTypes.map(type => (
-            <button key={type.id} className={`${styles.optionButton} ${selectedMealType.id === type.id ? styles.active : ''}`} onClick={() => setSelectedMealType(type)}>
-              {type.name}
-              <span>{type.delivery}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* --- Step 2: Select Meal (No changes) --- */}
-      <div className={styles.stepBox}>
-        {/* ... same as before ... */}
-        <div className={styles.stepHeader}>
-          <div className={styles.stepNumber}>2</div>
-          <h2>Select Your Meal</h2>
-        </div>
-        {isLoading && <p>Loading meals...</p>}
-        {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-        {!isLoading && !error && (
-            <>
-              <div className={styles.selectionGrid}>
-                {products.map(product => {
-                  const firstPlan = product.plans?.[0];
-                  const pricePerMeal = getPricePerMeal(firstPlan);
-                  return (
-                    <div
-                        key={product.id}
-                        className={`${styles.mealCard} ${selectedProduct?.id === product.id ? styles.active : ''}`}
-                        onClick={() => {
-                            setSelectedProduct(product);
-                            const firstValidPlan = product.plans.find(p => planRules[p.plan_name]);
-                            setSelectedPlan(firstValidPlan || null); 
-                        }}
-                    >
-                      <Image src={product.image_url || '/meal-placeholder.jpg'} alt={product.name} width={400} height={180} style={{objectFit:'cover'}} />
-                      <div className={styles.mealInfo}>
-                        <h3>{product.name}</h3>
-                        <p>{product.description}</p>
-                        {pricePerMeal > 0 && <p className={styles.mealPrice}>₹ {pricePerMeal} /- Per Meal</p>}
-                        {pricePerMeal === 0 && <p className={styles.mealPrice}>Price varies</p>}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className={styles.quantitySelector}>
-                <span className={styles.quantityLabel}>Quantity per day:</span>
-                <div className={styles.quantityControls}>
-                  <button className={styles.quantityButton} onClick={() => setQuantity(q => Math.max(1, q - 1))}>-</button>
-                  <span className={styles.quantityDisplay}>{quantity}</span>
-                  <button className={styles.quantityButton} onClick={() => setQuantity(q => q + 1)}>+</button>
-                </div>
-              </div>
-            </>
-        )}
-      </div>
-
-      {/* --- Step 3: Plan, Frequency, Date --- */}
-      <div className={styles.stepBox}>
-        <p className={styles.stepTitle}>Subscription Plan</p>
-        <div className={styles.buttonGroup}>
-           {/* --- UPDATED: Plan buttons show duration (original) + discount (new) --- */}
-           {selectedProduct?.plans?.map(p => {
-              const rule = planRules[p.plan_name];
-              if (!rule) return null; 
-
-              const planName = p.plan_name === 'Trial' ? 'Trial Meals' : `${p.plan_name} Plan`;
-              const subtext = `${p.duration_days} days`; // REVERTED to duration
-              const discountBadge = rule.discount > 0 ? `(${rule.discount * 100}% Off)` : null;
-              
-              return (
-                <button
-                    key={p.id} 
-                    className={`${styles.optionButton} ${selectedPlan?.id === p.id ? styles.active : ''}`}
-                    onClick={() => setSelectedPlan(p)} 
-                >
-                  {planName} 
-                  {discountBadge && <span className={styles.discountBadge}>{discountBadge}</span>}
-                  <span>{subtext}</span> {/* Shows duration */}
-                </button>
-              );
-           })}
-           {/* ---------------------------------- */}
-          {(!selectedProduct || !selectedProduct.plans || selectedProduct.plans.length === 0) && !isLoading && (
-            <p>Please select a meal to see available plans.</p>
-          )}
-        </div>
-        <br />
-        <p className={styles.stepTitle}>Delivery Frequency</p>
-        <div className={styles.buttonGroup}>
-           {deliveryFrequencies.map(f => (
-            <button
-                key={f.id}
-                className={`${styles.optionButton} ${selectedFrequency.id === f.id ? styles.active : ''}`}
-                onClick={() => setSelectedFrequency(f)}
-            >
-              {f.name}
-            </button>
-          ))}
-        </div>
-
-        {/* --- Custom day selection (No changes) --- */}
-        {selectedFrequency.id === 'custom' && (
-          <div className={styles.customDayContainer}>
-            <p className={styles.stepTitle}>Select delivery days:</p>
-            <div className={styles.daySelector}>
-              {daysOfWeek.map(day => (
-                <button
-                  key={day.key}
-                  className={`${styles.dayButton} ${customDays[day.key] ? styles.active : ''}`}
-                  onClick={() => handleCustomDayToggle(day.key)}
-                >
-                  {day.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
         
-        <br/>
-        <p className={styles.stepTitle}>Start Date</p>
-        {/* --- Calendar (No changes) --- */}
-        <div className={styles.datePickerContainer} ref={calendarRef}>
-            <button className={styles.dateDisplayButton} onClick={() => setCalendarOpen(prev => !prev)}>
-                {startDate ? format(startDate, 'do MMMM, yyyy') : 'Select a date'}
-            </button>
-            {isCalendarOpen && (
-                <div className={styles.calendarWrapper}>
-                    <DayPicker
-                        mode="single"
-                        selected={startDate}
-                        onSelect={(date) => {
-                            if (date) setStartDate(date);
-                            setCalendarOpen(false);
-                        }}
-                        fromDate={tomorrow}
-                        toDate={next15Days}
-                        modifiersClassNames={{ selected: styles.daySelected }}
-                    />
+        <div className={styles.heroContent}>
+            <span className={styles.heroBadge}>Pure & Home Cooked</span>
+            <h1 className={styles.heroTitle}>Your Daily Dose of Homely Love</h1>
+            <p className={styles.heroSubtitle}>
+                Customized meal plans made from fresh, organic ingredients.
+            </p>
+        </div>
+      </div>
+
+      {/* --- OVERLAP CONTAINER --- */}
+      <div className={styles.contentWrapper}>
+        <div className={styles.mainCard}>
+            
+            {/* --- STEP 1: MEAL TYPE --- */}
+            <div className={`${styles.stepSection} ${currentStep >= 1 ? styles.activeStep : ''}`}>
+                <div className={styles.stepHeader}>
+                    <div className={styles.stepNum}>1</div>
+                    <h3 className={styles.stepTitle}>Choose Meal Session</h3>
+                    {currentStep > 1 && <button className={styles.editBtn} onClick={() => setCurrentStep(1)}><Edit2 size={14} /> Edit</button>}
+                </div>
+                {/* Always show Step 1 content if currentStep is 1, or collapse it if > 1 (optional, here we keep logic same) */}
+                {currentStep === 1 && (
+                    <div className={styles.stepContent}>
+                        <div className={styles.typeGrid}>
+                            {mealTypes.map((type) => (
+                                <button key={type.id} className={`${styles.typeBtn} ${selections.mealType?.id === type.id ? styles.selectedType : ''}`} onClick={() => handleTypeSelect(type)}>
+                                    <div className={styles.typeInfo}>
+                                        <span className={styles.typeName}>{type.name}</span>
+                                        <span className={styles.typeTime}><Clock size={14}/> {type.timeRange}</span>
+                                    </div>
+                                    {selections.mealType?.id === type.id && <Check size={20} />}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* --- STEP 2: SELECT MEAL --- */}
+            <div className={`${styles.stepSection} ${currentStep >= 2 ? styles.activeStep : styles.lockedStep}`}>
+                <div className={styles.stepHeader}>
+                    <div className={styles.stepNum}>2</div>
+                    <h3 className={styles.stepTitle}>Select Your Meal</h3>
+                    {currentStep > 2 && <button className={styles.editBtn} onClick={() => setCurrentStep(2)}><Edit2 size={14} /> Edit</button>}
+                </div>
+                {currentStep === 2 && (
+                    <div className={`${styles.stepContent} ${styles.fadeIn}`}>
+                        {isLoading ? <div className={styles.loadingState}>Loading menu...</div> : (
+                            <>
+                            <div className={styles.mealsGrid}>
+                                {products.map((product) => {
+                                    const price = getPricePerMeal(product.plans?.[0]);
+                                    const isSelected = selections.product?.id === product.id;
+                                    return (
+                                        <div key={product.id} className={`${styles.mealCard} ${isSelected ? styles.selectedCard : ''}`} onClick={() => handleProductSelect(product)}>
+                                            <div className={styles.imageWrapper}>
+                                                <Image src={product.image_url || '/meal-placeholder.jpg'} alt={product.name} fill className={styles.mealImg}/>
+                                                {isSelected && <div className={styles.selectedOverlay}>Selected</div>}
+                                            </div>
+                                            <div className={styles.cardBody}>
+                                                <h4>{product.name}</h4>
+                                                <span className={styles.priceTag}>{price > 0 ? `₹ ${price} / meal` : 'Price Varies'}</span>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            <div className={styles.quantitySection}>
+                                <span className={styles.label}>Quantity Per Day</span>
+                                <div className={styles.qtyControls}>
+                                    <button onClick={() => setSelections(p => ({...p, quantity: Math.max(1, p.quantity - 1)}))}>-</button>
+                                    <span>{selections.quantity}</span>
+                                    <button onClick={() => setSelections(p => ({...p, quantity: p.quantity + 1}))}>+</button>
+                                </div>
+                            </div>
+                            </>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            {/* --- STEP 3: PLAN & SCHEDULE --- */}
+            <div className={`${styles.stepSection} ${currentStep >= 3 ? styles.activeStep : styles.lockedStep}`}>
+                <div className={styles.stepHeader}>
+                    <div className={styles.stepNum}>3</div>
+                    <h3 className={styles.stepTitle}>Plan & Schedule</h3>
+                    {currentStep > 3 && <button className={styles.editBtn} onClick={() => setCurrentStep(3)}><Edit2 size={14} /> Edit</button>}
+                </div>
+                
+                {currentStep === 3 && selections.product && (
+                    <div className={`${styles.stepContent} ${styles.fadeIn}`}>
+                        
+                        {/* A. PLAN SELECTION */}
+                        <div className={styles.sectionBlock}>
+                            <label className={styles.sectionLabel}>Select Duration</label>
+                            <div className={styles.planCardsGrid}>
+                                {selections.product.plans?.map(p => {
+                                    const rule = planRules[p.plan_name];
+                                    if (!rule) return null;
+                                    const isSelected = selections.plan?.id === p.id;
+                                    return (
+                                        <button key={p.id} className={`${styles.planCard} ${isSelected ? styles.planCardActive : ''}`} onClick={() => handlePlanSelect(p)}>
+                                            {rule.label && <span className={styles.planBadge}>{rule.label}</span>}
+                                            <span className={styles.planName}>{p.plan_name}</span>
+                                            <span className={styles.planDuration}>{p.duration_days} Days</span>
+                                            {rule.discount > 0 && <span className={styles.planDiscount}>{rule.discount * 100}% Savings</span>}
+                                            {isSelected && <div className={styles.checkIcon}><Check size={14}/></div>}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* B. FREQUENCY */}
+                        {!isTrialSelected && (
+                            <div className={styles.sectionBlock}>
+                                <label className={styles.sectionLabel}>Delivery Days</label>
+                                <div className={styles.freqContainer}>
+                                    {deliveryFrequencies.map(f => (
+                                        <button key={f.id} className={`${styles.freqSegment} ${selections.frequency.id === f.id ? styles.freqActive : ''}`} onClick={() => setSelections(prev => ({...prev, frequency: f}))}>
+                                            {f.name}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        
+                        {/* C. CUSTOM DAYS */}
+                        {!isTrialSelected && selections.frequency.id === 'custom' && (
+                            <div className={styles.customDayWrapper}>
+                                <p className={styles.miniLabel}>Select specific days of the week:</p>
+                                <div className={styles.daySelector}>
+                                    {daysOfWeek.map(day => (
+                                        <button key={day.key} className={`${styles.dayCircle} ${selections.customDays[day.key] ? styles.activeDay : ''}`} onClick={() => handleCustomDayToggle(day.key)}>
+                                            {day.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        
+                        {isTrialSelected && (
+                            <div className={styles.trialInfoBox}>
+                                <Info size={16} />
+                                <span>Trial meals are delivered on <strong>3 consecutive days</strong> starting from your selected date.</span>
+                            </div>
+                        )}
+
+                        {/* D. DATE INPUT */}
+                        <div className={styles.sectionBlock}>
+                            <label className={styles.sectionLabel}>Start Date</label>
+                            <div className={styles.premiumDateInput} onClick={() => document.getElementById('nativeDate').showPicker()}>
+                                <div className={styles.dateIconBox}>
+                                    <Calendar size={20} color="#d97706" />
+                                </div>
+                                <div className={styles.dateInfo}>
+                                    <span className={styles.dateLabel}>First Meal On</span>
+                                    <input 
+                                        id="nativeDate"
+                                        type="date"
+                                        className={styles.hiddenNativeInput}
+                                        min={minDateStr}
+                                        max={maxDateStr}
+                                        value={selections.startDate}
+                                        onChange={(e) => setSelections(prev => ({...prev, startDate: e.target.value}))}
+                                    />
+                                    <span className={styles.displayDate}>
+                                        {selections.startDate || "Select a date"}
+                                    </span>
+                                </div>
+                                <div className={styles.dateHint}>
+                                    <Info size={14} /> Max 15 days in advance
+                                </div>
+                            </div>
+                        </div>
+
+                        <button className={styles.continueBtn} onClick={() => setCurrentStep(4)}>Continue to Summary</button>
+                    </div>
+                )}
+            </div>
+
+            {/* --- STEP 4: SUMMARY --- */}
+            {currentStep >= 4 && (
+                <div className={`${styles.stepSection} ${styles.summarySection} ${styles.fadeIn}`}>
+                    <div className={styles.stepHeader} style={{borderBottom:'none', background:'#2c1810', color:'white', borderRadius: '8px 8px 0 0'}}>
+                        <div className={styles.stepNum} style={{background:'white', color:'#2c1810'}}>4</div>
+                        <h3 className={styles.stepTitle} style={{color:'white'}}>Order Summary</h3>
+                    </div>
+                    
+                    <div className={styles.summaryBox}>
+                        <div className={styles.summaryRow}><span>Meal Session</span><strong>{selections.mealType?.name}</strong></div>
+                        <div className={styles.summaryRow}><span>Delivery Slot</span><strong>{selections.mealType?.timeRange}</strong></div>
+                        <div className={styles.summaryRow}><span>Selected Meal</span><strong>{selections.product?.name}</strong></div>
+                        <div className={styles.summaryRow}><span>Plan</span><strong>{selections.plan?.plan_name}</strong></div>
+                        <div className={styles.summaryRow}><span>Frequency</span><strong>{summary.deliveryDaysText}</strong></div>
+                        <div className={styles.summaryRow}><span>Total Meals</span><strong>{summary.totalMeals}</strong></div>
+                        <div className={styles.divider}></div>
+                        <div className={styles.summaryRow}><span>Subtotal</span><span>₹ {summary.originalAmount}</span></div>
+                        {summary.discountAmount > 0 && <div className={`${styles.summaryRow} ${styles.greenText}`}><span>Discount</span><span>- ₹ {summary.discountAmount}</span></div>}
+                        <div className={styles.totalRow}><span>Total Amount</span><span className={styles.finalPrice}>₹ {summary.totalAmount}</span></div>
+                    </div>
+
+                    <div className={styles.trustRow}>
+                        <ShieldCheck size={16} color="#15803d"/> 
+                        <span>Free cancellation before 24 hours of delivery.</span>
+                    </div>
+
+                    <button className={styles.checkoutBtn} onClick={handleProceedToCheckout}>Proceed to Checkout <ArrowRight size={20} /></button>
                 </div>
             )}
+            
         </div>
-      </div>
-
-      {/* --- Step 4: Order Summary --- */}
-      <div className={styles.stepBox}>
-         <div className={styles.stepHeader}>
-          <div className={styles.stepNumber}>4</div>
-          <h2>Order Summary</h2>
-        </div>
-        {/* --- UPDATED: Summary grid with discount --- */}
-        <div className={styles.summaryGrid}>
-          <span className={styles.summaryLabel}>Meal Type</span>
-          <span className={styles.summaryValue}>{selectedMealType.name}</span>
-          
-          <span className={styles.summaryLabel}>Selected Meal</span>
-          <span className={styles.summaryValue}>{selectedProduct?.name || 'N/A'}</span>
-          
-          <span className={styles.summaryLabel}>Quantity/Day:</span>
-          <span className={styles.summaryValue}>{quantity}</span>
-          
-          <span className={styles.summaryLabel}>Subscription:</span>
-          <span className={styles.summaryValue}>{selectedPlan?.plan_name || 'N/A'}</span>
-          
-          <span className={styles.summaryLabel}>Delivery Days:</span>
-          <span className={styles.summaryValue}>{summary.deliveryDaysText || 'N/A'}</span>
-          
-          <span className={styles.summaryLabel}>Start Date:</span>
-          <span className={styles.summaryValue}>{startDate ? format(startDate, 'do MMMM, yyyy') : 'Not selected'}</span>
-          
-          {/* This now shows the dynamic meal count */}
-          <span className={styles.summaryLabel}>Total Meals:</span>
-          <span className={styles.summaryValue}>{summary.totalMeals}</span>
-
-          {/* --- NEW PRICE BREAKDOWN --- */}
-          <span className={styles.summaryLabel} style={{marginTop: '1rem'}}>Subtotal</span>
-          <span className={styles.summaryValue} style={{marginTop: '1rem'}}>
-            ₹ {(summary.originalAmount || 0).toLocaleString('en-IN')}
-          </span>
-          
-          {summary.discountAmount > 0 && (
-            <>
-              <span className={`${styles.summaryLabel} ${styles.discountText}`}>
-                Subscription Discount
-              </span>
-              <span className={`${styles.summaryValue} ${styles.discountText}`}>
-                - ₹ {(summary.discountAmount || 0).toLocaleString('en-IN')}
-              </span>
-            </>
-          )}
-          {/* ------------------------- */}
-          
-          <div className={styles.totalAmountRow}>
-            <span className={styles.summaryTotalLabel}>Total Amount</span>
-            <span className={styles.summaryTotalPrice}>
-              ₹ {(summary.totalAmount || 0).toLocaleString('en-IN')}/-
-            </span>
-          </div>
-        </div>
-        <button
-          className={styles.checkoutButton}
-          onClick={handleProceedToCheckout}
-          disabled={!selectedProduct || !selectedPlan || !startDate || isLoading}
-        >
-          Proceed to Checkout
-        </button>
       </div>
     </div>
   );

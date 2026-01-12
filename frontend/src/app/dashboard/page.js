@@ -1,3 +1,4 @@
+//src/app/dashboard/page.js
 import DashboardClient from '@/components/dashboard/DashboardClient';
 
 // This is the Server Component part of the page.
