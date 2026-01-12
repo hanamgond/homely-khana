@@ -133,26 +133,29 @@
   align-items: start; /* Align to top */
 }
 
+/* ... existing styles ... */
+
 .whyUsImages { 
   display: flex; 
   flex-direction: column; 
   gap: 1.5rem; 
   position: sticky; 
-  top: 100px; /* Sticks nicely as you scroll */
+  top: 100px; /* This makes the images float nicely as you scroll */
 }
 
-/* FIX: Force images to be shorter rectangles */
+/* FIX: Force images into a neat rectangle */
 .whyUsImages > div { 
   position: relative;
   width: 100%;
-  height: 240px; /* Fixed height creates a uniform look */
+  height: 240px; /* Fixed height makes them uniform */
   border-radius: 16px; 
-  overflow: hidden; /* Crops the image */
+  overflow: hidden; /* Crops any excess image height */
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   transition: transform 0.3s ease;
+  background-color: #f3f4f6;
 }
 
-/* Ensure the Next.js Image fills the box perfectly */
+/* Ensure the image covers the box perfectly */
 .whyUsImages img {
   object-fit: cover;
   width: 100%;
@@ -162,6 +165,8 @@
 .whyUsImages > div:hover { 
   transform: scale(1.02); 
 }
+
+/* ... keep the rest of your styles ... */
 
 /* CHANGE: Turn the list into a compact Grid */
 .whyUsList { 

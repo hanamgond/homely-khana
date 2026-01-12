@@ -13,7 +13,7 @@ export default function PantryPage() {
       </h1>
       
       <p style={{ maxWidth: '600px', fontSize: '1.2rem', color: '#666', marginBottom: '2rem', lineHeight: '1.6' }}>
-        We are crafting a special range of homemade <strong>Pickles, Chutney Podis, and Healthy Snacks</strong>. No preservatives, just like grandma's recipe.
+        We are crafting a special range of homemade <strong>Pickles, Chutney Podis, and Healthy Snacks</strong>. No preservatives, just like grandma&apos;s recipe.
       </p>
 
       {/* Waitlist Form */}
