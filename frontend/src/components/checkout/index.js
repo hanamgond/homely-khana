@@ -1,3 +1,4 @@
+// frontend/src/components/checkout/index.js
 'use client';
 
 import { useContext, useState, useEffect } from 'react';
@@ -9,6 +10,7 @@ import { toast } from 'sonner';
 import { load } from '@cashfreepayments/cashfree-js';
 import { fetchWithToken, getCookie } from '@/utils/CookieManagement';
 import { Trash2, Pencil, CreditCard, Banknote, ShieldCheck, Lock, Plus } from 'lucide-react';
+import GoogleAddressInput from './GoogleAddressInput'; // <--- NEW IMPORT
 
 export default function CheckoutClient() {
   const { cart, cartTotal, setDeliveryAddress, clearCart, removeSubscription } = useContext(AppContext);
@@ -22,8 +24,11 @@ export default function CheckoutClient() {
   
   // Full form state
   const [formData, setFormData] = useState({
-    fullName: '', phone: '', addressLine1: '', addressLine2: '',
-    city: '', state: '', pincode: '', landmark: '', type: 'Home', isDefault: false
+    fullName: '', phone: '', 
+    addressLine1: '', addressLine2: '',
+    city: '', state: '', pincode: '', 
+    landmark: '', type: 'Home', isDefault: false,
+    lat: null, lng: null // <--- ADD THESE
   });
   
   const [editingAddressId, setEditingAddressId] = useState(null);
@@ -63,6 +68,22 @@ export default function CheckoutClient() {
     } finally {
       setIsAddressLoading(false);
     }
+  };
+  
+
+  // 2. NEW HANDLER FOR GOOGLE SELECTION
+  const handleGoogleAddressSelect = (geoData) => {
+    setFormData(prev => ({
+        ...prev,
+        addressLine2: geoData.addressLine1, // We put Building Name in Line 2 (Area) or Line 1 based on pref. 
+        // Better UX: Put "Seawoods Grand Central" in Line 2, leave Line 1 empty for "Flat No".
+        city: geoData.city,
+        state: geoData.state,
+        pincode: geoData.pincode,
+        lat: geoData.lat,
+        lng: geoData.lng
+    }));
+    toast.success("Address details fetched! Please add your Flat/Floor number.");
   };
 
   useEffect(() => {
@@ -262,34 +283,61 @@ export default function CheckoutClient() {
                                 </button>
                             </div>
                         ) : (
-                            // ADDRESS FORM
-                            <form onSubmit={handleSaveAddress} className={styles.addressForm}>
-                                <div className={styles.formGrid}>
-                                    <div className={styles.inputGroup}><label>Full Name</label><input name="fullName" value={formData.fullName} onChange={handleInputChange} required /></div>
-                                    <div className={styles.inputGroup}><label>Phone</label><input name="phone" value={formData.phone} onChange={handleInputChange} required maxLength="10" /></div>
-                                    <div className={styles.inputGroupFull}><label>Flat / Building</label><input name="addressLine1" value={formData.addressLine1} onChange={handleInputChange} required /></div>
-                                    <div className={styles.inputGroupFull}><label>Street / Area</label><input name="addressLine2" value={formData.addressLine2} onChange={handleInputChange} /></div>
-                                    <div className={styles.inputGroup}><label>City</label><input name="city" value={formData.city} onChange={handleInputChange} required /></div>
-                                    <div className={styles.inputGroup}><label>Pincode</label><input name="pincode" value={formData.pincode} onChange={handleInputChange} required maxLength="6" /></div>
-                                    <div className={styles.inputGroup}><label>State</label><input name="state" value={formData.state} onChange={handleInputChange} required /></div>
-                                    <div className={styles.inputGroup}>
-                                        <label>Type</label>
-                                        <select name="type" value={formData.type} onChange={handleInputChange}><option value="Home">Home</option><option value="Work">Work</option><option value="Other">Other</option></select>
-                                    </div>
-                                </div>
+                            // ADDRESS FORM WRAPPER
+                            <div className={styles.addressFormWrapper}>
                                 
-                                <div className={styles.checkboxRow}>
-                                    <input type="checkbox" id="def" name="isDefault" checked={formData.isDefault} onChange={handleInputChange} />
-                                    <label htmlFor="def">Set as default address</label>
+                                {/* 1. GOOGLE SEARCH COMPONENT */}
+                                <GoogleAddressInput onAddressSelect={handleGoogleAddressSelect} />
+                                
+                                {/* Divider */}
+                                <div style={{ 
+                                    margin: '1.5rem 0', 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    color: '#9ca3af', 
+                                    fontSize: '0.75rem', 
+                                    fontWeight: '600', 
+                                    letterSpacing: '0.05em' 
+                                }}>
+                                    <span style={{ flex: 1, height: '1px', background: '#e5e7eb' }}></span>
+                                    <span style={{ padding: '0 10px' }}>OR ENTER MANUALLY</span>
+                                    <span style={{ flex: 1, height: '1px', background: '#e5e7eb' }}></span>
                                 </div>
 
-                                <div className={styles.formActions}>
-                                    <button type="button" className={styles.cancelBtn} onClick={handleCancelEdit}>Cancel</button>
-                                    <button type="submit" className={styles.saveBtn} disabled={isLoading}>
-                                        {editingAddressId ? 'Update Address' : 'Save Address'}
-                                    </button>
-                                </div>
-                            </form>
+                                {/* 2. EXISTING MANUAL FORM */}
+                                <form onSubmit={handleSaveAddress} className={styles.addressForm}>
+                                    <div className={styles.formGrid}>
+                                        <div className={styles.inputGroup}><label>Full Name</label><input name="fullName" value={formData.fullName} onChange={handleInputChange} required /></div>
+                                        <div className={styles.inputGroup}><label>Phone</label><input name="phone" value={formData.phone} onChange={handleInputChange} required maxLength="10" /></div>
+                                        
+                                        {/* Label updated to clarify this is for Flat No */}
+                                        <div className={styles.inputGroupFull}><label>Flat / Building / Floor</label><input name="addressLine1" value={formData.addressLine1} onChange={handleInputChange} required placeholder="e.g. Flat 401, A-Wing" /></div>
+                                        
+                                        {/* This will be auto-filled by Google */}
+                                        <div className={styles.inputGroupFull}><label>Street / Area</label><input name="addressLine2" value={formData.addressLine2} onChange={handleInputChange} /></div>
+                                        
+                                        <div className={styles.inputGroup}><label>City</label><input name="city" value={formData.city} onChange={handleInputChange} required /></div>
+                                        <div className={styles.inputGroup}><label>Pincode</label><input name="pincode" value={formData.pincode} onChange={handleInputChange} required maxLength="6" /></div>
+                                        <div className={styles.inputGroup}><label>State</label><input name="state" value={formData.state} onChange={handleInputChange} required /></div>
+                                        <div className={styles.inputGroup}>
+                                            <label>Type</label>
+                                            <select name="type" value={formData.type} onChange={handleInputChange}><option value="Home">Home</option><option value="Work">Work</option><option value="Other">Other</option></select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className={styles.checkboxRow}>
+                                        <input type="checkbox" id="def" name="isDefault" checked={formData.isDefault} onChange={handleInputChange} />
+                                        <label htmlFor="def">Set as default address</label>
+                                    </div>
+
+                                    <div className={styles.formActions}>
+                                        <button type="button" className={styles.cancelBtn} onClick={handleCancelEdit}>Cancel</button>
+                                        <button type="submit" className={styles.saveBtn} disabled={isLoading}>
+                                            {editingAddressId ? 'Update Address' : 'Save Address'}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         )}
                     </div>
                 </div>
