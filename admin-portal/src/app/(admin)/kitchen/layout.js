@@ -1,3 +1,4 @@
+// admin-portal/src/app/(admin)/kitchen/layout.js
 'use client';
 
 import Link from 'next/link';
@@ -14,18 +15,22 @@ export default function KitchenLayout({ children }) {
              {/* Sub Navigation Tabs */}
             <Tabs value={activeTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-2 md:w-[300px]">
-                    {/* --- FIX: Removed legacyBehavior --- */}
+                    
+                    {/* Tab 1: Prep Sheet (This was already mostly correct) */}
                     <TabsTrigger value="prep" asChild>
                         <Link href="/kitchen">
                             Prep Sheet
                         </Link>
                     </TabsTrigger>
-                     <Link href="/kitchen/dispatch" passHref>
-                        <TabsTrigger value="dispatch" asChild>
-                           <a>Dispatch Sheet</a>
-                        </TabsTrigger>
-                    </Link>
-                    {/* --- END FIX --- */}
+
+                    {/* Tab 2: Dispatch Sheet (FIXED) */}
+                    {/* We put Link INSIDE the Trigger, just like the first one */}
+                    <TabsTrigger value="dispatch" asChild>
+                        <Link href="/kitchen/dispatch">
+                           Dispatch Sheet
+                        </Link>
+                    </TabsTrigger>
+
                 </TabsList>
             </Tabs>
 

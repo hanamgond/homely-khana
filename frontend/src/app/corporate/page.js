@@ -1,13 +1,26 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { 
   Award, Users, UtensilsCrossed, ShieldCheck, Check, PhoneCall,
-  ClipboardList, Utensils, Rocket 
+  ClipboardList, Utensils, Rocket, Loader2, CheckCircle2 
 } from 'lucide-react';
 import styles from './page.module.css';
 
 export default function CorporatePage() {
+  const [formData, setFormData] = useState({
+    organizationName: '',
+    contactPerson: '',
+    directPhone: '',
+    serviceType: 'Daily Lunch',
+    totalHeadcount: '',
+    specificRequirements: ''
+  });
+
+  const [status, setStatus] = useState('idle'); // idle, loading, success, error
+  const [responseMsg, setResponseMsg] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false); // <--- NEW STATE for View Switching
+
   const brands = [
     { name: 'Infosys', color: '#007CC3' },
     { name: 'TATA MOTORS', color: '#2774AE' },
@@ -17,10 +30,60 @@ export default function CorporatePage() {
     { name: 'Wipro', color: '#563592' },
   ];
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('loading');
+    setResponseMsg('');
+
+    try {
+      // Ensure this URL matches your backend environment
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/corporate/leads`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setStatus('success');
+        setIsSubmitted(true); // <--- Switch to Success View
+        // We keep the form data briefly so we can personalize the thank you message
+      } else {
+        setStatus('error');
+        setResponseMsg(data.message || 'Something went wrong.');
+      }
+    } catch (error) {
+      console.error(error);
+      setStatus('error');
+      setResponseMsg('Failed to connect to server. Please try again.');
+    }
+  };
+
+  const handleReset = () => {
+    setIsSubmitted(false);
+    setStatus('idle');
+    setFormData({
+      organizationName: '',
+      contactPerson: '',
+      directPhone: '',
+      serviceType: 'Daily Lunch',
+      totalHeadcount: '',
+      specificRequirements: ''
+    });
+  };
+
   return (
     <div className={styles.pageContainer}>
       
-      {/* 1. HERO SECTION (Restored Background) */}
+      {/* 1. HERO SECTION */}
       <div className={styles.heroSection}>
         <div className={styles.heroOverlay} />
         <div className={styles.heroContent}>
@@ -32,7 +95,6 @@ export default function CorporatePage() {
             </p>
         </div>
         <div className={styles.heroImageWrapper}>
-            {/* Restored the previous image code */}
             <Image 
                 src="/why-us-1.jpg" 
                 alt="Feast" 
@@ -78,70 +140,192 @@ export default function CorporatePage() {
                 </div>
             </div>
 
-            {/* RIGHT: FORM */}
+            {/* RIGHT: FORM or SUCCESS MESSAGE */}
             <div className={styles.stickyFormContainer}>
                 <div className={styles.formCard}>
-                    <div className={styles.formHeader}>
-                        <h3 className={styles.formTitle}>Request a Quote</h3>
-                        <p className={styles.formSubtitle}>Receive a custom proposal within 2 hours.</p>
-                    </div>
                     
-                    <form className={styles.formBody}>
-                        <div className={styles.inputGroup}>
-                            <label className={styles.label}>Organization Name</label>
-                            <input type="text" className={styles.input} placeholder="Ex: Google India" />
-                        </div>
-
-                        <div className={styles.row50}>
-                            <div className={styles.inputGroup}>
-                                <label className={styles.label}>Contact Person</label>
-                                <input type="text" className={styles.input} placeholder="Your Name" />
+                    {isSubmitted ? (
+                        // --- SUCCESS VIEW (NEW) ---
+                        <div style={{ 
+                            display: 'flex', 
+                            flexDirection: 'column', 
+                            alignItems: 'center', 
+                            justifyContent: 'center', 
+                            padding: '3rem 1rem', 
+                            textAlign: 'center',
+                            minHeight: '500px' // Keeps height consistent with form
+                        }}>
+                            <div style={{ 
+                                background: '#dcfce7', 
+                                padding: '1.5rem', 
+                                borderRadius: '50%', 
+                                marginBottom: '1.5rem',
+                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' 
+                            }}>
+                                <CheckCircle2 size={48} color="#15803d" strokeWidth={2.5} />
                             </div>
-                            <div className={styles.inputGroup}>
-                                <label className={styles.label}>Direct Phone</label>
-                                <input type="tel" className={styles.input} placeholder="+91 999..." />
-                            </div>
-                        </div>
+                            
+                            <h3 className={styles.formTitle} style={{ fontSize: '1.75rem', marginBottom: '0.5rem' }}>
+                                Request Received!
+                            </h3>
+                            
+                            <p className={styles.bodyText} style={{ marginBottom: '2rem', color: '#4b5563' }}>
+                                Thank you, <strong>{formData.contactPerson}</strong>.<br/>
+                                We have received your inquiry for <strong>{formData.organizationName}</strong>.
+                            </p>
 
-                        <div className={styles.row50}>
-                            <div className={styles.inputGroup}>
-                                <label className={styles.label}>Service Type</label>
-                                <div className={styles.selectWrapper}>
-                                    <select className={styles.select}>
-                                        <option>Daily Lunch</option>
-                                        <option>Event Catering</option>
-                                        <option>Snack Boxes</option>
-                                    </select>
+                            <div style={{ 
+                                background: '#f3f4f6', 
+                                padding: '1rem', 
+                                borderRadius: '8px', 
+                                fontSize: '0.9rem', 
+                                color: '#1f2937',
+                                marginBottom: '2rem',
+                                width: '100%'
+                            }}>
+                                <p style={{ margin: 0 }}>
+                                    Our concierge will contact you at <strong>{formData.directPhone}</strong> within 2 hours.
+                                </p>
+                            </div>
+
+                            <button 
+                                onClick={handleReset} 
+                                className={styles.submitBtn}
+                                style={{ 
+                                    backgroundColor: 'transparent', 
+                                    border: '1px solid #3e2723', 
+                                    color: '#3e2723',
+                                    fontWeight: '600'
+                                }}
+                            >
+                                Send Another Request
+                            </button>
+                        </div>
+                    ) : (
+                        // --- FORM VIEW (EXISTING) ---
+                        <>
+                            <div className={styles.formHeader}>
+                                <h3 className={styles.formTitle}>Request a Quote</h3>
+                                <p className={styles.formSubtitle}>Receive a custom proposal within 2 hours.</p>
+                            </div>
+                            
+                            <form className={styles.formBody} onSubmit={handleSubmit}>
+                                <div className={styles.inputGroup}>
+                                    <label className={styles.label}>Organization Name *</label>
+                                    <input 
+                                      type="text" 
+                                      name="organizationName"
+                                      value={formData.organizationName}
+                                      onChange={handleChange}
+                                      className={styles.input} 
+                                      placeholder="Ex: Google India" 
+                                      required 
+                                    />
                                 </div>
-                            </div>
-                            <div className={styles.inputGroup}>
-                                <label className={styles.label}>Total Headcount</label>
-                                <input type="number" className={styles.input} placeholder="Ex: 50" />
-                            </div>
-                        </div>
 
-                        <div className={styles.inputGroup}>
-                            <label className={styles.label}>Specific Requirements</label>
-                            <textarea rows="2" className={styles.textarea} placeholder="Cuisines, allergies, delivery time..."></textarea>
-                        </div>
+                                <div className={styles.row50}>
+                                    <div className={styles.inputGroup}>
+                                        <label className={styles.label}>Contact Person *</label>
+                                        <input 
+                                          type="text" 
+                                          name="contactPerson"
+                                          value={formData.contactPerson}
+                                          onChange={handleChange}
+                                          className={styles.input} 
+                                          placeholder="Your Name" 
+                                          required 
+                                        />
+                                    </div>
+                                    <div className={styles.inputGroup}>
+                                        <label className={styles.label}>Direct Phone *</label>
+                                        <input 
+                                          type="tel" 
+                                          name="directPhone"
+                                          value={formData.directPhone}
+                                          onChange={handleChange}
+                                          className={styles.input} 
+                                          placeholder="+91 999..." 
+                                          required 
+                                        />
+                                    </div>
+                                </div>
 
-                        <button type="button" className={styles.submitBtn}>
-                            Submit Request
-                        </button>
+                                <div className={styles.row50}>
+                                    <div className={styles.inputGroup}>
+                                        <label className={styles.label}>Service Type</label>
+                                        <div className={styles.selectWrapper}>
+                                            <select 
+                                              name="serviceType"
+                                              value={formData.serviceType}
+                                              onChange={handleChange}
+                                              className={styles.select}
+                                            >
+                                                <option value="Daily Lunch">Daily Lunch</option>
+                                                <option value="Event Catering">Event Catering</option>
+                                                <option value="Snack Boxes">Snack Boxes</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className={styles.inputGroup}>
+                                        <label className={styles.label}>Total Headcount</label>
+                                        <input 
+                                          type="number" 
+                                          name="totalHeadcount"
+                                          value={formData.totalHeadcount}
+                                          onChange={handleChange}
+                                          className={styles.input} 
+                                          placeholder="Ex: 50" 
+                                        />
+                                    </div>
+                                </div>
 
-                        <div className={styles.tastingNote}>
-                            <Check size={14} color="#166534" /> Complimentary tasting session included.
-                        </div>
+                                <div className={styles.inputGroup}>
+                                    <label className={styles.label}>Specific Requirements</label>
+                                    <textarea 
+                                      rows="2" 
+                                      name="specificRequirements"
+                                      value={formData.specificRequirements}
+                                      onChange={handleChange}
+                                      className={styles.textarea} 
+                                      placeholder="Cuisines, allergies, delivery time..."
+                                    ></textarea>
+                                </div>
 
-                        <div className={styles.directContactSection}>
-                            <div className={styles.dividerOr}><span>OR</span></div>
-                            <p className={styles.contactLabel}>Prefer to speak to a human?</p>
-                            <a href="tel:+919876543210" className={styles.phoneLink}>
-                                <PhoneCall size={18} />
-                                <span>+91 98765 43210</span>
-                            </a>
-                        </div>
-                    </form>
+                                {status === 'error' && (
+                                    <div style={{ color: 'red', marginBottom: '1rem', fontSize: '0.9rem', textAlign: 'center' }}>
+                                        {responseMsg}
+                                    </div>
+                                )}
+
+                                <button 
+                                    type="submit" 
+                                    className={styles.submitBtn}
+                                    disabled={status === 'loading'}
+                                    style={{ opacity: status === 'loading' ? 0.7 : 1 }}
+                                >
+                                    {status === 'loading' ? (
+                                        <><Loader2 className="animate-spin" size={18} /> Sending...</>
+                                    ) : (
+                                        'Submit Request'
+                                    )}
+                                </button>
+
+                                <div className={styles.tastingNote}>
+                                    <Check size={14} color="#166534" /> Complimentary tasting session included.
+                                </div>
+
+                                <div className={styles.directContactSection}>
+                                    <div className={styles.dividerOr}><span>OR</span></div>
+                                    <p className={styles.contactLabel}>Prefer to speak to a human?</p>
+                                    <a href="tel:+919876543210" className={styles.phoneLink}>
+                                        <PhoneCall size={18} />
+                                        <span>+91 98765 43210</span>
+                                    </a>
+                                </div>
+                            </form>
+                        </>
+                    )}
+
                 </div>
             </div>
 

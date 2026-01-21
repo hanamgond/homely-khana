@@ -5,6 +5,10 @@ if (process.env.NODE_ENV !== "production") {
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const corporateRoutes = require('./routes/corporate');
+const teamRoutes = require('./routes/team');
+const menuRoutes = require('./routes/menu');
+
 
 // --- Define allowed origins ---
 const allowedOrigins = [
@@ -41,6 +45,7 @@ const adminRoutes = require("./routes/admin");
 const userDashboardRoutes = require("./routes/user-dashboard");// --- ADD THIS ---
 
 // --- REGISTER ALL THE ROUTES ---
+app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api/addresses", addressRoutes); 
@@ -48,7 +53,10 @@ app.use("/api/bookings", bookingsRoutes);
 app.use("/api/payment", paymentsRoutes);
 app.use("/api/reviews", reviewsRoutes);
 app.use("/api/admin", adminRoutes); 
-app.use('/api/user-dashboard', userDashboardRoutes);// --- ADD THIS ---
+app.use('/api/user-dashboard', userDashboardRoutes);
+app.use('/api/corporate', corporateRoutes);
+app.use('/api/team', teamRoutes);
+app.use('/api/menu', menuRoutes);// --- ADD THIS ---
 
 // --- Start server ---
 const port = process.env.PORT || 5000; 

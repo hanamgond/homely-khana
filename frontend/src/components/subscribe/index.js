@@ -1,3 +1,4 @@
+//frontend/sc/components/subscribe/index.js
 'use client';
 
 import { useState, useEffect, useContext } from 'react';
@@ -199,21 +200,14 @@ export default function SubscribeClient() {
       
       {/* --- HERO SECTION --- */}
       <div className={styles.heroSection}>
-        <div className={styles.heroBg}>
-            {/* FORCE FIX: Using standard HTML img tag to bypass Next.js blocking */}
-            <img 
-                src="https://images.unsplash.com/photo-1505253758473-96b701d2cd03?q=80&w=3200&auto=format&fit=crop"
-                alt="Organic Ingredients"
-                className={styles.heroImgHTML} 
-            />
-            <div className={styles.heroOverlay}></div>
-        </div>
+        {/* Note: Image is now handled via CSS background for better overlay control */}
         
         <div className={styles.heroContent}>
-            <span className={styles.heroBadge}>Pure & Home Cooked</span>
-            <h1 className={styles.heroTitle}>Your Daily Dose of Homely Love</h1>
+            <span className={styles.heroBadge}>Meal Plans</span>
+            <h1 className={styles.heroTitle}>Your Daily Dose of Home</h1>
             <p className={styles.heroSubtitle}>
-                Customized meal plans made from fresh, organic ingredients.
+                Forget grocery shopping and cooking. Subscribe to healthy, <br className="hidden md:block"/>
+                homely meals delivered right to your doorstep.
             </p>
         </div>
       </div>

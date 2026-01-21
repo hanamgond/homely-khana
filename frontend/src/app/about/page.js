@@ -1,78 +1,141 @@
 'use client';
-import React from 'react';
-import Image from 'next/image';
-import { ShieldCheck, Heart, Users, CheckCircle } from 'lucide-react';
+
+import Link from 'next/link';
+import styles from './page.module.css';
 
 export default function AboutPage() {
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
-      
-      {/* 1. Hero Section */}
-      <section style={{ textAlign: 'center', marginBottom: '60px' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: '800', color: '#1f2937', marginBottom: '1rem' }}>
-          More Than Just a <span style={{ color: '#FF9801' }}>Tiffin Service</span>
-        </h1>
-        <p style={{ maxWidth: '700px', margin: '0 auto', fontSize: '1.1rem', color: '#4b5563', lineHeight: '1.6' }}>
-          HomelyKhana was started with a simple mission: To deliver food that tastes exactly like it was made in your mother’s kitchen—fresh, safe, and full of love.
-        </p>
+    <div className={styles.pageContainer}>
+
+      {/* HERO */}
+      <section className={styles.hero}>
+        <div className={styles.container}>
+          <div className={styles.heroInner}>
+            <div className={styles.heroEyebrow}>
+              Tradition • Care • Responsibility
+            </div>
+            <h1 className={styles.heroTitle}>
+              Food prepared with<br />
+              the dignity of home.
+            </h1>
+            <p className={styles.heroSubtitle}>
+              HomelyKhana exists for those who believe that what we eat
+              should be prepared with patience, familiarity,
+              and respect for tradition.
+            </p>
+          </div>
+        </div>
       </section>
 
-      {/* 2. Our Story / Mission */}
-      <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', alignItems: 'center', marginBottom: '80px' }}>
-        <div style={{ position: 'relative', height: '400px', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
-          {/* Replace with actual image of kitchen/founder */}
-          <Image src="/why-us-1.jpg" alt="Our Kitchen" fill style={{ objectFit: 'cover' }} />
-        </div>
-        <div>
-          <h2 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '1.5rem', color: '#111827' }}>The Homely Promise</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div style={featureStyle}>
-              <div style={iconBox('#fee2e2')}><Heart size={24} color="#dc2626" /></div>
-              <div>
-                <h3 style={featureTitle}>Zero Preservatives</h3>
-                <p style={featureText}>We never use artificial colors, tasting salts (MSG), or frozen bases. Freshly chopped vegetables, every single morning.</p>
-              </div>
-            </div>
-            <div style={featureStyle}>
-              <div style={iconBox('#ecfccb')}><ShieldCheck size={24} color="#65a30d" /></div>
-              <div>
-                <h3 style={featureTitle}>FSSAI Certified Kitchen</h3>
-                <p style={featureText}>Our kitchen follows strict hygiene protocols. Hairnets, gloves, and daily deep cleaning are mandatory.</p>
-              </div>
-            </div>
-            <div style={featureStyle}>
-              <div style={iconBox('#e0f2fe')}><Users size={24} color="#0284c7" /></div>
-              <div>
-                <h3 style={featureTitle}>Community First</h3>
-                <p style={featureText}>We source ingredients from local farmers and employ home-chefs who understand the nuance of Indian cooking.</p>
+      {/* PHILOSOPHY */}
+      <section className={styles.philosophy}>
+        <div className={styles.container}>
+          <div className={styles.philosophyGrid}>
+            <div>
+              <h2 className={styles.philosophyTitle}>
+                A Different Way of Thinking About Food
+              </h2>
+              <p className={styles.philosophyText}>
+                We do not view meals as products or orders.
+                In our kitchens, food is treated as a responsibility —
+                one that affects health, mood, and everyday life.
+              </p>
+              <p className={styles.philosophyText}>
+                Ingredients are chosen deliberately.
+                Cooking follows familiar rhythms.
+                Excess is avoided.
+              </p>
+
+              <div className={styles.philosophyCallout}>
+                If it does not belong on our own table,
+                it does not leave our kitchen.
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3. Stats Section */}
-      <section style={{ background: '#fff7ed', padding: '40px', borderRadius: '20px', display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '20px', textAlign: 'center' }}>
-        <div>
-          <h3 style={{ fontSize: '2.5rem', fontWeight: '800', color: '#FF9801' }}>10k+</h3>
-          <p style={{ color: '#666', fontWeight: '600' }}>Happy Meals Delivered</p>
+      {/* UTTAM */}
+      <section className={styles.uttam}>
+        <div className={styles.container}>
+          <div className={styles.uttamCard}>
+            <div className={styles.uttamEyebrow}>
+              The Heart of HomelyKhana
+            </div>
+            <h2 className={styles.uttamTitle}>
+              Uttam
+            </h2>
+
+            <p className={styles.uttamText}>
+              Uttam begins her day before sunrise,
+              cooking the way she learned at home —
+              by observing, tasting, and adjusting with care.
+            </p>
+
+            <p className={styles.uttamText}>
+              Spices are ground by hand.
+              Oil is measured with restraint.
+              Each dish is prepared to be eaten daily,
+              not occasionally.
+            </p>
+
+            <div className={styles.uttamQuote}>
+              “Would I serve this to my family?”
+            </div>
+
+            <p className={styles.uttamText}>
+              This question guides every meal.
+              It always has.
+            </p>
+          </div>
         </div>
-        <div>
-          <h3 style={{ fontSize: '2.5rem', fontWeight: '800', color: '#FF9801' }}>500+</h3>
-          <p style={{ color: '#666', fontWeight: '600' }}>Active Subscribers</p>
+      </section>
+
+      {/* AUDIENCE */}
+      <section className={styles.audience}>
+        <div className={styles.container}>
+          <h2 className={styles.audienceTitle}>
+            Who This Is For
+          </h2>
+
+          <div className={styles.audienceGrid}>
+            <div className={styles.audienceItem}>
+              Those who value consistency and restraint over novelty.
+            </div>
+            <div className={styles.audienceItem}>
+              Those who grew up with home-cooked meals as a daily ritual.
+            </div>
+            <div className={styles.audienceItem}>
+              Those who care about how food is prepared,
+              not just how it tastes.
+            </div>
+            <div className={styles.audienceItem}>
+              Those who want meals that feel familiar,
+              nourishing, and dependable.
+            </div>
+          </div>
         </div>
-        <div>
-          <h3 style={{ fontSize: '2.5rem', fontWeight: '800', color: '#FF9801' }}>4.8</h3>
-          <p style={{ color: '#666', fontWeight: '600' }}>Average Rating</p>
+      </section>
+
+      {/* CTA */}
+      <section className={styles.cta}>
+        <div className={styles.container}>
+          <p className={styles.ctaText}>
+            If this philosophy resonates with you,
+            we invite you to experience our kitchen.
+          </p>
+
+          <div className={styles.ctaActions}>
+            <Link href="/menu" className={styles.ctaPrimary}>
+              View Today’s Menu
+            </Link>
+            <Link href="/subscribe" className={styles.ctaSecondary}>
+              Begin a Subscription
+            </Link>
+          </div>
         </div>
       </section>
 
     </div>
   );
 }
-
-// Inline styles for cleaner code
-const featureStyle = { display: 'flex', gap: '15px', alignItems: 'flex-start' };
-const iconBox = (bg) => ({ minWidth: '50px', height: '50px', background: bg, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' });
-const featureTitle = { fontSize: '1.1rem', fontWeight: '700', color: '#374151', margin: '0 0 5px 0' };
-const featureText = { fontSize: '0.95rem', color: '#6b7280', lineHeight: '1.5', margin: 0 };

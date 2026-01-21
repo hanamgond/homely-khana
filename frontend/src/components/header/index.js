@@ -1,3 +1,4 @@
+//frontend/src/components/header/index.js
 'use client';
 
 import React, { useState, useContext, useEffect } from 'react';
@@ -6,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { AppContext } from '@/utils/AppContext';
 import { 
     Menu, X, ShoppingCart, User, ChevronDown, MapPin, 
-    Utensils, ShoppingBag, Building, ShieldCheck, Phone 
+    Utensils, ShoppingBag, Building, ShieldCheck, Phone, BookOpen 
 } from 'lucide-react';
 import styles from './Header.module.css';
 
@@ -18,7 +19,7 @@ export default function Header() {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isMealDropdownOpen, setIsMealDropdownOpen] = useState(false);
     
-    // --- NEW: Location State ---
+    // Location State
     const [isLocationOpen, setIsLocationOpen] = useState(false);
     const [selectedCity, setSelectedCity] = useState("Navi Mumbai");
     const cities = ["Navi Mumbai", "Mumbai", "Pune", "Bangalore", "Hyderabad"];
@@ -39,13 +40,11 @@ export default function Header() {
     const handleCitySelect = (city) => {
         setSelectedCity(city);
         setIsLocationOpen(false);
-        // Optional: Save to localStorage or Context here
     };
 
     return (
         <>
             <header className={styles.header}>
-                {/* FIX: Container is now full width to push items to edges */}
                 <div className={styles.container}>
                     
                     {/* LEFT: Burger & Logo */}
@@ -65,8 +64,9 @@ export default function Header() {
                             onMouseEnter={() => setIsMealDropdownOpen(true)}
                             onMouseLeave={() => setIsMealDropdownOpen(false)}
                         >
+                            {/* CHANGE 1: Renamed 'Meal Plans' to 'Subscriptions' */}
                             <Link href="/subscribe" className={styles.navLink}>
-                                Meal Plans <ChevronDown size={14} />
+                                Subscriptions <ChevronDown size={14} />
                             </Link>
                             {isMealDropdownOpen && (
                                 <div className={styles.dropdownMenu}>
@@ -78,6 +78,9 @@ export default function Header() {
 
                         <Link href="/menu" className={styles.navLink}>Weekly Menu</Link>
                         
+                        {/* CHANGE 2: Added 'Our Story' Link */}
+                        <Link href="/about" className={styles.navLink}>Our Story</Link>
+                        
                         <Link href="/pantry" className={styles.navLink}>
                             The Pantry <span className={styles.newBadge}>NEW</span>
                         </Link>
@@ -88,11 +91,10 @@ export default function Header() {
                     {/* RIGHT: Utilities */}
                     <div className={styles.rightSection}>
                         
-                        {/* --- NEW: Location Dropdown --- */}
+                        {/* Location Dropdown */}
                         <div 
                             className={styles.locationWrapper}
                             onClick={() => setIsLocationOpen(!isLocationOpen)}
-                            // Close when mouse leaves to prevent it getting stuck open
                             onMouseLeave={() => setIsLocationOpen(false)}
                         >
                             <div className={styles.locationBadge}>
@@ -101,7 +103,6 @@ export default function Header() {
                                 <ChevronDown size={14} color="#d97706" />
                             </div>
 
-                            {/* City List Dropdown */}
                             {isLocationOpen && (
                                 <div className={styles.locationDropdown}>
                                     {cities.map((city) => (
@@ -109,7 +110,7 @@ export default function Header() {
                                             key={city} 
                                             className={`${styles.cityItem} ${selectedCity === city ? styles.activeCity : ''}`}
                                             onClick={(e) => {
-                                                e.stopPropagation(); // Prevent closing immediately
+                                                e.stopPropagation(); 
                                                 handleCitySelect(city);
                                             }}
                                         >
@@ -138,7 +139,7 @@ export default function Header() {
                 </div>
             </header>
 
-            {/* --- MOBILE DRAWER (Kept same as before) --- */}
+            {/* --- MOBILE DRAWER --- */}
             <div className={`${styles.overlay} ${isDrawerOpen ? styles.showOverlay : ''}`} onClick={() => setIsDrawerOpen(false)} />
 
             <div className={`${styles.drawer} ${isDrawerOpen ? styles.openDrawer : ''}`}>
@@ -165,13 +166,19 @@ export default function Header() {
                 <div className={styles.drawerScrollable}>
                     <div className={styles.drawerSection}>
                         <h4 className={styles.sectionTitle}>Eat Daily</h4>
+                        {/* Updated Mobile Label as well */}
                         <Link href="/subscribe" className={styles.drawerItem}>
                             <Utensils size={18} className={styles.itemIcon} />
-                            Subscribe to Meals
+                            Subscriptions
                         </Link>
                         <Link href="/menu" className={styles.drawerItem}>
                             <span style={{fontSize:'1.1rem'}}>📅</span>
                             Weekly Menu
+                        </Link>
+                         {/* Added Mobile Link for Our Story */}
+                         <Link href="/about" className={styles.drawerItem}>
+                            <BookOpen size={18} className={styles.itemIcon} />
+                            Our Story
                         </Link>
                     </div>
 
@@ -180,11 +187,6 @@ export default function Header() {
                         <Link href="/pantry" className={styles.drawerItem}>
                             <ShoppingBag size={18} className={styles.itemIcon} />
                             Pickles & Podis
-                            <span className={styles.comingSoon}>Coming Soon</span>
-                        </Link>
-                        <Link href="/pantry" className={styles.drawerItem}>
-                            <span style={{fontSize:'1.1rem'}}>🥨</span>
-                            Healthy Snacks
                             <span className={styles.comingSoon}>Coming Soon</span>
                         </Link>
                     </div>
@@ -199,10 +201,6 @@ export default function Header() {
 
                     <div className={styles.drawerSection}>
                         <h4 className={styles.sectionTitle}>Support</h4>
-                        <Link href="/about" className={styles.drawerItem}>
-                            <ShieldCheck size={18} className={styles.itemIcon} />
-                            Our Kitchen & Hygiene
-                        </Link>
                         <Link href="/contact" className={styles.drawerItem}>
                             <Phone size={18} className={styles.itemIcon} />
                             Contact Support

@@ -1,118 +1,142 @@
 'use client';
-import React, { useState } from 'react';
-import Image from 'next/image';
+
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { 
-  Sun, Moon, Leaf, Flame, Info, CalendarDays, 
-  ChevronRight, Star, Filter 
+  Sun, Moon, ChevronRight, Filter 
 } from 'lucide-react';
 import styles from './page.module.css';
 
+// --- HELPER: Get date for a specific day of the current (or next) week ---
+const getDateForDay = (dayName, isNextWeek) => {
+  const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  const now = new Date();
+  const currentDayIndex = now.getDay(); // 0 = Sunday, 1 = Monday...
+  
+  // 1. Find the "Monday" of the current week
+  // (We subtract the current day index to go back to Sunday, then add 1 for Monday)
+  // Note: This logic assumes week starts on Sunday. Adjusting for Monday start:
+  const distToMonday = (currentDayIndex + 6) % 7; 
+  const currentMonday = new Date(now);
+  currentMonday.setDate(now.getDate() - distToMonday);
+
+  // 2. Find the index of the target day (e.g., "Friday" = 5)
+  // We treat Monday as index 0 for calculation purposes to add days easily
+  const targetDayIndex = days.indexOf(dayName.toLowerCase());
+  // Adjust so Monday is 0, Sunday is 6
+  const adjustedTargetIndex = targetDayIndex === 0 ? 6 : targetDayIndex - 1;
+
+  // 3. Calculate the date
+  const targetDate = new Date(currentMonday);
+  targetDate.setDate(currentMonday.getDate() + adjustedTargetIndex);
+
+  // 4. If "Next Week" is selected, add 7 days
+  if (isNextWeek) {
+    targetDate.setDate(targetDate.getDate() + 7);
+  }
+
+  // Format: "Oct 23"
+  return targetDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+};
+
 export default function MenuPage() {
   const [activeTab, setActiveTab] = useState('this-week');
-  const [dietFilter, setDietFilter] = useState('all'); // all, veg, non-veg
+  const [dietFilter, setDietFilter] = useState('all'); 
+  
+  const [rawData, setRawData] = useState([]); // Store original DB data
+  const [displayData, setDisplayData] = useState([]); // Store data transformed with dates
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sample Data based on the "Koramangala Optimized" Menu
-  const menuData = [
-    {
-      day: 'Monday',
-      date: 'Oct 12',
-      lunch: {
-        title: 'Paneer & Peas Matar',
-        desc: 'Homely style Matar Paneer, Yellow Dal Tadka, Phulkas, Steamed Rice, Green Salad.',
-        tags: ['High Protein', 'Bestseller'],
-        calories: '450 kcal'
-      },
-      dinner: {
-        title: 'Light Aloo Methi',
-        desc: 'Fenugreek potatoes (Aloo Methi), Arhar Dal Fry, Phulkas, Cucumber Raita.',
-        tags: ['Light Digest', 'Detox'],
-        calories: '380 kcal'
+  // --- 1. FETCH DATA (Run once) ---
+  useEffect(() => {
+    async function fetchMenu() {
+      try {
+        const res = await fetch('http://localhost:5000/api/menu'); 
+        if (!res.ok) throw new Error('Failed to fetch menu');
+        
+        const data = await res.json();
+        setRawData(data); // Save raw data
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setError('Could not load the menu. Please try again later.');
+        setLoading(false);
       }
-    },
-    {
-      day: 'Tuesday',
-      date: 'Oct 13',
-      lunch: {
-        title: 'Rajma Masala Feast',
-        desc: 'The Classic Rajma, Jeera Rice, Carrot-Cucumber Salad, Phulkas.',
-        tags: ['Comfort Food'],
-        calories: '500 kcal'
-      },
-      dinner: {
-        title: 'Bhindi Do Pyaza',
-        desc: 'Okra with onions, Light Moong Dal, Phulkas, Steamed Rice.',
-        tags: ['Low Carb Option'],
-        calories: '350 kcal'
+    }
+    fetchMenu();
+  }, []);
+
+  // --- 2. TRANSFORM DATA (Run when rawData OR activeTab changes) ---
+  useEffect(() => {
+    if (rawData.length === 0) return;
+
+    const isNextWeek = activeTab === 'next-week';
+    
+    // Define day order
+    const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const grouped = {};
+
+    rawData.forEach(item => {
+      // Create day entry if missing
+      if (!grouped[item.day_of_week]) {
+        grouped[item.day_of_week] = {
+          day: item.day_of_week,
+          // RE-CALCULATE DATE HERE based on the tab
+          date: getDateForDay(item.day_of_week, isNextWeek), 
+          lunch: null,
+          dinner: null
+        };
       }
-    },
-    {
-      day: 'Wednesday',
-      date: 'Oct 14',
-      lunch: {
-        title: 'Veg Jalfrezi Superbowl',
-        desc: 'Mix veg with bell peppers, Dal Palak (Spinach), Rice, Phulkas.',
-        tags: ['Fiber Rich'],
-        calories: '420 kcal'
-      },
-      dinner: {
-        title: 'Egg Curry / Paneer Lababdar',
-        desc: 'Choice of protein in rich gravy, Steamed Rice, Phulkas, Roasted Papad.',
-        tags: ['Protein Kick'],
-        calories: '480 kcal'
+
+      // Parse tags
+      const tagsArray = typeof item.tags === 'string' ? JSON.parse(item.tags) : (item.tags || []);
+      const mealData = {
+        title: item.title,
+        desc: item.description,
+        tags: tagsArray,
+        calories: item.calories ? `${item.calories} kcal` : ''
+      };
+
+      if (item.meal_type === 'Lunch') {
+        grouped[item.day_of_week].lunch = mealData;
+      } else if (item.meal_type === 'Dinner') {
+        grouped[item.day_of_week].dinner = mealData;
       }
-    },
-    {
-      day: 'Thursday',
-      date: 'Oct 15',
-      lunch: {
-        title: 'Kadhi Pakora & Rice',
-        desc: 'Yogurt based curry, Steamed Rice, Dry Aloo Jeera, Fried Chilly.',
-        tags: ['Fan Favorite'],
-        calories: '460 kcal'
-      },
-      dinner: {
-        title: 'Lauki Chana Dal',
-        desc: 'Bottle Gourd with lentils (very light), Baingan Bharta, Phulkas.',
-        tags: ['Gut Health'],
-        calories: '320 kcal'
-      }
-    },
-    {
-      day: 'Friday',
-      date: 'Oct 16',
-      lunch: {
-        title: 'Chole Masala Treat',
-        desc: 'Rich Chickpea curry, Veg Pulao, Onion Salad, Phulkas.',
-        tags: ['Indulgent'],
-        calories: '550 kcal'
-      },
-      dinner: {
-        title: 'Dal Makhani Special',
-        desc: 'Creamy black lentils, Laccha Paratha, Jeera Rice, Small Sweet.',
-        tags: ['Weekend Vibes'],
-        calories: '600 kcal'
-      }
-    },
-  ];
+    });
+
+    // Sort and Filter
+    const sortedData = dayOrder
+      .map(day => grouped[day])
+      .filter(item => item !== undefined);
+
+    setDisplayData(sortedData);
+
+  }, [rawData, activeTab]); // <--- Re-run when Tab changes
+
+  if (loading) return <div className="p-10 text-center">Loading fresh menu...</div>;
+  if (error) return <div className="p-10 text-center text-red-500">{error}</div>;
 
   return (
     <div className={styles.pageContainer}>
       
-      {/* 1. HERO HEADER */}
+      {/* HERO HEADER */}
       <div className={styles.heroSection}>
         <div className={styles.heroContent}>
             <span className={styles.heroBadge}>Weekly Selection</span>
-            <h1 className={styles.heroTitle}>This Week&apos;s Menu</h1>
+            <h1 className={styles.heroTitle}>
+               {activeTab === 'this-week' ? "This Week's Menu" : "Next Week's Menu"}
+            </h1>
             <p className={styles.heroSubtitle}>
-                Fresh, diverse, and nutritionist-approved meals. 
-                <br />Designed for the busy professional.
+                Experience the warmth of home-cooked meals. 
+                <br />Fresh ingredients, traditional recipes, zero preservatives.
             </p>
         </div>
       </div>
 
       <div className={styles.maxWidthWrapper}>
         
-        {/* 2. STICKY FILTER BAR */}
+        {/* STICKY FILTER BAR */}
         <div className={styles.stickyBar}>
             <div className={styles.weekToggle}>
                 <button 
@@ -143,9 +167,11 @@ export default function MenuPage() {
             </div>
         </div>
 
-        {/* 3. MENU GRID */}
+        {/* MENU GRID */}
         <div className={styles.menuGrid}>
-            {menuData.map((item, index) => (
+            {displayData.length === 0 && <p className="text-center text-gray-500">No menu items found.</p>}
+            
+            {displayData.map((item, index) => (
                 <div key={index} className={styles.dayCard}>
                     
                     {/* DATE COLUMN */}
@@ -154,59 +180,74 @@ export default function MenuPage() {
                         <span className={styles.dayDate}>{item.date.split(' ')[1]}</span>
                     </div>
 
-                    {/* LUNCH SECTION */}
-                    <div className={styles.mealSection}>
-                        <div className={styles.mealHeader}>
-                            <div className={styles.iconWrapper} style={{background:'#FFF7ED'}}>
-                                <Sun size={20} color="#F59E0B" />
-                            </div>
-                            <span className={styles.mealType}>LUNCH</span>
-                        </div>
-                        <h3 className={styles.dishTitle}>{item.lunch.title}</h3>
-                        <p className={styles.dishDesc}>{item.lunch.desc}</p>
-                        <div className={styles.tagRow}>
-                            {item.lunch.tags.map((tag, i) => (
-                                <span key={i} className={styles.tag}>{tag}</span>
-                            ))}
-                            <span className={styles.calTag}>{item.lunch.calories}</span>
-                        </div>
-                    </div>
+                    {/* LUNCH */}
+                    {item.lunch ? (
+                      <div className={styles.mealSection}>
+                          <div className={styles.mealHeader}>
+                              <div className={styles.iconWrapper} style={{background:'#FFF7ED'}}>
+                                  <Sun size={20} color="#F59E0B" />
+                              </div>
+                              <span className={styles.mealType}>LUNCH</span>
+                          </div>
+                          <h3 className={styles.dishTitle}>{item.lunch.title}</h3>
+                          <p className={styles.dishDesc}>{item.lunch.desc}</p>
+                          <div className={styles.tagRow}>
+                              {item.lunch.tags.map((tag, i) => (
+                                  <span key={i} className={styles.tag}>{tag}</span>
+                              ))}
+                              {item.lunch.calories && <span className={styles.calTag}>{item.lunch.calories}</span>}
+                          </div>
+                      </div>
+                    ) : (
+                      <div className={styles.mealSection}>
+                         <div className="h-full flex items-center justify-center text-gray-300 italic text-sm">
+                            No Lunch
+                         </div>
+                      </div>
+                    )}
 
-                    {/* DIVIDER (Visible on Desktop) */}
                     <div className={styles.verticalDivider}></div>
 
-                    {/* DINNER SECTION */}
-                    <div className={styles.mealSection}>
-                        <div className={styles.mealHeader}>
-                            <div className={styles.iconWrapper} style={{background:'#F1F5F9'}}>
-                                <Moon size={20} color="#475569" />
-                            </div>
-                            <span className={styles.mealType}>DINNER</span>
-                        </div>
-                        <h3 className={styles.dishTitle}>{item.dinner.title}</h3>
-                        <p className={styles.dishDesc}>{item.dinner.desc}</p>
-                        <div className={styles.tagRow}>
-                            {item.dinner.tags.map((tag, i) => (
-                                <span key={i} className={styles.tag}>{tag}</span>
-                            ))}
-                            <span className={styles.calTag}>{item.dinner.calories}</span>
-                        </div>
-                    </div>
+                    {/* DINNER */}
+                    {item.dinner ? (
+                      <div className={styles.mealSection}>
+                          <div className={styles.mealHeader}>
+                              <div className={styles.iconWrapper} style={{background:'#F1F5F9'}}>
+                                  <Moon size={20} color="#475569" />
+                              </div>
+                              <span className={styles.mealType}>DINNER</span>
+                          </div>
+                          <h3 className={styles.dishTitle}>{item.dinner.title}</h3>
+                          <p className={styles.dishDesc}>{item.dinner.desc}</p>
+                          <div className={styles.tagRow}>
+                              {item.dinner.tags.map((tag, i) => (
+                                  <span key={i} className={styles.tag}>{tag}</span>
+                              ))}
+                              {item.dinner.calories && <span className={styles.calTag}>{item.dinner.calories}</span>}
+                          </div>
+                      </div>
+                    ) : (
+                       <div className={styles.mealSection}>
+                         <div className="h-full flex items-center justify-center text-gray-300 italic text-sm">
+                            No Dinner
+                         </div>
+                      </div>
+                    )}
 
                 </div>
             ))}
         </div>
 
-        {/* 4. BOTTOM CTA */}
+        {/* CTA BOTTOM */}
         <div className={styles.ctaSection}>
             <div className={styles.ctaCard}>
                 <div>
                     <h2 className={styles.ctaTitle}>Ready to subscribe?</h2>
                     <p className={styles.ctaText}>Get these meals delivered to your door starting at ₹120/meal.</p>
                 </div>
-                <button className={styles.ctaButton}>
+                <Link href="/subscribe" className={styles.ctaButton}>
                     View Plans <ChevronRight size={18} />
-                </button>
+                </Link>
             </div>
         </div>
 
