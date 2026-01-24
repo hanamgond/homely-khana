@@ -1,3 +1,5 @@
+//frontend/src/components/auth/SignupClient.js
+
 'use client'; // Required because this page uses state and client-side logic
 
 import { useState } from "react";

@@ -1,195 +1,220 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
-import { Quote, Star, ArrowRight, Users, Heart, ChefHat } from 'lucide-react';
-// We import styles from the module you created in the previous step
-import styles from './page.module.css';
+import { useState, useEffect } from 'react';
+import { Plus, Edit2, Trash2, Loader2, Sun, Moon } from 'lucide-react';
+import AddMenuModal from '@/components/menu/AddMenuModal';
 
-export default function AboutPage() {
+const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+export default function AdminMenuPage() {
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Date Logic State
+  const [weekOffset, setWeekOffset] = useState(0); // 0 = This Week, 1 = Next Week
+  const [weekDates, setWeekDates] = useState([]);
+
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const [selectedDay, setSelectedDay] = useState('Monday');
+  const [selectedType, setSelectedType] = useState('Lunch');
+
+  // Calculate Dates whenever weekOffset changes
+  useEffect(() => {
+    const getMonday = (d) => {
+      d = new Date(d);
+      const day = d.getDay(),
+      diff = d.getDate() - day + (day === 0 ? -6 : 1); 
+      return new Date(d.setDate(diff));
+    };
+
+    const startOfWeek = getMonday(new Date());
+    // Add offset (weeks * 7 days)
+    startOfWeek.setDate(startOfWeek.getDate() + (weekOffset * 7));
+
+    const dates = DAYS.map((_, i) => {
+        const d = new Date(startOfWeek);
+        d.setDate(startOfWeek.getDate() + i);
+        return d.getDate(); // Just the day number (e.g., 19, 20)
+    });
+
+    setWeekDates(dates);
+  }, [weekOffset]);
+
+  const fetchMenu = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/menu/weekly`);
+      const data = await res.json();
+      if (data.success) {
+        setMenuItems(Object.values(data.data).flat());
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchMenu(); }, []); // Fetch once on load
+
+  const handleAdd = (day, type) => {
+    setEditingItem(null);
+    setSelectedDay(day);
+    setSelectedType(type);
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (item) => {
+    setEditingItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (id) => {
+      if(!confirm("Delete this item?")) return;
+      await fetch(`${process.env.NEXT_PUBLIC_URL}/api/menu/delete/${id}`, { method: 'DELETE' });
+      fetchMenu();
+  };
+
+  const getSlotItem = (day, type) => {
+      // In a real app, you would filter by weekOffset too if your DB supports dates
+      return menuItems.find(item => item.day_of_week === day && item.meal_type === type);
+  };
+
   return (
-    <div className={styles.pageContainer}>
+    <div className="min-h-screen bg-gray-50/50">
       
-      {/* --- HERO: The "Stolen Tiffin" Hook --- */}
-      <div className={styles.heroSection}>
-        <div className={styles.maxWidthWrapper}>
-            <div className={styles.gridTwo}>
-                
-                {/* Text Side */}
-                <div>
-                    <div className={styles.pillBadge}>
-                        <Star size={12} fill="currentColor" /> The Origin Story
+      {/* Header */}
+      <div className="bg-white border-b sticky top-0 z-10 px-8 py-5 shadow-sm">
+        <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+          <div>
+             <h1 className="text-2xl font-bold text-gray-900">Weekly Menu Manager</h1>
+             <p className="text-sm text-gray-500">Plan and edit the schedule seen by customers</p>
+          </div>
+
+          {/* Week Toggle */}
+          <div className="bg-gray-100 p-1.5 rounded-full flex gap-1 border border-gray-200">
+             <button 
+                onClick={() => setWeekOffset(0)}
+                className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
+                   weekOffset === 0 ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-900'
+                }`}
+             >
+                This Week
+             </button>
+             <button 
+                onClick={() => setWeekOffset(1)}
+                className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
+                   weekOffset === 1 ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-900'
+                }`}
+             >
+                Next Week
+             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Grid */}
+      <div className="max-w-[1600px] mx-auto p-8">
+        {loading ? (
+            <div className="flex justify-center py-20"><Loader2 className="animate-spin text-orange-500" size={40}/></div>
+        ) : (
+            <div className="space-y-6">
+                {/* Column Headers */}
+                <div className="hidden md:grid grid-cols-12 gap-6 px-6 text-xs font-bold text-gray-400 uppercase tracking-widest">
+                    <div className="col-span-1">Day</div>
+                    <div className="col-span-11 grid grid-cols-2 gap-6">
+                        <div>Lunch Option</div>
+                        <div>Dinner Option</div>
                     </div>
-                    
-                    <h1 className={styles.heroTitle}>
-                        It started with a <br/>
-                        <span className={styles.stolenWrapper}>
-                            <span className={styles.stolenText}>stolen</span>
-                            <svg className={styles.underlineSvg} viewBox="0 0 100 10" preserveAspectRatio="none">
-                                <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
-                            </svg>
-                        </span> 
-                        tiffin box.
-                    </h1>
-                    
-                    <p className={styles.heroSubtitle}>
-                        How a sister&apos;s love and a hungry Ola office turned a simple lunch dabba into Bangalore&apos;s favorite homely meal service.
-                    </p>
                 </div>
 
-                {/* Image Side - The "Hero" Dabba */}
-                <div className={styles.heroImageWrapper}>
-                    <div className={styles.heroImageFrame}>
-                        {/* FIX: Using standard <img> to prevent 404 upstream errors */}
-                        <img 
-                            src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?q=80&w=1000&auto=format&fit=crop" 
-                            alt="Authentic Indian Tiffin" 
-                            className={styles.heroImg}
-                        />
-                        {/* Floating Badge */}
-                        <div className={styles.floatingCard}>
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">The Catalyst</p>
-                            <p className="text-sm font-semibold text-[#2c1810] leading-relaxed">
-                                &quot;My colleagues didn&apos;t just want food. They wanted <span style={{color:'#ea580c'}}>this</span> food.&quot;
-                            </p>
+                {DAYS.map((day, index) => {
+                    const lunchItem = getSlotItem(day, 'Lunch');
+                    const dinnerItem = getSlotItem(day, 'Dinner');
+                    const dateDisplay = weekDates[index]; 
+
+                    return (
+                        <div key={day} className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col md:flex-row hover:shadow-md transition-shadow">
+                            
+                            {/* Date Column */}
+                            <div className="w-full md:w-32 bg-gray-50 md:border-r border-b md:border-b-0 border-gray-100 p-6 flex flex-row md:flex-col items-center justify-between md:justify-center text-center">
+                                <div>
+                                    <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider">{day.substring(0,3)}</span>
+                                    <span className="block text-3xl font-serif font-medium text-gray-800 mt-1">{dateDisplay}</span>
+                                </div>
+                            </div>
+
+                            {/* Meal Slots */}
+                            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2">
+                                {/* Lunch */}
+                                <div className="p-6 border-b lg:border-b-0 lg:border-r border-gray-100 relative group">
+                                    <div className="mb-4 flex items-center gap-2 md:hidden">
+                                        <Sun size={18} className="text-orange-400" />
+                                        <span className="text-xs font-bold text-gray-400 tracking-widest uppercase">LUNCH</span>
+                                    </div>
+                                    <AdminMealCard item={lunchItem} type="Lunch" onAdd={() => handleAdd(day, 'Lunch')} onEdit={handleEdit} />
+                                </div>
+
+                                {/* Dinner */}
+                                <div className="p-6 relative group">
+                                    <div className="mb-4 flex items-center gap-2 md:hidden">
+                                        <Moon size={18} className="text-indigo-400" />
+                                        <span className="text-xs font-bold text-gray-400 tracking-widest uppercase">DINNER</span>
+                                    </div>
+                                    <AdminMealCard item={dinnerItem} type="Dinner" onAdd={() => handleAdd(day, 'Dinner')} onEdit={handleEdit} />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    {/* Decorative Blob */}
-                    <div className={styles.blob}></div>
-                </div>
+                    );
+                })}
             </div>
-        </div>
+        )}
       </div>
 
-      {/* --- CHAPTER 1: The Context --- */}
-      <div className={styles.chapterSection}>
-        <div className={styles.maxWidthWrapper}>
-            <div className={styles.gridTwo}>
-                
-                {/* Visual: Office */}
-                <div style={{position:'relative'}}>
-                    <div className={styles.officeImageFrame}>
-                         {/* FIX: Using standard <img> */}
-                         <img 
-                            src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1000&auto=format&fit=crop" 
-                            alt="Bangalore Office Life" 
-                            className={styles.officeImg}
-                        />
-                    </div>
-                    <div className={styles.dateTag}>
-                        <p className="font-serif text-3xl italic">2022</p>
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-orange-200 mt-1">Bangalore, Ola Office</p>
-                    </div>
-                </div>
-
-                {/* Content */}
-                <div>
-                    <h2 className={styles.sectionHeading}>The 1:00 PM Problem</h2>
-                    
-                    <div className={styles.textBlock}>
-                        <p>
-                            I was working at <strong>Ola</strong>. The work was exciting, but lunch was a struggle. It was either greasy fast food, expensive cafes, or &quot;healthy&quot; salads that tasted like cardboard.
-                        </p>
-                        <p>
-                            I was the lucky one. My sister sent me a <strong>fresh, warm dabba</strong> every day. 
-                        </p>
-                    </div>
-
-                    <div className={styles.quoteBox}>
-                        <Quote className="text-orange-300 absolute top-4 left-4 opacity-50" size={32} />
-                        <p className={styles.quoteText}>
-                            &quot;That dabba rarely stayed mine. The aroma of home-cooked dal and soft rotis would draw my colleagues in like magnets.&quot;
-                        </p>
-                    </div>
-                    
-                    <p className="text-lg text-gray-600 font-medium">
-                        It started with a &quot;tasting spoon.&quot; Soon, my lunch hour became a community gathering.
-                    </p>
-                </div>
-            </div>
-        </div>
-      </div>
-
-      {/* --- CHAPTER 2: The Timeline --- */}
-      <div className={styles.timelineSection}>
-        <div className={styles.timelineBg}></div>
-        <div className={styles.maxWidthWrapper}>
-            <div className={styles.timelineHeader}>
-                <h2 className={styles.whiteHeading}>From our Kitchen to Yours</h2>
-                <div className={styles.orangeDivider}></div>
-            </div>
-
-            <div className={styles.gridThree}>
-                {/* Step 1 */}
-                <div className={styles.glassCard}>
-                    <div className={styles.iconBox}>
-                        <Users size={24} />
-                    </div>
-                    <h3 className={styles.cardTitle}>The &quot;Secret&quot; Pilot</h3>
-                    <p className={styles.cardDesc}>
-                        We started supplying tiffins to just 10-15 colleagues. The feedback was unanimous: <em>&quot;Don&apos;t change a thing. This is exactly what we missed.&quot;</em>
-                    </p>
-                </div>
-
-                {/* Step 2 */}
-                <div className={styles.glassCard} style={{position:'relative', overflow:'hidden'}}>
-                    <div style={{position:'absolute', top:0, right:0, background:'#fbbf24', color:'black', fontSize:'10px', fontWeight:'bold', padding:'4px 10px', borderRadius:'0 0 0 10px'}}>JAN 2023</div>
-                    <div className={styles.iconBox}>
-                        <Heart size={24} />
-                    </div>
-                    <h3 className={styles.cardTitle}>Cloud Kitchen</h3>
-                    <p className={styles.cardDesc}>
-                        We launched from home on Swiggy & Zomato. No ads. Just pure taste. Within a month, we hit <strong>50+ daily orders</strong> purely on word of mouth.
-                    </p>
-                </div>
-
-                {/* Step 3 - Highlighted */}
-                <div className={styles.orangeCard}>
-                    <div className={styles.iconBox}>
-                        <ChefHat size={28} />
-                    </div>
-                    <h3 className={styles.cardTitle}>The Restaurant</h3>
-                    <p className={styles.cardDesc} style={{color:'#ffedd5'}}>
-                        In <strong>July 2023</strong>, we moved to a professional kitchen. Today, we deliver that same &quot;Sister&apos;s Tiffin&quot; love to hundreds across the city.
-                    </p>
-                </div>
-            </div>
-        </div>
-      </div>
-
-      {/* --- FOUNDER'S NOTE --- */}
-      <div className={styles.founderSection}>
-         <div className={styles.maxWidthWrapper}>
-            <div className={styles.avatarWrapper}>
-                <div className={styles.avatarBlob}></div>
-                <div className={styles.avatar}>H</div>
-            </div>
-            
-            <div style={{marginBottom: '3rem'}}>
-                <h3 className="text-xl font-bold text-[#2c1810]">Hanamgond</h3>
-                <p className="text-orange-600 text-sm font-bold uppercase tracking-widest">Founder, HomelyKhana</p>
-            </div>
-
-            <h2 className={styles.founderQuote}>
-                &quot;We don&apos;t just deliver food.<br/>We deliver your daily break.&quot;
-            </h2>
-            
-            <p className={styles.founderText}>
-                Join the community of professionals who have stopped compromising on their daily meals. Treat yourself to the warmth of home.
-            </p>
-
-            <div className={styles.btnGroup}>
-                <Link href="/subscribe" className={styles.primaryBtn}>
-                    Start Your Subscription 
-                    <ArrowRight size={20} />
-                </Link>
-                <Link href="/menu" className={styles.secondaryBtn}>
-                    See Today&apos;s Menu
-                </Link>
-            </div>
-         </div>
-      </div>
-
+      <AddMenuModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onRefresh={fetchMenu}
+        editingItem={editingItem}
+        initialDay={selectedDay}
+        initialType={selectedType}
+      />
     </div>
   );
+}
+
+// Sub-component remains same as previous step
+function AdminMealCard({ item, type, onAdd, onEdit }) {
+    if (!item) {
+        return (
+            <button onClick={onAdd} className="w-full h-40 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center text-gray-400 hover:border-orange-300 hover:text-orange-600 hover:bg-orange-50/50 transition-all group">
+                <Plus size={24} className="mb-2 opacity-50 group-hover:scale-110 transition-transform" />
+                <span className="text-sm font-medium">Add {type}</span>
+            </button>
+        );
+    }
+    return (
+        <div className="flex flex-col h-full justify-between relative">
+            <div>
+                <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-xl font-bold text-gray-900 font-serif leading-tight">{item.title}</h3>
+                    <button onClick={() => onEdit(item)} className="p-2 bg-gray-100 hover:bg-orange-100 text-gray-600 hover:text-orange-600 rounded-lg transition-colors">
+                        <Edit2 size={16} />
+                    </button>
+                </div>
+                <p className="text-sm text-gray-500 mb-4 line-clamp-2 leading-relaxed">{item.description}</p>
+            </div>
+            <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
+                <div className="flex gap-2">
+                    <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${item.is_veg ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{item.is_veg ? 'VEG' : 'NON-VEG'}</span>
+                    {item.tags && item.tags.map && item.tags.map(tag => (
+                        <span key={tag} className="px-2 py-1 rounded text-[10px] font-bold uppercase bg-orange-50 text-orange-700">{tag}</span>
+                    ))}
+                </div>
+                <span className="text-sm font-semibold text-gray-400">{item.calories} kcal</span>
+            </div>
+        </div>
+    );
 }

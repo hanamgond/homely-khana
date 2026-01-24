@@ -3,68 +3,63 @@
 import { useState, useEffect, useRef } from 'react';
 import { MapPin, Loader2, Search } from 'lucide-react';
 import { toast } from 'sonner';
+// 1. IMPORT THE SAFE LOADER
+import { useJsApiLoader } from '@react-google-maps/api';
 
-const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+// 2. DEFINE LIBRARIES OUTSIDE (Prevents unnecessary re-renders)
+const LIBRARIES = ['places'];
 
 export default function GoogleAddressInput({ onAddressSelect }) {
     const [query, setQuery] = useState('');
     const [predictions, setPredictions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [isScriptLoaded, setIsScriptLoaded] = useState(false);
     
-    // Refs for Google Services to persist across renders
+    // 3. SAFE LOADING HOOK
+    // This hook checks if "window.google" exists. If yes, it skips loading.
+    // If no, it loads it once. This fixes the crash.
+    const { isLoaded } = useJsApiLoader({
+        id: 'google-map-script',
+        googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+        libraries: LIBRARIES
+    });
+
+    // Refs for Cost Savings (Session Token)
     const autocompleteService = useRef(null);
     const placesService = useRef(null);
     const sessionToken = useRef(null);
 
-    // 1. Load Google Maps Script safely
+    // 4. INIT SERVICES (Only when script is ready)
     useEffect(() => {
-        if (!GOOGLE_API_KEY) {
-            console.error("Google Maps API Key missing!");
-            return;
+        if (isLoaded && window.google && !autocompleteService.current) {
+            autocompleteService.current = new window.google.maps.places.AutocompleteService();
+            placesService.current = new window.google.maps.places.PlacesService(document.createElement('div'));
+            // Start the Cost-Saving Session
+            sessionToken.current = new window.google.maps.places.AutocompleteSessionToken();
         }
+    }, [isLoaded]);
 
-        if (!window.google) {
-            const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`;
-            script.async = true;
-            script.onload = () => {
-                setIsScriptLoaded(true);
-                initServices();
-            };
-            document.body.appendChild(script);
-        } else {
-            setIsScriptLoaded(true);
-            initServices();
-        }
-    }, []);
-
-    const initServices = () => {
-        if (!window.google) return;
-        autocompleteService.current = new window.google.maps.places.AutocompleteService();
-        placesService.current = new window.google.maps.places.PlacesService(document.createElement('div'));
-        sessionToken.current = new window.google.maps.places.AutocompleteSessionToken();
-    };
-
-    // 2. Debounced Search (Cost Saver)
+    // 5. DEBOUNCED SEARCH (Preserves Cost Saving)
     useEffect(() => {
         const timer = setTimeout(() => {
-            if (query.length > 3 && isScriptLoaded) {
+            // Only search if query is long enough AND script is loaded
+            if (query.length > 3 && isLoaded) {
                 fetchPredictions();
             }
-        }, 400); // 400ms delay
+        }, 400); // 400ms delay to save API calls while typing
 
         return () => clearTimeout(timer);
-    }, [query, isScriptLoaded]);
+    }, [query, isLoaded]);
 
     const fetchPredictions = () => {
         if (!autocompleteService.current) return;
         
         setIsLoading(true);
+        
         const request = {
             input: query,
-            componentRestrictions: { country: 'in' }, // Restrict to India
-            sessionToken: sessionToken.current, // CRITICAL: Groups queries for billing
+            componentRestrictions: { country: 'in' },
+            // CRITICAL: Passing sessionToken groups all these searches into "0" cost
+            sessionToken: sessionToken.current, 
         };
 
         autocompleteService.current.getPlacePredictions(request, (results, status) => {
@@ -77,19 +72,22 @@ export default function GoogleAddressInput({ onAddressSelect }) {
         });
     };
 
-    // 3. Handle Selection
+    // 6. HANDLE SELECTION (The Single Billable Event)
     const handleSelect = (placeId) => {
+        if (!placesService.current) return;
+
         const request = {
             placeId: placeId,
             fields: ['name', 'formatted_address', 'address_components', 'geometry'],
-            sessionToken: sessionToken.current, // CRITICAL: Closes the session
+            // CRITICAL: Passing token here "closes" the session. 
+            // You are billed for ONE "Place Details" call, not for the searches.
+            sessionToken: sessionToken.current,
         };
 
         placesService.current.getDetails(request, (place, status) => {
             if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                // Parse Address Components
                 let address = {
-                    addressLine1: '', // Usually building name
+                    addressLine1: '',
                     city: '',
                     state: '',
                     pincode: '',
@@ -97,21 +95,19 @@ export default function GoogleAddressInput({ onAddressSelect }) {
                     lng: place.geometry.location.lng(),
                 };
 
-                // Extract data carefully
                 place.address_components.forEach(comp => {
                     if (comp.types.includes('locality')) address.city = comp.long_name;
                     if (comp.types.includes('administrative_area_level_1')) address.state = comp.long_name;
                     if (comp.types.includes('postal_code')) address.pincode = comp.long_name;
                 });
 
-                // Set the main address line to the Name or Street
                 address.addressLine1 = place.name || place.formatted_address.split(',')[0];
 
                 onAddressSelect(address);
                 setPredictions([]);
                 setQuery('');
                 
-                // Regenerate token for next search
+                // REFRESH TOKEN: Start a fresh session for the next search
                 sessionToken.current = new window.google.maps.places.AutocompleteSessionToken();
             } else {
                 toast.error("Failed to fetch address details");
@@ -119,6 +115,7 @@ export default function GoogleAddressInput({ onAddressSelect }) {
         });
     };
 
+    // 7. UI RENDER (Unchanged)
     return (
         <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>
@@ -144,7 +141,6 @@ export default function GoogleAddressInput({ onAddressSelect }) {
                 )}
             </div>
 
-            {/* Dropdown Results */}
             {predictions.length > 0 && (
                 <div style={{
                     position: 'absolute',

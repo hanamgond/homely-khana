@@ -1,3 +1,5 @@
+//frontend/src/componets/auth/AuthForm.js
+
 'use client';
 
 import { useState, useContext } from "react";
@@ -7,19 +9,21 @@ import { toast } from "sonner";
 import { AppContext } from "@/utils/AppContext";
 import { setCookie } from "@/utils/CookieManagement";
 import styles from "./AuthForm.module.css";
-// Importing icons for better UX
-import { Eye, EyeOff, AlertCircle } from 'lucide-react'; 
+// Added KeyRound for OTP screen
+import { Eye, EyeOff, AlertCircle, KeyRound } from 'lucide-react';
 
 export default function AuthForm({ defaultTab = 'login' }) {
     const router = useRouter();
     const { login } = useContext(AppContext);
     
+    // States: 'login' | 'signup' | 'otp'
     const [activeTab, setActiveTab] = useState(defaultTab);
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    
-    // Separate error state for specific feedback box
     const [formError, setFormError] = useState(""); 
+    
+    // OTP State
+    const [otp, setOtp] = useState("");
 
     const [formData, setFormData] = useState({ 
         name: '', 
@@ -32,53 +36,10 @@ export default function AuthForm({ defaultTab = 'login' }) {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        // Clear errors when user starts typing again to reduce friction
         if (formError) setFormError(""); 
     };
 
-    const handleLogin = async () => {
-        setIsLoading(true);
-        setFormError(""); // Reset previous errors
-
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    phone: formData.phone, 
-                    password: formData.password 
-                }),
-            });
-            const json = await response.json();
-
-            if (json.success) {
-                setCookie(json.token);
-                login(json.user); 
-                toast.success("Login successful!");
-                router.push("/"); // <--- Redirects to Home Page
-            } else {
-                // --- IMPROVISED ERROR LOGIC ---
-                const msg = json.error || json.message || "";
-                
-                // Check specifically for "Not Found" or "Does not exist"
-                if (response.status === 404 || msg.toLowerCase().includes("not found") || msg.toLowerCase().includes("exist")) {
-                    setFormError("Account does not exist. Please create an account.");
-                } 
-                // Check specifically for wrong password
-                else if (response.status === 401 || msg.toLowerCase().includes("password") || msg.toLowerCase().includes("credentials")) {
-                    setFormError("Incorrect password. Please try again.");
-                } 
-                else {
-                    setFormError(msg || "Login failed. Please check your inputs.");
-                }
-            }
-        } catch (error) {
-            setFormError("Unable to connect to server. Please check your internet.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
+    // --- 1. SIGNUP: Sends OTP ---
     const handleSignup = async () => {
         if (formData.password !== formData.confirmPassword) {
             setFormError("Passwords do not match.");
@@ -102,22 +63,87 @@ export default function AuthForm({ defaultTab = 'login' }) {
             const data = await response.json();
 
             if (data.success) {
-                toast.success("Account created successfully! Please log in.");
-                setActiveTab('login');
-                setFormData(prev => ({...prev, password: '', confirmPassword: ''}));
+                toast.success("OTP sent to your email!");
+                setActiveTab('otp'); // Switch to OTP screen
             } else {
-                // --- IMPROVISED SIGNUP LOGIC ---
-                const msg = data.error || "";
-                
-                // Check specifically if user already exists
-                if (msg.toLowerCase().includes("exists") || response.status === 409) {
-                    setFormError("User already exists with this details. Please Login.");
-                } else {
-                    setFormError(msg || "Signup failed. Please try again.");
-                }
+                setFormError(data.error || "Signup failed.");
             }
         } catch (err) {
-            setFormError("An error occurred. Could not connect to the server.");
+            setFormError("Connection failed. Check backend.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // --- 2. VERIFY OTP ---
+    const handleVerifyOtp = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setFormError("");
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/verify-otp`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: formData.email, otp })
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                toast.success("Verified! Please login.");
+                setActiveTab('login');
+                // Clear sensitive fields
+                setFormData(prev => ({ ...prev, password: '', confirmPassword: '' }));
+            } else {
+                setFormError(data.message || "Invalid OTP");
+            }
+        } catch (err) {
+            setFormError("Verification failed.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // --- 3. LOGIN (Existing) ---
+    const handleLogin = async () => {
+        setIsLoading(true);
+        setFormError(""); 
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/auth/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    phone: formData.phone, 
+                    password: formData.password 
+                }),
+            });
+            const json = await response.json();
+
+            if (json.success) {
+                setCookie(json.token);
+                login(json.user); 
+                toast.success("Login successful!");
+                router.push("/"); 
+            } else {
+                const msg = json.error || json.message || "";
+                
+                if (response.status === 403 || msg.toLowerCase().includes("verified")) {
+                    setFormError("Email not verified. Please verify your account.");
+                    // Optional: You could redirect them to OTP screen here if you had logic to resend OTP
+                }
+                else if (response.status === 404 || msg.toLowerCase().includes("not found")) {
+                    setFormError("Account does not exist. Please create an account.");
+                } 
+                else if (response.status === 401) {
+                    setFormError("Incorrect password. Please try again.");
+                } 
+                else {
+                    setFormError(msg || "Login failed. Please check your inputs.");
+                }
+            }
+        } catch (error) {
+            setFormError("Unable to connect to server. Please check your internet.");
         } finally {
             setIsLoading(false);
         }
@@ -125,13 +151,59 @@ export default function AuthForm({ defaultTab = 'login' }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (activeTab === 'login') {
-            handleLogin();
-        } else {
-            handleSignup();
-        }
+        if (activeTab === 'login') handleLogin();
+        else if (activeTab === 'signup') handleSignup();
+        else if (activeTab === 'otp') handleVerifyOtp(e);
     };
 
+    // --- RENDER OTP SCREEN ---
+    if (activeTab === 'otp') {
+        return (
+            <div className={styles.pageContainer}>
+                <div className={styles.formCard}>
+                    <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                        <div style={{ background: '#fff7ed', width: '60px', height: '60px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#f97316', margin: '0 auto' }}>
+                            <KeyRound size={28} />
+                        </div>
+                        <h2 className={styles.title} style={{ marginTop: '15px' }}>Enter OTP</h2>
+                        <p className={styles.subtitle}>We sent a 6-digit code to <br/><strong>{formData.email}</strong></p>
+                    </div>
+
+                    {formError && (
+                        <div style={{ background: '#fee2e2', color: '#b91c1c', padding: '12px', borderRadius: '8px', marginBottom: '1rem', fontSize: '0.9rem', textAlign: 'center' }}>
+                            {formError}
+                        </div>
+                    )}
+
+                    <form onSubmit={handleVerifyOtp} className={styles.form}>
+                        <div className={styles.inputGroup}>
+                            <input 
+                                type="text" 
+                                value={otp} 
+                                onChange={(e) => setOtp(e.target.value)} 
+                                placeholder="123456"
+                                style={{ letterSpacing: '8px', textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold' }}
+                                maxLength={6}
+                                required
+                            />
+                        </div>
+                        <button type="submit" className={styles.submitButton} disabled={isLoading}>
+                            {isLoading ? 'Verifying...' : 'Verify & Create Account'}
+                        </button>
+                    </form>
+                    
+                    <button 
+                        onClick={() => setActiveTab('signup')} 
+                        style={{ marginTop: '20px', color: '#666', background: 'none', border: 'none', cursor: 'pointer', width: '100%', textDecoration: 'underline' }}
+                    >
+                        Wrong email? Go back
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // --- RENDER LOGIN / SIGNUP (Standard) ---
     return (
         <div className={styles.pageContainer}>
             <Link href="/" className={styles.backToHome}>
@@ -159,7 +231,6 @@ export default function AuthForm({ defaultTab = 'login' }) {
                     </button>
                 </div>
 
-                {/* --- SMART ERROR DISPLAY --- */}
                 {formError && (
                     <div style={{
                         background: '#fee2e2', 
@@ -216,7 +287,7 @@ export default function AuthForm({ defaultTab = 'login' }) {
                                     position: 'absolute', right: '10px', background: 'none', 
                                     border: 'none', cursor: 'pointer', color: '#666', display: 'flex'
                                 }}
-                                tabIndex="-1" // Prevent tab from focusing on eye icon
+                                tabIndex="-1" 
                             >
                                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
@@ -236,7 +307,7 @@ export default function AuthForm({ defaultTab = 'login' }) {
                         disabled={isLoading}
                         style={{ opacity: isLoading ? 0.7 : 1, cursor: isLoading ? 'not-allowed' : 'pointer' }}
                     >
-                        {isLoading ? 'Processing...' : (activeTab === 'login' ? 'Login' : 'Create Account')}
+                        {isLoading ? 'Processing...' : (activeTab === 'login' ? 'Login' : 'Send OTP')}
                     </button>
 
                     {activeTab === 'login' && (

@@ -1,3 +1,4 @@
+//frontend/src/app/signup/page.js
 import AuthForm from '@/components/auth/AuthForm';
 
 // This is the Server Component for the /signup route

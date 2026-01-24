@@ -88,7 +88,7 @@ const setupDatabase = async () => {
     // --- 4. CREATE TABLES ---
     console.log("Creating tables...");
 
-    // 4.1 USERS (Holistic Model)
+// 4.1 USERS (Holistic Model)
     await client.query(`
       CREATE TABLE "users" (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY, 
@@ -100,22 +100,28 @@ const setupDatabase = async () => {
         -- ROLE & ACCESS
         role user_role_enum DEFAULT 'customer',
         is_active BOOLEAN DEFAULT true,
-        permissions JSONB DEFAULT '{}',     -- e.g. { "view_revenue": true, "delete_orders": false }
+        permissions JSONB DEFAULT '{}',
         
+        -- EMAIL VERIFICATION & SECURITY (ADDED FOR RESEND)
+        is_verified BOOLEAN DEFAULT FALSE,
+        verification_token VARCHAR(255),
+        reset_password_token VARCHAR(255),
+        reset_password_expires BIGINT,
+
         -- OPERATIONS (Staff Specific)
-        zone VARCHAR(100),                  -- e.g. "Sector 5", "Vashi Hub"
-        kitchen_station VARCHAR(100),       -- e.g. "Curry Station"
+        zone VARCHAR(100),
+        kitchen_station VARCHAR(100),
         
         -- ATTENDANCE & FINANCE
         current_shift_status shift_status_enum DEFAULT 'clocked_out',
         last_active_at TIMESTAMPTZ,
-        wallet_balance DECIMAL(10,2) DEFAULT 0.00,  -- Cash collected by rider (COD)
+        wallet_balance DECIMAL(10,2) DEFAULT 0.00,
         
         -- COMPLIANCE & HR
-        documents JSONB DEFAULT '{}',       -- { "license": "url", "aadhar": "url" }
-        assets JSONB DEFAULT '{}',          -- { "bag_id": "123", "tshirt": "L" }
-        emergency_contact JSONB DEFAULT '{}', -- { "name": "Mom", "phone": "999..." }
-        fcm_token VARCHAR(500),             -- Push Notifications for Staff App
+        documents JSONB DEFAULT '{}',
+        assets JSONB DEFAULT '{}',
+        emergency_contact JSONB DEFAULT '{}',
+        fcm_token VARCHAR(500),
 
         created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -350,8 +356,12 @@ const setupDatabase = async () => {
     console.log("🚀 SETUP COMPLETE.");
 
   } catch (err) {
-    await client.query('ROLLBACK');
-    console.error("🚨 SETUP FAILED:", err);
+    // FIX: Only rollback if the client was actually connected
+    if (client) {
+      await client.query('ROLLBACK');
+    }
+    console.error("🚨 SETUP FAILED (Real Error Below):");
+    console.error(err); // This will print the actual reason
     process.exit(1);
   } finally {
     if (client) client.release();
