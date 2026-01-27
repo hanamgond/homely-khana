@@ -26,7 +26,7 @@ export default function AddExistingDrawer({ showDiv, setShowDiv, addresses, setA
             setLoading(true);
             setError(null);
             // In a real app, you'd use your authenticated fetch utility here
-            const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/address/all`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/addresses/all`);
             if (!response.ok) {
                 throw new Error('Failed to fetch addresses. Please try again.');
             }

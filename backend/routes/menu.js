@@ -1,23 +1,45 @@
+//backend/routes/menu.js
+
 const express = require('express');
 const router = express.Router();
 const pool = require('../db/db');
-const NodeCache = require("node-cache");
+const redisClient = require("../lib/redis"); // Using the shared Redis client
+const { authenticateAdmin } = require('../middlewares/auth');
+const { z } = require('zod');
 
-// Initialize cache: 10 minute TTL (600 seconds)
-const menuCache = new NodeCache({ stdTTL: 600 });
+// --- 1. Zod Validation Schema ---
+const menuItemSchema = z.object({
+  day_of_week: z.enum(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']),
+  meal_type: z.enum(['Lunch', 'Dinner']),
+  title: z.string().min(1).trim(),
+  description: z.string().optional().default(''),
+  price: z.number().min(0).default(120),
+  is_veg: z.boolean().default(true),
+  calories: z.number().optional().nullable(),
+  tags: z.array(z.string()).default([]),
+  image_url: z.string().optional().nullable()
+});
 
-// Helper to clear cache when data changes
-const clearMenuCache = () => menuCache.del("weekly_menu");
+const MENU_CACHE_KEY = "homely_khana:weekly_menu";
 
-const fetchMenuLogic = async (req, res) => {
+// --- 2. Shared Cache Busting Logic ---
+const clearMenuCache = async () => {
+  await redisClient.del(MENU_CACHE_KEY);
+};
+
+/**
+ * [GET /api/menu]
+ * Fetches the weekly menu with Redis Caching
+ */
+const fetchMenuLogic = async (req, res, next) => {
   try {
-    // 1. Check Cache first
-    const cachedData = menuCache.get("weekly_menu");
+    // 1. Check Shared Redis Cache first
+    const cachedData = await redisClient.get(MENU_CACHE_KEY);
     if (cachedData) {
-      return res.json({ success: true, data: cachedData, source: 'cache' });
+      return res.json({ success: true, data: JSON.parse(cachedData), source: 'redis' });
     }
 
-    // 2. Database Fetch
+    // 2. Database Fetch with Sorted Logic
     const result = await pool.query(`
       SELECT * FROM weekly_menu_items 
       WHERE is_active = true 
@@ -35,43 +57,59 @@ const fetchMenuLogic = async (req, res) => {
         tags: typeof row.tags === 'string' ? JSON.parse(row.tags) : (row.tags || [])
     }));
 
-    // 3. Set Cache
-    menuCache.set("weekly_menu", safeRows);
+    // 3. Set Shared Cache (TTL: 1 hour)
+    await redisClient.setEx(MENU_CACHE_KEY, 3600, JSON.stringify(safeRows));
 
     res.json({ success: true, data: safeRows });
   } catch (error) {
-    console.error('Error fetching menu:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    next(error); // Pass to Global Error Handler
   }
 };
 
 router.get('/', fetchMenuLogic);
 router.get('/weekly', fetchMenuLogic);
 
-// ADMIN ROUTES: Must clear cache on changes
-router.post('/add', async (req, res) => {
+// --- 3. ADMIN ROUTES (Protected) ---
+
+router.post('/add', authenticateAdmin, async (req, res, next) => {
+  const validation = menuItemSchema.safeParse(req.body);
+  if (!validation.success) {
+    const error = new Error("Invalid menu data");
+    error.statusCode = 400;
+    error.details = validation.error.errors;
+    return next(error);
+  }
+
+  const { day_of_week, meal_type, title, description, price, is_veg, calories, tags, image_url } = validation.data;
+
   try {
-    const { day_of_week, meal_type, title, description, price, is_veg, calories, tags, image_url } = req.body;
     const result = await pool.query(
-      `INSERT INTO weekly_menu_items (...) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, true) RETURNING *`,
-      [day_of_week, meal_type, title, description, price || 120, is_veg ?? true, calories, JSON.stringify(tags || []), image_url]
+      `INSERT INTO weekly_menu_items 
+       (day_of_week, meal_type, title, description, price, is_veg, calories, tags, image_url, is_active) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, true) RETURNING *`,
+      [day_of_week, meal_type, title, description, price, is_veg, calories, JSON.stringify(tags), image_url]
     );
     
-    clearMenuCache(); // Cache invalidated
+    await clearMenuCache(); // Invalidate Redis across all 10 instances
     res.status(201).json({ success: true, item: result.rows[0] });
-  } catch (err) { res.status(500).json({ success: false }); }
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.put('/update/:id', async (req, res) => {
-  /* ... existing logic ... */
-  clearMenuCache();
-  res.json({ success: true });
-});
-
-router.delete('/delete/:id', async (req, res) => {
-  /* ... existing logic ... */
-  clearMenuCache();
-  res.json({ success: true });
+router.delete('/delete/:id', authenticateAdmin, async (req, res, next) => {
+  try {
+    const result = await pool.query('DELETE FROM weekly_menu_items WHERE id = $1 RETURNING *', [req.params.id]);
+    if (result.rows.length === 0) {
+      const error = new Error("Item not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+    await clearMenuCache();
+    res.json({ success: true, message: "Menu item deleted" });
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;

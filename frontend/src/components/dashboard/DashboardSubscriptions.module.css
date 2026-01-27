@@ -1,232 +1,439 @@
-/* src/components/dashboard/DashboardSubscription.module.css */
+/* DashboardSubscriptions.module.css */
 
-.main {
-    width: 100vw;
-    display: flex;
+/* Main Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
 }
 
-.mainLeft {
-    width: 220px;
-    height: 100vh;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    padding: 0 15px;
-    position: sticky;
-    top: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    flex-shrink: 0;
+/* Header */
+.headerTitle {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
 }
 
-.mainLeftCtn {
-    margin-top: 30px;
+.headerSubtitle {
+  color: #666;
+  font-size: 1rem;
+  margin-bottom: 2rem;
 }
 
-.mainRight {
-    margin: 40px 25px;
-    width: 100%;
-    height: fit-content;
-    display: flex;
-    justify-content: space-evenly;
-    gap: 40px;
-    flex-wrap: wrap;
-    flex: 1;
+/* Section Titles */
+.sectionTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  color: #444;
+  padding-bottom: 0.8rem;
+  border-bottom: 2px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.companyName {
-    font-family: "Lancelot", serif;
-    font-size: 36px;
-    font-weight: 600;
-    text-decoration: none;
-    color: black;
-}
-
-.userName {
-    margin-top: 20px;
-    font-size: 16px;
-    color: #FF9801;
-}
-
-.sidebarBtnCtn {
-    margin-top: 65px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    transform: translateX(-15px);
-}
-
-.sideBarLink {
-    text-align: left;
-    border: none;
-    background: transparent;
-    font-size: 20px;
-    padding-left: 15px;
-    width: calc(100% + 15px);
-    color: black;
-    text-decoration: none;
-}
-
-.sideBarLink:hover {
-    text-decoration: underline;
-}
-
-.sideBarLogoutBtn {
-    text-align: left;
-    border: none;
-    background: transparent;
-    font-size: 20px;
-    padding-left: 15px;
-    width: calc(100% + 15px);
-    color: red;
-    font-weight: 600;
-    transform: translateX(-15px);
-    margin-bottom: 45px;
-}
-
-.rightParent {
-    padding: 20px;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    border-radius: 15px;
-    /* width: 350px; */
-    width: 100%;
-    height: fit-content;
-}
-
-.rightTitle {
-    margin-bottom: 25px;
-    padding: 3px;
-    border-bottom: 0.5px dashed #FF9801;
-    font-size: 28px;
-    font-weight: 600;
-    color: #FF9801;
-}
-
-.rightChip {
-    width: 350px;
-    /* margin-top: 10px; */
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-    border: 1px solid #00000047;
-    padding: 10px;
-    border-radius: 7px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.rightChipCtn {
-    display: flex;
-    gap: 25px;
-    flex-wrap: wrap;
-}
-
-.rightChipFlexCtn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.rightChipFlexCtn:first-child {
-    margin-bottom: 3px;
-}
-
-.mealImg {
-    height: 70px;
-    width: 70px;
-    border-radius: 10px;
-}
-
-.chipCaption {
-    font-size: 14px;
-    color: #00000096;
-    display: flex;
-    gap: 4px;
-}
-
-.chipCaption span:nth-child(1) {
-    width: 65px;
-}
-
-/* .chipCaption span:nth-child(2) {
+.sectionTitle::before {
+  content: '';
   width: 4px;
-}
-.chipCaption span:nth-child(3) {
-  grid-column: 3;
-} */
-
-.chipMealName {
-    font-size: 20px;
-    font-weight: 600;
+  height: 20px;
+  background: #FF9801;
+  border-radius: 2px;
 }
 
-
-.rateBtn {
-    border: none;
-    background: transparent;
-    /* margin-top: 3px; */
-    text-align: left;
-    font-size: 16px;
-    padding: 0;
-    color: #FF9801;
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    transition: all 250ms ease-out;
+/* Loading State */
+.loadingContainer {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
 }
 
-.rateBtn:hover {
-    gap: 7px;
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #FF9801;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
 }
 
-.rightCtn {
-    padding: 10px;
-    margin-top: 5px;
+/* Subscription Grid */
+.subscriptionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
 }
 
-.chipAdd {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    /* Limit to 2 lines */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 14px;
-    color: #00000096;
-    /* margin-top: 3px; */
+/* Subscription Card */
+.subscriptionCard {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
 }
 
-.chipActiveLabel {
-    color: #2DC04E;
+.subscriptionCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
 }
 
-.chipExpiredLabel {
-    color: red;
+/* Card Header */
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.2rem;
 }
 
-.chipMealNum {
-    margin-top: 4px;
+.planInfo {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
-@media (max-width: 730px),
-(orientation: portrait) {
+.mealImage {
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
 
-    .main {
-        flex-direction: column;
-        align-items: center;
-    }
+.planDetails h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.3rem 0;
+  color: #333;
+}
 
-    .mainRight {
-        margin: 90px 0 55px 0;
-        padding: 15px;
-        width: 93vw;
-    }
+.planDetails p {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
 
-    .rightChip {
-        width: 100%;
-    }
+/* Status Badges */
+.badgeActive {
+  background: #dcfce7;
+  color: #166534;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
 
-    .rightTitle {
-        font-size: 26px;
-    }
+.badgeEndingSoon {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badgeInactive {
+  background: #f3f4f6;
+  color: #6b7280;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Info Grid */
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  margin: 1rem 0;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #555;
+  padding: 0.5rem;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.infoItem b {
+  color: #1a1a1a;
+  margin-left: 2px;
+}
+
+/* Delivery Schedule */
+.deliverySchedule {
+  grid-column: 1 / -1;
+  border-top: 1px solid #eee;
+  padding-top: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.scheduleTitle {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.daysGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.dayPill {
+  padding: 4px 10px;
+  background: #e0f2fe;
+  color: #0369a1;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.dayPill.active {
+  background: #FF9801;
+  color: white;
+  font-weight: 600;
+}
+
+/* Address Section */
+.addressSection {
+  grid-column: 1 / -1;
+  border-top: 1px solid #eee;
+  padding-top: 0.8rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.addressText {
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.4;
+  flex: 1;
+}
+
+/* Action Buttons */
+.actionButtons {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.actionButton {
+  flex: 1;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.primaryButton {
+  background: #1a1a1a;
+  color: white;
+}
+
+.primaryButton:hover {
+  background: #333;
+}
+
+.secondaryButton {
+  background: white;
+  color: #666;
+  border: 1px solid #e5e7eb;
+}
+
+.secondaryButton:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.warningButton {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.warningButton:hover {
+  background: #fde68a;
+}
+
+/* Empty States */
+.emptyState {
+  color: #888;
+  font-style: italic;
+  background: #f9fafb;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px dashed #ddd;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.emptyStateIcon {
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* Progress Bar */
+.progressContainer {
+  margin: 0.5rem 0;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.3rem;
+}
+
+.progressBar {
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* Subscription History */
+.historySection {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #eee;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.historyItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.historyItem:hover {
+  background: #f1f5f9;
+}
+
+.historyName {
+  font-weight: 600;
+  color: #333;
+}
+
+.historyDetails {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.historyStatus {
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.statusCompleted {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.statusCancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* CTA Button */
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #FF9801;
+  color: white;
+  border: none;
+  padding: 0.9rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+  margin-top: 1.5rem;
+}
+
+.ctaButton:hover {
+  background: #e68900;
+}
+
+/* Animations */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .subscriptionGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .cardHeader {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .actionButtons {
+    flex-direction: column;
+  }
+  
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .planInfo {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .daysGrid {
+    justify-content: center;
+  }
 }

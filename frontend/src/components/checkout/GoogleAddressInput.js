@@ -1,3 +1,5 @@
+//frontend/src/components/checkout/GoogleAdressInput.js
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';

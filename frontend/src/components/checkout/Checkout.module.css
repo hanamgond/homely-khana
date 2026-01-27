@@ -657,3 +657,85 @@
         grid-column: span 1;
     }
 }
+
+/* --- NEW VISUAL ADDRESS TYPES --- */
+.typeSelectorGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.typeBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    color: #4b5563;
+    font-size: 0.85rem;
+}
+
+.typeBtn:hover {
+    border-color: #2c1810;
+    background: #fffbf0;
+}
+
+.activeType {
+    border: 2px solid #2c1810;
+    background: #fffbf0;
+    color: #2c1810;
+}
+
+/* --- ORDER FOR SELF TOGGLE --- */
+.selfToggleRow {
+    background: #ffffff;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.selfToggleRow input {
+    width: 18px;
+    height: 18px;
+    accent-color: #2c1810;
+}
+
+.selfToggleRow label {
+    font-weight: 600;
+    color: #2c1810;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+/* Form transition for manual entry */
+.manualSectionHeader {
+    margin: 20px 0 15px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.manualSectionHeader::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #e5e7eb;
+}

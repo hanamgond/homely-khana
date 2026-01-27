@@ -1,4 +1,3 @@
-// frontend/src/components/checkout/index.js
 'use client';
 
 import { useContext, useState, useEffect } from 'react';
@@ -9,11 +8,12 @@ import styles from './Checkout.module.css';
 import { toast } from 'sonner';
 import { load } from '@cashfreepayments/cashfree-js';
 import { fetchWithToken, getCookie } from '@/utils/CookieManagement';
-import { Trash2, Pencil, CreditCard, Banknote, ShieldCheck, Lock, Plus } from 'lucide-react';
-import GoogleAddressInput from './GoogleAddressInput'; // <--- NEW IMPORT
+// Added Home, Briefcase, MapPin for the new Type Selector
+import { Trash2, Pencil, CreditCard, Banknote, ShieldCheck, Lock, Plus, Home, Briefcase, MapPin } from 'lucide-react';
+import GoogleAddressInput from './GoogleAddressInput';
 
 export default function CheckoutClient() {
-  const { cart, cartTotal, setDeliveryAddress, clearCart, removeSubscription } = useContext(AppContext);
+  const { user,cart, cartTotal, setDeliveryAddress, clearCart, removeSubscription } = useContext(AppContext);
   const router = useRouter();
 
   // --- STATE VARIABLES ---
@@ -22,30 +22,33 @@ export default function CheckoutClient() {
   const [isAddressLoading, setIsAddressLoading] = useState(true);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   
-  // Full form state
+  // New: Track if ordering for self to hide Name/Phone fields
+  const [isOrderingForSelf, setIsOrderingForSelf] = useState(true);
+
+  // Address Type Config
+  const addressTypes = [
+    { id: 'home', label: 'Home', icon: <Home size={18} /> },
+    { id: 'work', label: 'Work', icon: <Briefcase size={18} /> },
+    { id: 'other', label: 'Other', icon: <MapPin size={18} /> }
+  ];
+  
   const [formData, setFormData] = useState({
     fullName: '', phone: '', 
     addressLine1: '', addressLine2: '',
     city: '', state: '', pincode: '', 
     landmark: '', type: 'Home', isDefault: false,
-    lat: null, lng: null // <--- ADD THESE
+    lat: null, lng: null 
   });
   
   const [editingAddressId, setEditingAddressId] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('online');
   const [isLoading, setIsLoading] = useState(false);
 
-  // --- DERIVED STATE ---
   const isCartEmpty = !cart || (cart.lunch.length === 0 && cart.dinner.length === 0);
-  
-  // Combine items for the summary loop
   const allItems = [...(cart?.lunch || []), ...(cart?.dinner || [])];
-
-  // Calculate totals for discount display
   const totalOriginalPrice = allItems.reduce((acc, item) => acc + (item.originalAmount || item.totalPrice), 0);
   const totalDiscount = totalOriginalPrice - cartTotal;
 
-  // --- FETCH ADDRESSES ---
   const fetchAddresses = async () => {
     setIsAddressLoading(true);
     try {
@@ -69,19 +72,16 @@ export default function CheckoutClient() {
       setIsAddressLoading(false);
     }
   };
-  
 
-  // 2. NEW HANDLER FOR GOOGLE SELECTION
   const handleGoogleAddressSelect = (geoData) => {
     setFormData(prev => ({
         ...prev,
-        addressLine2: geoData.addressLine1, // We put Building Name in Line 2 (Area) or Line 1 based on pref. 
-        // Better UX: Put "Seawoods Grand Central" in Line 2, leave Line 1 empty for "Flat No".
+        addressLine2: geoData.addressLine1, 
         city: geoData.city,
         state: geoData.state,
         pincode: geoData.pincode,
-        lat: geoData.lat,
-        lng: geoData.lng
+        lat: geoData.lat, // Background storage
+        lng: geoData.lng  // Background storage
     }));
     toast.success("Address details fetched! Please add your Flat/Floor number.");
   };
@@ -94,7 +94,6 @@ export default function CheckoutClient() {
     }
   }, []);
 
-  // --- FORM HANDLERS ---
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
@@ -102,14 +101,26 @@ export default function CheckoutClient() {
 
   const handleSaveAddress = async (e) => {
     e.preventDefault();
-    if (!formData.fullName || !formData.phone || !formData.addressLine1 || !formData.city || !formData.state || !formData.pincode) {
+    
+    // Construct final payload including background coordinates
+    const finalPayload = {
+      ...formData,
+      type: formData.type.toLowerCase(),
+      fullName: isOrderingForSelf ? (user?.name || "Self") : formData.fullName,
+    // This logic cleans the login phone number to exactly 10 digits to pass Zod validation
+      phone: isOrderingForSelf 
+      ? (user?.phone?.replace(/\D/g, '').slice(-10) || "") 
+      : formData.phone 
+    };
+
+    if (!finalPayload.addressLine1 || !finalPayload.city || !finalPayload.state || !finalPayload.pincode) {
         toast.error("Please fill in all required address fields.");
         return;
     }
 
     setIsLoading(true);
     try {
-      const body = JSON.stringify(formData);
+      const body = JSON.stringify(finalPayload);
       const url = editingAddressId
         ? `${process.env.NEXT_PUBLIC_URL}/api/addresses/edit/${editingAddressId}`
         : `${process.env.NEXT_PUBLIC_URL}/api/addresses/add`;
@@ -138,19 +149,19 @@ export default function CheckoutClient() {
     setFormData({
       fullName: address.full_name, phone: address.phone, addressLine1: address.address_line_1,
       addressLine2: address.address_line_2 || '', city: address.city, state: address.state,
-      pincode: address.pincode, landmark: address.landmark || '', type: address.type, isDefault: address.is_default
+      pincode: address.pincode, landmark: address.landmark || '', type: address.type, isDefault: address.is_default,
+      lat: address.latitude || null, lng: address.longitude || null
     });
     setEditingAddressId(address.id);
     setViewMode('add_new_address');
   };
 
   const handleCancelEdit = () => {
-    setFormData({ fullName: '', phone: '', addressLine1: '', addressLine2: '', city: '', state: '', pincode: '', landmark: '', type: 'Home', isDefault: false });
+    setFormData({ fullName: '', phone: '', addressLine1: '', addressLine2: '', city: '', state: '', pincode: '', landmark: '', type: 'Home', isDefault: false, lat: null, lng: null });
     setEditingAddressId(null);
     setViewMode('select_address');
   };
 
-  // --- ITEM ACTIONS ---
   const handleRemoveItem = (mealType, subs_id) => {
       if (!mealType || !subs_id) return;
       removeSubscription(mealType, subs_id);
@@ -166,7 +177,6 @@ export default function CheckoutClient() {
     if (item.plan) params.set('planId', item.plan.id);
     if (item.startDate) params.set('startDate', item.startDate);
     
-    // Frequency reconstruction logic
     if (item.frequency) {
         const freqMap = {'Mon - Fri': 'mon-fri', 'Mon - Sat': 'mon-sat', 'Mon - Sun': 'mon-sun'};
         const customDays = item.frequency.split(', ');
@@ -180,13 +190,10 @@ export default function CheckoutClient() {
     router.push(`/subscribe?${params.toString()}`);
   };
 
-  // --- PAYMENT HANDLER ---
   const handleProceedToPayment = async () => {
     if (!selectedAddressId) return toast.error("Please select a delivery address.");
-    
     const finalAddress = savedAddresses.find(addr => addr.id === selectedAddressId);
     if (!finalAddress) return toast.error("Selected address invalid.");
-    
     if(setDeliveryAddress) setDeliveryAddress(finalAddress);
 
     setIsLoading(true);
@@ -214,7 +221,6 @@ export default function CheckoutClient() {
     }
   };
 
-  // --- RENDER EMPTY STATE ---
   if (isCartEmpty && !isAddressLoading) {
     return (
         <div className={styles.emptyContainer}>
@@ -227,23 +233,16 @@ export default function CheckoutClient() {
     );
   }
 
-  // --- MAIN RENDER ---
   return (
     <div className={styles.container}>
       <div className={styles.maxWidthWrapper}>
-        
-        {/* HEADER */}
         <div className={styles.header}>
             <h1 className={styles.pageTitle}>Secure Checkout</h1>
             <div className={styles.secureBadge}><Lock size={12}/> 256-Bit SSL Encrypted</div>
         </div>
 
         <div className={styles.grid}>
-            
-            {/* LEFT COLUMN: FORMS */}
             <div className={styles.leftColumn}>
-                
-                {/* 1. ADDRESS CARD */}
                 <div className={styles.card}>
                     <div className={styles.cardHeader}>
                         <div className={styles.stepNum}>1</div>
@@ -283,46 +282,48 @@ export default function CheckoutClient() {
                                 </button>
                             </div>
                         ) : (
-                            // ADDRESS FORM WRAPPER
                             <div className={styles.addressFormWrapper}>
-                                
-                                {/* 1. GOOGLE SEARCH COMPONENT */}
-                                <GoogleAddressInput onAddressSelect={handleGoogleAddressSelect} />
-                                
-                                {/* Divider */}
-                                <div style={{ 
-                                    margin: '1.5rem 0', 
-                                    display: 'flex', 
-                                    alignItems: 'center', 
-                                    color: '#9ca3af', 
-                                    fontSize: '0.75rem', 
-                                    fontWeight: '600', 
-                                    letterSpacing: '0.05em' 
-                                }}>
-                                    <span style={{ flex: 1, height: '1px', background: '#e5e7eb' }}></span>
-                                    <span style={{ padding: '0 10px' }}>OR ENTER MANUALLY</span>
-                                    <span style={{ flex: 1, height: '1px', background: '#e5e7eb' }}></span>
+                                <div className={styles.typeSelectorGrid}>
+                                    {addressTypes.map((t) => (
+                                        <button
+                                            key={t.id}
+                                            type="button"
+                                            className={`${styles.typeBtn} ${formData.type.toLowerCase() === t.id ? styles.activeType : ''}`}
+                                            onClick={() => setFormData({ ...formData, type: t.id })}
+                                        >
+                                            {t.icon} <span>{t.label}</span>
+                                        </button>
+                                    ))}
                                 </div>
 
-                                {/* 2. EXISTING MANUAL FORM */}
+                                <GoogleAddressInput onAddressSelect={handleGoogleAddressSelect} />
+                                
+                                <div className={styles.manualSectionHeader}>Delivery Details</div>
+
                                 <form onSubmit={handleSaveAddress} className={styles.addressForm}>
+                                    <div className={styles.selfToggleRow}>
+                                        <input 
+                                            type="checkbox" 
+                                            id="forSelf" 
+                                            checked={isOrderingForSelf} 
+                                            onChange={(e) => setIsOrderingForSelf(e.target.checked)} 
+                                        />
+                                        <label htmlFor="forSelf">Ordering for myself</label>
+                                    </div>
+
+                                    {!isOrderingForSelf && (
+                                        <div className={styles.formGrid}>
+                                            <div className={styles.inputGroup}><label>Receiver&apos;s Name</label><input name="fullName" value={formData.fullName} onChange={handleInputChange} required /></div>
+                                            <div className={styles.inputGroup}><label>Receiver&apos;s Phone</label><input name="phone" value={formData.phone} onChange={handleInputChange} required maxLength="10" /></div>
+                                        </div>
+                                    )}
+
                                     <div className={styles.formGrid}>
-                                        <div className={styles.inputGroup}><label>Full Name</label><input name="fullName" value={formData.fullName} onChange={handleInputChange} required /></div>
-                                        <div className={styles.inputGroup}><label>Phone</label><input name="phone" value={formData.phone} onChange={handleInputChange} required maxLength="10" /></div>
-                                        
-                                        {/* Label updated to clarify this is for Flat No */}
                                         <div className={styles.inputGroupFull}><label>Flat / Building / Floor</label><input name="addressLine1" value={formData.addressLine1} onChange={handleInputChange} required placeholder="e.g. Flat 401, A-Wing" /></div>
-                                        
-                                        {/* This will be auto-filled by Google */}
-                                        <div className={styles.inputGroupFull}><label>Street / Area</label><input name="addressLine2" value={formData.addressLine2} onChange={handleInputChange} /></div>
-                                        
+                                        <div className={styles.inputGroupFull}><label>Street / Area (From Google)</label><input name="addressLine2" value={formData.addressLine2} onChange={handleInputChange} /></div>
                                         <div className={styles.inputGroup}><label>City</label><input name="city" value={formData.city} onChange={handleInputChange} required /></div>
                                         <div className={styles.inputGroup}><label>Pincode</label><input name="pincode" value={formData.pincode} onChange={handleInputChange} required maxLength="6" /></div>
                                         <div className={styles.inputGroup}><label>State</label><input name="state" value={formData.state} onChange={handleInputChange} required /></div>
-                                        <div className={styles.inputGroup}>
-                                            <label>Type</label>
-                                            <select name="type" value={formData.type} onChange={handleInputChange}><option value="Home">Home</option><option value="Work">Work</option><option value="Other">Other</option></select>
-                                        </div>
                                     </div>
                                     
                                     <div className={styles.checkboxRow}>
@@ -342,7 +343,6 @@ export default function CheckoutClient() {
                     </div>
                 </div>
 
-                {/* 2. PAYMENT */}
                 <div className={styles.card}>
                     <div className={styles.cardHeader}>
                         <div className={styles.stepNum}>2</div>
@@ -361,10 +361,8 @@ export default function CheckoutClient() {
                         </label>
                     </div>
                 </div>
-
             </div>
 
-            {/* RIGHT: SUMMARY (Detailed & Premium) */}
             <div className={styles.rightColumn}>
                 <div className={styles.summaryCard}>
                     <div className={styles.summaryHeader}>
@@ -381,26 +379,17 @@ export default function CheckoutClient() {
                                         <button onClick={() => handleRemoveItem(item.mealType, item.subs_id)} aria-label="Remove"><Trash2 size={14}/></button>
                                     </div>
                                 </div>
-
-                                {/* Meal Title */}
                                 <h4 className={styles.itemTitle}>{item.name}</h4>
-                                
-                                {/* Detailed Grid */}
                                 <div className={styles.itemMetaGrid}>
                                     <span className={styles.label}>Plan</span>
                                     <span className={styles.value}>{item.plan?.plan_name}</span>
-                                    
                                     <span className={styles.label}>Frequency</span>
                                     <span className={styles.value}>{item.frequency}</span>
-                                    
                                     <span className={styles.label}>Start Date</span>
                                     <span className={styles.value}>{item.startDate}</span>
-                                    
                                     <span className={styles.label}>Total Meals</span>
                                     <span className={styles.value}>{item.totalMeals}</span>
                                 </div>
-
-                                {/* Price Row */}
                                 <div className={styles.itemPriceRow}>
                                     <span className={styles.label}>Price</span>
                                     <span>
@@ -414,25 +403,21 @@ export default function CheckoutClient() {
                         ))}
                     </div>
 
-                    {/* BILL DETAILS */}
                     <div className={styles.billDetails}>
                         <div className={styles.billRow}>
                             <span>Subtotal</span>
                             <span>₹{totalOriginalPrice.toLocaleString('en-IN')}</span>
                         </div>
-                        
                         {totalDiscount > 0 && (
                             <div className={`${styles.billRow} ${styles.discountRow}`}>
                                 <span>Discount</span>
                                 <span>- ₹{totalDiscount.toLocaleString('en-IN')}</span>
                             </div>
                         )}
-                        
                         <div className={styles.billRow}>
                             <span>Delivery & Packing</span>
                             <span className={styles.freeText}>FREE</span>
                         </div>
-                        
                         <div className={styles.totalRow}>
                             <span>To Pay</span>
                             <span>₹{cartTotal.toLocaleString('en-IN')}</span>
@@ -458,7 +443,6 @@ export default function CheckoutClient() {
                     </div>
                 </div>
             </div>
-
         </div>
       </div>
     </div>

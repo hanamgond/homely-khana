@@ -1,90 +1,160 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { fetchWithToken } from '@/utils/CookieManagement';
-import { format } from 'date-fns';
-import { ShoppingBag } from 'lucide-react';
+import { format, parseISO } from 'date-fns';
+import { 
+  ShoppingBag, Download, Loader2, 
+  ChevronDown, ChevronUp, MapPin, Package, User, Clock,
+  Receipt, Truck, CreditCard
+} from 'lucide-react';
+import { toast } from "sonner";
+import styles from './DashboardHistory.module.css';
 
 export default function OrderHistoryClient() {
-  const [orders, setOrders] = useState([]);
+  const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [expandedBooking, setExpandedBooking] = useState(null);
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    const fetchBookings = async () => {
       try {
-        const res = await fetchWithToken(`${process.env.NEXT_PUBLIC_URL}/api/bookings`);
+        setLoading(true);
+        const res = await fetchWithToken(`${process.env.NEXT_PUBLIC_URL}/api/userDashboard/bookings`);
+        if (!res.ok) throw new Error(`Status: ${res.status}`);
         const data = await res.json();
-        if (data.success) {
-          setOrders(data.data);
+        
+        if (data.success && data.data) {
+          const transformed = data.data.map(booking => ({
+            ...booking,
+            uiStatus: booking.cancelled_at ? 'cancelled' : 
+                      booking.delivered_at ? 'delivered' : 
+                      booking.payment_status === 'pending' ? 'pending' : 'processing'
+          }));
+          setBookings(transformed);
         }
       } catch (err) {
-        console.error("Failed to load history", err);
+        toast.error("Failed to sync bookings");
       } finally {
         setLoading(false);
       }
     };
-    fetchOrders();
+    fetchBookings();
   }, []);
 
-  return (
-      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#1a1a1a', marginBottom:'2rem' }}>Order History</h2>
+  const filteredBookings = useMemo(() => {
+    if (statusFilter === 'all') return bookings;
+    return bookings.filter(b => b.uiStatus === statusFilter);
+  }, [bookings, statusFilter]);
 
-        {loading ? <p>Loading orders...</p> : orders.length === 0 ? (
-          <div style={styles.emptyContainer}>
-              <ShoppingBag size={40} color="#ccc" />
-              <p>No past orders found.</p>
-          </div>
-        ) : (
-          <div style={{ background: 'white', borderRadius: '16px', border: '1px solid #e5e7eb', overflow: 'hidden', boxShadow:'0 2px 10px rgba(0,0,0,0.03)' }}>
-            <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                <thead>
-                    <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e5e7eb' }}>
-                        <th style={styles.th}>Order ID</th>
-                        <th style={styles.th}>Date</th>
-                        <th style={styles.th}>Amount</th>
-                        <th style={styles.th}>Payment Status</th>
-                        <th style={styles.th}>Method</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orders.map((order) => (
-                    <tr key={order.id} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                        <td style={{ ...styles.td, fontFamily: 'monospace', fontWeight: '600', color:'#555' }}>
-                            #{order.id.slice(0, 8)}
-                        </td>
-                        <td style={styles.td}>
-                            {format(new Date(order.created_at), 'dd MMM yyyy')}
-                        </td>
-                        <td style={{ ...styles.td, fontWeight: 'bold', color:'#1a1a1a' }}>
-                            ₹{order.total_amount}
-                        </td>
-                        <td style={styles.td}>
-                        <span style={{
-                            padding: '4px 10px', borderRadius: '20px', fontSize: '0.75rem', fontWeight:'700',
-                            background: order.payment_status === 'completed' ? '#dcfce7' : '#fee2e2',
-                            color: order.payment_status === 'completed' ? '#166534' : '#991b1b'
-                        }}>
-                            {order.payment_status.toUpperCase()}
-                        </span>
-                        </td>
-                        <td style={{ ...styles.td, textTransform: 'capitalize', color:'#666' }}>
-                            {order.payment_method}
-                        </td>
-                    </tr>
-                    ))}
-                </tbody>
-                </table>
+  const getMealIcon = (type) => {
+    return String(type).toLowerCase().includes('dinner') ? '🌙' : '☀️';
+  };
+
+  return (
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Order History</h1>
+        <p className={styles.subtitle}>Detailed ledger of your meal subscriptions and one-time orders</p>
+      </header>
+
+      <nav className={styles.filterBar}>
+        {['all', 'delivered', 'processing', 'cancelled'].map(f => (
+          <button 
+            key={f} 
+            className={`${styles.filterBtn} ${statusFilter === f ? styles.activeFilter : ''}`}
+            onClick={() => setStatusFilter(f)}
+          >
+            {f.charAt(0).toUpperCase() + f.slice(1)}
+          </button>
+        ))}
+      </nav>
+
+      {loading ? (
+        <div className={styles.loaderContainer}><Loader2 className={styles.spinner} size={40} /></div>
+      ) : (
+        <div className={styles.ledger}>
+          {filteredBookings.map(booking => (
+            <div key={booking.id} className={`${styles.ledgerCard} ${expandedBooking === booking.id ? styles.expanded : ''}`}>
+              <div 
+                className={styles.ledgerMain} 
+                onClick={() => setExpandedBooking(expandedBooking === booking.id ? null : booking.id)}
+              >
+                <div className={styles.dateBlock}>
+                  <span className={styles.day}>{format(parseISO(booking.created_at), 'dd')}</span>
+                  <span className={styles.month}>{format(parseISO(booking.created_at), 'MMM')}</span>
+                </div>
+                
+                <div className={styles.infoBlock}>
+                  <span className={styles.orderId}>#{booking.booking_id || booking.id.slice(0, 8)}</span>
+                  <span className={styles.planLabel}>{booking.plan_name || 'Standard Plan'}</span>
+                </div>
+
+                <div className={styles.statusBlock}>
+                  <span className={`${styles.statusBadge} ${styles[booking.uiStatus]}`}>
+                    {booking.uiStatus.toUpperCase()}
+                  </span>
+                </div>
+
+                <div className={styles.priceBlock}>
+                  ₹{parseFloat(booking.total_amount).toLocaleString('en-IN')}
+                </div>
+
+                <div className={styles.chevron}>
+                  {expandedBooking === booking.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                </div>
+              </div>
+
+              {expandedBooking === booking.id && (
+                <div className={styles.detailsContent}>
+                  <div className={styles.detailsGrid}>
+                    <div className={styles.gridCard}>
+                      <span className={styles.label}><MapPin size={14} /> Delivery Address</span>
+                      <p className={styles.valText}>{booking.address_line_1}, {booking.city}</p>
+                    </div>
+                    <div className={styles.gridCard}>
+                      <span className={styles.label}><User size={14} /> Recipient Info</span>
+                      <p className={styles.valText}>{booking.full_name || "Self"}</p>
+                      <small className={styles.subText}>{booking.phone || "Profile Phone"}</small>
+                    </div>
+                  </div>
+
+                  <div className={styles.itemsSection}>
+                    <span className={styles.label}><Receipt size={14} /> Items Ordered</span>
+                    <div className={styles.itemsWrapper}>
+                      {booking.items?.map((item, idx) => (
+                        <div key={idx} className={styles.itemRow}>
+                          <div className={styles.itemMeta}>
+                            <span className={styles.mealIcon}>{getMealIcon(item.meal_type)}</span>
+                            <div>
+                              <span className={styles.itemName}>{item.product_name}</span>
+                              <span className={styles.itemType}>{item.meal_type}</span>
+                            </div>
+                          </div>
+                          <div className={styles.itemPricing}>
+                            <span>{item.quantity} x ₹{item.price_per_unit}</span>
+                            <span className={styles.lineTotal}>₹{parseFloat(item.total_price).toFixed(2)}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <footer className={styles.actions}>
+                    <button className={styles.downloadBtn}>
+                      <Download size={14} /> Download Invoice
+                    </button>
+                    <span className={styles.timestamp}>
+                      <Clock size={12} /> {format(parseISO(booking.created_at), 'hh:mm a')}
+                    </span>
+                  </footer>
+                </div>
+              )}
             </div>
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
-
-const styles = {
-    th: { padding: '1.2rem', fontSize: '0.85rem', textTransform: 'uppercase', color: '#64748b', fontWeight: '600', letterSpacing: '0.5px' },
-    td: { padding: '1.2rem', fontSize: '0.95rem' },
-    emptyContainer: { display:'flex', flexDirection:'column', alignItems:'center', gap:'1rem', padding:'4rem', background:'#f9fafb', borderRadius:'16px', color:'#888' }
-};

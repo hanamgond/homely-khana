@@ -1,11 +1,40 @@
+// backend/routes/bookings.js 
+
 const express = require("express");
 const pool = require("../db/db");
-const { authenticateToken } = require("../middlewares/auth");
+const authMiddleware = require("../middlewares/auth");
+const authenticateToken = authMiddleware.authenticateToken;
 const { Cashfree } = require("cashfree-pg");
-
+const redisClient = require("../lib/redis");
+const { z } = require("zod"); 
 const router = express.Router();
 
-// --- Cashfree Initialization ---
+// Import rate limiter - path is correct
+const { bookingLimiter } = require("../middlewares/rateLimiter");
+
+// --- 1. Zod Validation Schemas ---
+const cartItemSchema = z.object({
+  id: z.any(), 
+  name: z.any(),
+  quantity: z.any().transform(v => parseInt(v) || 1),
+  totalPrice: z.any().transform(v => typeof v === 'string' ? parseFloat(v.replace(/[^\d.-]/g, '')) : v),
+  mealType: z.any().optional(),
+  startDate: z.any().optional(),
+  plan: z.any().optional(),
+  base_price: z.any().optional()
+});
+
+const bookingSchema = z.object({
+  cart: z.object({
+    lunch: z.array(cartItemSchema).optional().default([]),
+    dinner: z.array(cartItemSchema).optional().default([])
+  }),
+  cartTotal: z.any().transform(v => typeof v === 'string' ? parseFloat(v.replace(/[^\d.-]/g, '')) : v),
+  addressId: z.any(),
+  paymentMethod: z.enum(['cod', 'online'])
+});
+
+// Cashfree Initialization
 let cfConfig = {
     env: process.env.CASHFREE_ENV || 'SANDBOX',
     appId: process.env.CASHFREE_CLIENT_ID,
@@ -14,42 +43,46 @@ let cfConfig = {
 const cashfree = new Cashfree(cfConfig);
 
 /**
- * POST /create
+ * POST /api/bookings/create
+ * Hardened for high-concurrency (10 PM2 instances)
  */
-router.post("/create", authenticateToken, async (req, res) => {
-  const { cart, cartTotal, addressId, paymentMethod } = req.body;
+router.post("/create", authenticateToken, bookingLimiter, async (req, res, next) => {
+  const validation = bookingSchema.safeParse(req.body);
+  
+  if (!validation.success) {
+    const error = new Error("Invalid booking data");
+    error.statusCode = 400;
+    error.details = validation.error.errors;
+    return next(error); 
+  }
+
+  const { cart, cartTotal, addressId, paymentMethod } = validation.data;
   const { userId, name, email, phone } = req.user;
 
-  // --- 1. Basic Validation ---
-  if (!cart || (!cart.lunch && !cart.dinner) || !cartTotal || !addressId || !paymentMethod) {
-    return res.status(400).json({ success: false, error: "Missing required booking data." });
-  }
-   if (isNaN(parseFloat(cartTotal)) || (paymentMethod === 'online' && parseFloat(cartTotal) < 1)) {
-     return res.status(400).json({ success: false, error: "Invalid cart total amount." });
-   }
-
   const client = await pool.connect();
-  let bookingId;
 
   try {
     await client.query("BEGIN");
 
-    // --- 2. Create the Master Booking Record ---
+    // Master Booking
     const bookingQuery = `
       INSERT INTO "bookings" (user_id, address_id, total_amount, payment_method, payment_status)
       VALUES ($1, $2, $3, $4, 'pending')
       RETURNING id
     `;
     const bookingResult = await client.query(bookingQuery, [userId, addressId, cartTotal, paymentMethod]);
-    bookingId = bookingResult.rows[0].id;
+    const bookingId = bookingResult.rows[0].id;
 
-    // --- 3. Prepare and Insert Booking Items ---
     const allItems = [
-      ...(cart.lunch || []).map(item => ({ ...item, mealType: 'lunch' })),
-      ...(cart.dinner || []).map(item => ({ ...item, mealType: 'dinner' })),
+      ...cart.lunch.map(item => ({ ...item, mealType: 'lunch' })),
+      ...cart.dinner.map(item => ({ ...item, mealType: 'dinner' })),
     ];
     
-    if (allItems.length === 0) throw new Error("Cart is empty.");
+    if (allItems.length === 0) {
+      const error = new Error("Cart is empty.");
+      error.statusCode = 400;
+      throw error;
+    }
 
     for (const item of allItems) {
       const itemQuery = `
@@ -61,34 +94,29 @@ router.post("/create", authenticateToken, async (req, res) => {
       const planId = item.plan ? item.plan.id : null;
 
       const itemResult = await client.query(itemQuery, [
-          bookingId,
-          item.id,
-          item.quantity,
-          planId,
-          pricePerUnit,
-          item.totalPrice
+          bookingId, item.id, item.quantity, planId, pricePerUnit, item.totalPrice
       ]);
       item.booking_item_id = itemResult.rows[0].id;
     }
 
-    // --- 4. Handle Payment Method ---
+    // COD Flow
     if (paymentMethod === 'cod') {
       await client.query("UPDATE bookings SET payment_status = 'completed' WHERE id = $1", [bookingId]);
       await client.query("COMMIT");
 
-      // PERFORMANCE CHANGE: Move delivery creation to the background
-      // This allows the user to see the success screen immediately.
+      // Shared Cache Busting for all 10 instances
+      await redisClient.del(`user:${userId}:subscriptions`);
+      await redisClient.del(`user:${userId}:next-delivery`);
+
+      // Delivery creation in background to keep response snappy
       setImmediate(() => {
         createDeliveriesForBooking(pool, bookingId, allItems)
-          .catch(err => console.error(`Background Delivery Error for Booking ${bookingId}:`, err));
+          .catch(err => console.error(`[BG-ERR] Booking ${bookingId}:`, err));
       });
 
-      res.status(201).json({
-        success: true,
-        message: "Booking placed successfully!",
-        bookingId: bookingId
-      });
+      return res.status(201).json({ success: true, message: "Booking placed!", bookingId });
 
+    // Online Flow
     } else if (paymentMethod === 'online') {
       const cashfreeOrderId = `BOOKING_${bookingId}_${Date.now()}`;
       await client.query('UPDATE "bookings" SET cashfree_order_id = $1 WHERE id = $2', [cashfreeOrderId, bookingId]);
@@ -109,37 +137,35 @@ router.post("/create", authenticateToken, async (req, res) => {
       };
 
       const cashfreeResponse = await cashfree.orders.createOrder(request);
-
       if (!cashfreeResponse?.data?.payment_session_id) {
-          throw new Error("Failed to get payment session ID from Cashfree.");
+          throw new Error("Cashfree session initialization failed.");
       }
 
       await client.query("COMMIT");
 
-      res.status(201).json({
+      // Clear cache so dashboard is ready post-payment
+      await redisClient.del(`user:${userId}:subscriptions`);
+      await redisClient.del(`user:${userId}:next-delivery`);
+
+      return res.status(201).json({
         success: true,
-        message: "Booking created, redirecting to payment.",
-        bookingId: bookingId,
+        bookingId,
         payment_session_id: cashfreeResponse.data.payment_session_id
       });
     }
 
   } catch (err) {
     await client.query("ROLLBACK");
-    console.error("Booking Error:", err.message);
-    res.status(500).json({ success: false, error: "Failed to create booking." });
+    next(err); 
   } finally {
     client.release();
   }
 });
 
 /**
- * Helper function: createDeliveriesForBooking
- * MODIFIED: Now uses the DB Pool directly to support background execution.
+ * Shared logic to turn items into deliveries
  */
 async function createDeliveriesForBooking(dbPool, bookingId, bookingItems) {
-  console.log(`[BG-PROCESS] Starting delivery creation for Booking: ${bookingId}`);
-  
   try {
     const addressResult = await dbPool.query(`
       SELECT a.* FROM "addresses" a 
@@ -161,9 +187,8 @@ async function createDeliveriesForBooking(dbPool, bookingId, bookingItems) {
         if (planResult.rows.length === 0) continue;
         
         const planDuration = planResult.rows[0].duration_days;
-        let deliveryDate = new Date(item.startDate + 'T00:00:00');
+        let deliveryDate = item.startDate ? new Date(item.startDate + 'T00:00:00') : new Date();
         
-        // Safety check for past dates
         const today = new Date();
         today.setHours(0,0,0,0);
         if (deliveryDate < today) {
@@ -181,11 +206,9 @@ async function createDeliveriesForBooking(dbPool, bookingId, bookingItems) {
         }
       }
     }
-    console.log(`[BG-PROCESS] ✅ Deliveries created for Booking: ${bookingId}`);
   } catch (err) {
-    console.error(`[BG-PROCESS] 🚨 Error creating deliveries:`, err.stack);
+    console.error(`[BG-PROCESS] 🚨 Error in delivery creation:`, err.stack);
   }
 }
 
-// ... rest of your GET routes (/, /:id) remain exactly the same ...
 module.exports = router;

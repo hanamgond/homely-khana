@@ -1,82 +1,468 @@
-/* styles/Dashboard.module.css */
+/* Dashboard.module.css */
 
-.pageContainer {
-  max-width: 1200px;
-  margin: 3rem auto;
-  padding: 0 1rem;
+/* Header */
+.headerTitle {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+}
+
+.headerSubtitle {
+  color: #666;
+  font-size: 1rem;
+}
+
+/* Error Display */
+.errorCard {
+  background: #fee2e2;
+  border: 1px solid #ef4444;
+  color: #991b1b;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.retryButton {
+  margin-left: auto;
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* Stats Grid */
+.statsGrid {
   display: grid;
-  grid-template-columns: 250px 1fr;
-  gap: 2rem;
-  align-items: start;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-/* --- Sidebar Navigation --- */
-.sidebar {
-  background-color: #fff;
-  border-radius: var(--card-radius);
+.statCard {
+  background: white;
+  border-radius: 16px;
   padding: 1.5rem;
-  box-shadow: var(--card-shadow);
-  position: sticky;
-  top: 120px;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  border: 1px solid #f0f0f0;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.sidebarHeader { margin-bottom: 2rem; }
-.welcomeTitle {
-  font-size: 1.2rem;
-  font-weight: 800;
+
+.statCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.statIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.statContent {
+  flex: 1;
+}
+
+.statLabel {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin: 0 0 0.3rem 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statValue {
+  color: #0f172a;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 0 0 0.3rem 0;
+}
+
+.statSubtext {
+  color: #94a3b8;
+  font-size: 0.85rem;
   margin: 0;
 }
-.welcomeEmail {
+
+.progressBar {
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.quickActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.quickActionButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  background: white;
+  border: 1px solid;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quickActionButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Section Titles */
+.sectionTitle {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+/* Loading & Empty States */
+.loadingCard {
+  background: white;
+  border-radius: 16px;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+}
+
+.mainCard {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  border: 1px solid #eee;
+}
+
+.emptyMealCard {
+  background: white;
+  border-radius: 16px;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  border: 1px solid #eee;
+}
+
+/* Meal Card */
+.mealCardContent {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.mealImage {
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.mealDetails {
+  flex: 1;
+  min-width: 300px;
+}
+
+.mealHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.tag {
+  background: #FF9801;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.timeBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #f3f4f6;
+  color: #666;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.mealTitle {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.mealDescription {
+  color: #666;
+  font-size: 0.95rem;
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+}
+
+.mealFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.addressInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
   font-size: 0.9rem;
-  color: var(--muted-text);
-  word-break: break-all;
-}
-.sidebarNav { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
-.navButton {
-  width: 100%; background: none; border: none; padding: 0.85rem 1rem; border-radius: 8px;
-  font-size: 1rem; font-weight: 700; color: #374151; text-align: left;
-  cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem;
-}
-.navButton:hover { background-color: #fffaf0; color: var(--primary-orange); }
-.navButton.active { background-color: var(--primary-orange); color: white; }
-
-/* --- Main Content Area --- */
-.contentBox {
-  background-color: #fff;
-  border-radius: var(--card-radius);
-  padding: 2rem;
-  box-shadow: var(--card-shadow);
-}
-.contentHeader {
-  font-size: 2rem; font-weight: 800; margin: 0 0 2rem 0;
-  padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb;
 }
 
-/* --- "Today's Meal" Card --- */
-.mealCard { border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; }
-.mealCardHeader {
-  display: flex; gap: 1.5rem; align-items: center; padding: 1.5rem;
-  background-color: #f9fafb;
+.trackButton {
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  transition: background 0.2s;
 }
-.mealImage { border-radius: 8px; object-fit: cover; }
-.mealTitle { font-size: 1.5rem; font-weight: 800; margin: 0 0 0.25rem 0; }
-.mealItems { font-size: 1rem; color: var(--muted-text); margin: 0; }
-.mealCardBody { padding: 1.5rem; }
-.skipSection { display: flex; justify-content: space-between; align-items: center; }
-.countdown { font-weight: 700; text-align: right; }
-.countdown span { font-size: 1.2rem; color: #ef4444; }
-.countdown p { font-size: 0.8rem; color: var(--muted-text); margin: 0; }
-.skipButton {
-  background-color: #fee2e2; color: #ef4444; font-weight: 700; border: none;
-  padding: 0.75rem 1.5rem; border-radius: 8px; font-size: 0.9rem; cursor: pointer;
-}
-.statusTracker {
-  display: grid; grid-template-columns: repeat(4, 1fr); text-align: center;
-  margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb; position: relative;
-}
-.statusStep { font-weight: 600; color: #a0aec0; }
-.statusStep.active { color: var(--primary-orange); }
 
+.trackButton:hover {
+  background: #333;
+}
+
+/* Two Column Layout */
+.twoColumnGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+}
+
+/* Calendar */
+.calendarCard {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  border: 1px solid #eee;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.calendarDay {
+  text-align: center;
+  padding: 0.8rem 0.5rem;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.calendarDay:hover {
+  background: #f8fafc;
+}
+
+.calendarDayHeader {
+  margin-bottom: 0.8rem;
+}
+
+.calendarMeals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.mealIndicator {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.noMealIndicator {
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.calendarLegend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.legendColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+/* Activity */
+.activityCard {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  border: 1px solid #eee;
+}
+
+.activityItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.activityItem:last-child {
+  border-bottom: none;
+}
+
+.activityIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.activityContent {
+  flex: 1;
+}
+
+.activityText {
+  margin: 0 0 0.2rem 0;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.activityTime {
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.viewAllButton {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  color: #666;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.viewAllButton:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+/* Spinner Animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #FF9801;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .pageContainer { grid-template-columns: 1fr; }
-  .sidebar { position: static; margin-bottom: 2rem; }
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .twoColumnGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .calendarGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .mealCardContent {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .mealDetails {
+    min-width: auto;
+  }
+  
+  .mealFooter {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendarGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .calendarLegend {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
 }
