@@ -1,0 +1,322 @@
+/* --- GLOBAL --- */
+.pageContainer {
+    background-color: #FDFBF7;
+    min-height: 100vh;
+    color: #2c1810;
+    font-family: sans-serif;
+    overflow-x: hidden;
+}
+
+.maxWidthWrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- HERO --- */
+.heroSection {
+    position: relative;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: #1a1a1a; 
+    color: white;
+    margin-bottom: 80px;
+}
+.heroImageWrapper {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+}
+.heroOverlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.8));
+}
+.heroContent {
+    position: relative; z-index: 2; max-width: 900px; padding: 0 20px;
+}
+.heroTitle {
+    font-family: 'Times New Roman', serif;
+    font-size: clamp(3rem, 5vw, 4.5rem);
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+    color: #ffffff;
+}
+.heroSubtitle {
+    font-size: 1.25rem; color: #e5e5e5; max-width: 650px; margin: 0 auto; line-height: 1.8;
+}
+.heroBadge {
+    display: inline-block; color: #FCD34D; font-size: 0.8rem; letter-spacing: 3px; font-weight: 600;
+    margin-bottom: 25px; text-transform: uppercase; border-bottom: 1px solid #FCD34D; padding-bottom: 5px;
+}
+
+/* --- MAIN GRID --- */
+.mainGrid {
+    display: grid;
+    grid-template-columns: 1fr 450px;
+    gap: 80px;
+    align-items: start;
+    margin-bottom: 100px;
+}
+.leftContent { padding-top: 20px; }
+.sectionHeading { font-family: 'Times New Roman', serif; font-size: 2.5rem; color: #2c1810; margin-bottom: 1.5rem; }
+.bodyText { font-size: 1.15rem; color: #555; line-height: 1.7; margin-bottom: 50px; }
+.promiseGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.promiseItem h4 { font-family: 'Times New Roman', serif; font-size: 1.3rem; margin: 10px 0 5px 0; }
+.promiseItem p { font-size: 0.95rem; color: #666; line-height: 1.5; }
+
+/* --- FORM --- */
+.stickyFormContainer { position: sticky; top: 40px; z-index: 10; }
+.formCard {
+    background: white; border-radius: 8px;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+    border-top: 5px solid #d97706; overflow: hidden;
+}
+.formHeader { padding: 30px 30px 10px 30px; text-align: center; background: #fff; }
+.formTitle { font-family: 'Times New Roman', serif; font-size: 1.8rem; margin: 0; color: #2c1810; }
+.formSubtitle { margin: 8px 0 0 0; color: #666; font-size: 0.9rem; }
+.formBody { padding: 20px 30px 30px 30px; display: flex; flex-direction: column; gap: 20px; }
+.row50 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.inputGroup { display: flex; flex-direction: column; gap: 6px; }
+.label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; color: #4b5563; text-transform: uppercase; margin-left: 2px; }
+.input, .select, .textarea {
+    width: 100%; padding: 12px 12px 12px 0; border: none; border-bottom: 1px solid #e5e7eb;
+    font-size: 1rem; background: transparent; color: #111; border-radius: 0; transition: border-color 0.2s;
+}
+.input:focus, .select:focus, .textarea:focus { outline: none; border-bottom-color: #d97706; }
+.select { cursor: pointer; background: white; }
+.submitBtn {
+    background: #2c1810; color: white; border: none; padding: 16px; font-weight: 600; font-size: 1rem;
+    cursor: pointer; margin-top: 10px; letter-spacing: 1px; text-transform: uppercase; width: 100%;
+    border-radius: 4px; transition: background 0.2s;
+}
+.submitBtn:hover { background: #d97706; }
+.tastingNote {
+    text-align: center; font-size: 0.8rem; color: #166534; display: flex; justify-content: center;
+    align-items: center; gap: 5px; background: #f0fdf4; padding: 8px; border-radius: 4px;
+}
+.directContactSection { margin-top: 10px; text-align: center; }
+.dividerOr { display: flex; align-items: center; color: #ccc; font-size: 0.75rem; margin-bottom: 15px; }
+.dividerOr::before, .dividerOr::after { content: ''; flex: 1; height: 1px; background: #eee; }
+.dividerOr span { padding: 0 10px; }
+.contactLabel { font-size: 0.85rem; color: #666; margin-bottom: 5px; }
+.phoneLink {
+    display: inline-flex; align-items: center; gap: 8px; color: #2c1810; font-weight: 700; font-size: 1.1rem;
+    text-decoration: none; padding: 8px 16px; border: 1px solid #eee; border-radius: 50px; transition: all 0.2s;
+}
+.phoneLink:hover { background: #fff8f1; border-color: #d97706; color: #d97706; }
+
+/* --- LOGO MARQUEE --- */
+.trustSection {
+    padding: 60px 0; background-color: #fff; border-top: 1px solid #f3f4f6;
+    border-bottom: 1px solid #f3f4f6; overflow: hidden;
+}
+.trustHeader {
+    text-align: center; font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; color: #9ca3af;
+    margin-bottom: 40px; text-transform: uppercase;
+}
+.marquee { display: flex; overflow: hidden; user-select: none; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+.marqueeContent { display: flex; gap: 4rem; animation: scroll 30s linear infinite; padding-left: 4rem; }
+.logoItem { white-space: nowrap; font-size: 1.8rem; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; opacity: 0.8; }
+@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+
+/* --- NEW CATERING JOURNEY (Stepper) --- */
+.processSection { padding: 80px 0; background: white; }
+
+.stepperWrapper {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.stepperLine {
+    position: absolute;
+    top: 35px;
+    left: 50px;
+    right: 50px;
+    height: 2px;
+    background: #e5e7eb;
+    z-index: 0;
+}
+
+.stepItem {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    padding: 0 15px;
+}
+
+.stepIconBox {
+    width: 70px;
+    height: 70px;
+    background: #d97706;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 8px white;
+    margin-bottom: 25px;
+    transition: transform 0.3s ease;
+}
+
+.stepItem:hover .stepIconBox {
+    transform: scale(1.1);
+    background: #b45309;
+}
+
+.stepTitle {
+    font-family: 'Times New Roman', serif;
+    font-size: 1.4rem;
+    color: #2c1810;
+    margin-bottom: 10px;
+}
+
+.stepDesc {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.6;
+    max-width: 280px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .mainGrid { grid-template-columns: 1fr; gap: 50px; }
+    .stickyFormContainer { position: relative; top: 0; }
+    
+    .stepperWrapper {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-left: 20px;
+    }
+    
+    .stepperLine {
+        top: 35px;
+        left: 55px;
+        right: auto;
+        width: 2px;
+        height: calc(100% - 70px);
+        bottom: 0;
+    }
+
+    .stepItem {
+        flex-direction: row;
+        align-items: flex-start;
+        text-align: left;
+        margin-bottom: 40px;
+        width: 100%;
+    }
+
+    .stepIconBox {
+        width: 60px; height: 60px;
+        margin-right: 20px;
+        flex-shrink: 0;
+        margin-bottom: 0;
+        box-shadow: 0 0 0 10px white;
+    }
+
+    .stepDesc { max-width: 100%; }
+}
+
+/* --- PHONE INPUT STYLING (Fixed Alignment) --- */
+.phoneInputWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+    padding-top: 0; /* Remove top padding - let the parent handle it */
+    padding-bottom: 12px;
+    transition: border-color 0.2s;
+    width: 100%;
+    flex-wrap: nowrap;
+    min-height: 44px;
+    margin-top: 6px; /* Match the margin of regular inputs */
+}
+
+/* Make sure regular inputs have consistent styling */
+.input, .phoneInput {
+    border: none;
+    background: transparent;
+    color: #111;
+    outline: none;
+    width: 100%;
+    font-size: 1rem;
+    padding: 12px 0; /* Consistent padding */
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Update the regular input styles to match */
+.input {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 12px 0;
+    margin-top: 6px;
+}
+
+.input:focus {
+    border-bottom-color: #d97706;
+}
+
+.phoneInputWrapper:focus-within {
+    border-bottom-color: #d97706;
+}
+
+.countryCode {
+    font-size: 1rem;
+    color: #111;
+    font-weight: 500;
+    margin-right: 12px;
+    padding-right: 12px;
+    border-right: 1px solid #e5e7eb;
+    line-height: 1.5;
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding-top: 12px; /* Align text vertically with input */
+    padding-bottom: 12px;
+}
+
+.phoneInput {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 0; /* Match regular input padding */
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    background: transparent;
+    color: #111;
+    outline: none;
+    width: 100%;
+    border: none;
+}
+
+.phoneInput::placeholder {
+    color: #9ca3af;
+    opacity: 1;
+}
+
+/* Ensure the input group has consistent spacing */
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+/* Alternative more aggressive fix */
+.phoneInput {
+    flex: 1;
+    min-width: 0;
+    border: none !important;
+    padding: 12px 0 !important;  /* More padding */
+    margin: 0 !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+    background: transparent !important;
+    color: #111 !important;
+    outline: none !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}

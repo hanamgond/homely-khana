@@ -1,0 +1,66 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  text-align: center;
+  padding: 2rem;
+  background-color: #f9fafb; /* Light background for better contrast */
+}
+
+.icon {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #1f2937; /* Dark gray */
+}
+
+.message {
+  font-size: 1.1rem;
+  color: #6b7280; /* Medium gray */
+  margin-bottom: 2rem;
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap; /* responsive on small screens */
+  justify-content: center;
+}
+
+/* Base button styles */
+.button, .buttonSecondary {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+/* Primary Button (Orange) */
+.button {
+  background-color: #f97316;
+  color: white;
+}
+
+.button:hover {
+  background-color: #ea580c; /* Darker orange on hover */
+}
+
+/* Secondary Button (Gray) */
+.buttonSecondary {
+  background-color: #e5e7eb;
+  color: #1f2937;
+}
+
+.buttonSecondary:hover {
+  background-color: #d1d5db; /* Darker gray on hover */
+}

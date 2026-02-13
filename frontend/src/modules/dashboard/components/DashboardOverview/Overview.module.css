@@ -1,0 +1,602 @@
+/*frontend/src/modules/dashboard/componets/DashboardOverview/Overview.module.cssjs */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+}
+
+/* Header */
+.header {
+  margin-bottom: 2rem;
+  padding-top: 1rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+}
+
+.subtitle {
+  color: #64748b;
+  font-size: 1rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.date {
+  color: #666;
+  font-size: 0.9rem;
+  margin-left: 1rem;
+}
+
+/* Error Card */
+.errorCard {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #dc2626;
+}
+
+.errorContent {
+  flex: 1;
+}
+
+.retryButton {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.retryButton:hover {
+  background: #b91c1c;
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.statIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.statContent {
+  flex: 1;
+}
+
+.statLabel {
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem 0;
+}
+
+.statValue {
+  color: #1f2937;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+  line-height: 1;
+}
+
+.statSubtext {
+  color: #9ca3af;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.progressBar {
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 2px;
+  background: #16a34a;
+}
+
+.quickActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.quickActionButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  border: 1.5px solid;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quickActionButton:hover:not(:disabled) {
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.quickActionButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Meal Section */
+.mealSection {
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 1rem 0;
+}
+
+.loadingCard {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #FF9801;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.mealCard {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.mealContent {
+  display: flex;
+  padding: 1.5rem;
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .mealContent {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.mealImage {
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.mealDetails {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mealHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.tag {
+  background: #ffedd5;
+  color: #ea580c;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.timeBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #f3f4f6;
+  color: #4b5563;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+}
+
+.mealTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.mealDescription {
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.mealFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.addressInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.trackButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #FF9801;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.trackButton:hover {
+  background: #e68900;
+}
+
+.emptyMealCard {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.emptyMealCard h3 {
+  color: #374151;
+  margin: 0;
+}
+
+.emptyMealCard p {
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Two Column Grid */
+.twoColumnGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .twoColumnGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Calendar Card */
+.calendarCard {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.calendarDay {
+  text-align: center;
+  padding: 0.75rem 0.5rem;
+  border-radius: 12px;
+  transition: background 0.2s;
+}
+
+.calendarDay:hover {
+  background: #f9fafb;
+}
+
+.calendarDay.today {
+  background: #FF9801;
+  color: white;
+}
+
+.calendarDayHeader {
+  margin-bottom: 0.5rem;
+}
+
+.dayName {
+  font-size: 0.7rem;
+  font-weight: 600;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.calendarDay.today .dayName {
+  opacity: 1;
+}
+
+.dateNum {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-top: 0.2rem;
+}
+
+.calendarMeals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.mealIndicator {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.25rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.mealIndicator.lunch {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.mealIndicator.dinner {
+  background: #f0fdf4;
+  color: #047857;
+}
+
+.mealIndicator.skipped {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.noMealIndicator {
+  color: #9ca3af;
+  font-size: 0.9rem;
+  padding: 0.2rem;
+}
+
+.calendarLegend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.legendColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+/* Activity Card */
+.activityCard {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.activityItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.activityItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.activityIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.activityIcon.user {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.activityIcon.system {
+  background: #f0fdf4;
+  color: #10b981;
+}
+
+.activityContent {
+  flex: 1;
+}
+
+.activityText {
+  color: #374151;
+  margin: 0 0 0.25rem 0;
+  font-size: 0.95rem;
+}
+
+.activityTime {
+  color: #9ca3af;
+  font-size: 0.8rem;
+}
+
+.viewAllButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: 1px solid #e5e7eb;
+  color: #FF9801;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.viewAllButton:hover {
+  background: #ffedd5;
+  border-color: #FF9801;
+}
+
+/* Meal Details Card */
+.mealDetailsCard {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.mealDetailRow {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.mealDetailRow:last-child {
+  margin-bottom: 0;
+}
+
+.mealDetailItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.detailLabel {
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detailValue {
+  font-size: 0.95rem;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+/* Empty Activity */
+.emptyActivity {
+  padding: 2rem;
+  text-align: center;
+  color: #9ca3af;
+}
+
+.emptyActivity small {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  margin-top: 0.25rem;
+  display: block;
+}

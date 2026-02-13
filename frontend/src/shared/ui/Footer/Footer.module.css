@@ -1,0 +1,118 @@
+/* styles/Footer.module.css */
+.footer {
+  background-color: var(--primary-orange);
+  color: #ffffff;
+  padding: 14px 20px; /* Reduced from 50px 20px (60% reduction) */
+  position: relative;
+  z-index: 10; /* Ensure footer is above sidebar */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footerGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem; /* Keep original gap */
+}
+
+.brandColumn {
+  grid-column: span 1;
+}
+
+.logo {
+  font-size: 1.75rem; /* Keep original size */
+  font-weight: 700;
+  margin: 0 0 1rem 0; /* Keep original margin */
+  color: white;
+}
+
+.description {
+  font-size: 0.9rem; /* Keep original size */
+  line-height: 1.6; /* Keep original */
+  opacity: 0.9;
+  max-width: 250px;
+  margin-bottom: 0.7rem; /* Reduced from 1.5rem (33% reduction) */
+}
+
+.socialIcons {
+  display: flex;
+  gap: 1rem; /* Keep original */
+}
+
+.socialIcons a {
+  color: white;
+  opacity: 0.8;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.socialIcons a:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.footerHeading {
+  font-size: 1rem; /* Keep original */
+  font-weight: 700;
+  margin: 0 0 1rem 0; /* Keep original */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.95;
+}
+
+.footerLinks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* Keep original */
+}
+
+.footerLinks li {
+  font-size: 0.9rem; /* Keep original */
+}
+
+.footerLinks a, .footerLinks li {
+  color: white;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.footerLinks a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.footerBottom {
+  margin-top: 14px; /* Reduced from 40px (50% reduction) */
+  padding-top: 7px; /* Reduced from 20px (50% reduction) */
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  font-size: 0.85rem; /* Keep original */
+  opacity: 0.8;
+}
+
+/* Responsive Styles - Keep original proportions */
+@media (max-width: 992px) {
+  .footerGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem; /* Keep original */
+  }
+  .brandColumn {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 576px) {
+  .footerGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem; /* Keep original */
+  }
+  .brandColumn {
+    grid-column: span 1;
+  }
+}

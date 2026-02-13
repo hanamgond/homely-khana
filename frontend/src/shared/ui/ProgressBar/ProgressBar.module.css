@@ -1,0 +1,147 @@
+.progressWrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 25px 0;
+}
+
+.progressWrapperOrder {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 7px 0;
+    font-size: 14px;
+}
+
+.progressItem {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 20%;
+    text-align: center;
+}
+
+.progressItemOrder {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 25%;
+    text-align: center;
+}
+
+.progressItem::before {
+    position: absolute;
+    content: "";
+    border-bottom: 2px solid #ccc;
+    width: 100%;
+    top: 20px;
+    left: -50%;
+    z-index: 2;
+}
+
+.progressItemOrder::before {
+    position: absolute;
+    content: "";
+    border-bottom: 2px solid #ccc;
+    width: 100%;
+    top: 5px;
+    left: -50%;
+    z-index: 2;
+}
+
+.progressItem::after {
+    position: absolute;
+    content: "";
+    border-bottom: 2px solid #D6DBE2;
+    width: 100%;
+    top: 20px;
+    left: 50%;
+    z-index: 2;
+}
+
+.progressItemOrder::after {
+    position: absolute;
+    content: "";
+    border-bottom: 2px solid #D6DBE2;
+    width: 100%;
+    top: 5px;
+    left: 50%;
+    z-index: 2;
+}
+
+.progressCounter {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #D6DBE2;
+    margin-bottom: 6px;
+}
+
+.progressCounterOrder {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #D6DBE2;
+    margin-bottom: 6px;
+}
+
+.active {
+    font-weight: bold;
+}
+
+.completed .progressCounter {
+    background-color: #FF9801;
+}
+
+.completedOrder .progressCounterOrder {
+    background-color: #FF9801;
+}
+
+.completed::after {
+    position: absolute;
+    content: "";
+    border-bottom: 2px solid #FF9801;
+    width: 100%;
+    top: 20px;
+    left: 50%;
+    z-index: 3;
+}
+
+.completedOrder::after {
+    position: absolute;
+    content: "";
+    border-bottom: 2px solid #FF9801;
+    width: 100%;
+    top: 5px;
+    left: 50%;
+    z-index: 3;
+}
+
+.progressItem:first-child::before,
+.progressItemOrder:first-child::before,
+.progressItemOrder:last-child::after,
+.progressItem:last-child::after {
+    content: none;
+}
+
+@media (orientation: portrait) {
+    .progressItem {
+        width: 24.4%;
+    }
+
+    .progressWrapper {
+        padding: 20px 0;
+    }
+}

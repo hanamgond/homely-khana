@@ -1,0 +1,140 @@
+/* frontend/src/componets/auth/AuthForm.module.css */
+
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f9f9f7;
+    padding: 2rem;
+    position: relative;
+}
+
+.backToHome {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    color: #4b5563;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.backToHome:hover {
+    color: #111827;
+}
+
+.formCard {
+    background: #ffffff;
+    padding: 2.5rem 3rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+    border: 1px solid #f0f0f0;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: #6b7280;
+    margin-bottom: 2rem;
+}
+
+.tabGroup {
+    display: flex;
+    background-color: #f3f4f6;
+    border-radius: 12px;
+    padding: 5px;
+    margin-bottom: 1.5rem;
+}
+
+.tabButton {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background-color: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #4b5563;
+    transition: all 0.3s ease;
+}
+
+.tabButton.active {
+    background-color: #ffffff;
+    color: var(--primary-orange, #f97316);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    text-align: left;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.inputGroup label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #374151;
+    font-size: 0.9rem;
+}
+
+.inputGroup input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.inputGroup input:focus {
+    outline: none;
+    border-color: var(--primary-orange, #f97316);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+}
+
+.submitButton {
+    background-color: #22c55e; /* Green button from screenshot */
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background-color 0.2s ease;
+}
+
+.submitButton:hover {
+    background-color: #16a34a; /* Darker green */
+}
+
+.secondaryLink {
+    text-align: center;
+    color: var(--primary-orange, #f97316);
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.secondaryLink:hover {
+    text-decoration: underline;
+}

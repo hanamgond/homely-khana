@@ -1,0 +1,345 @@
+/* ---frontend/src/app/menu/page.module.css--- */
+/* --- GLOBAL --- */
+.pageContainer {
+    background-color: #FDFBF7; /* Consistent Cream Background */
+    min-height: 100vh;
+    color: #2c1810;
+    font-family: sans-serif;
+    padding-bottom: 80px;
+}
+
+.maxWidthWrapper {
+    max-width: 1000px; /* Slightly narrower than corporate for focus */
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- HERO --- */
+.heroSection {
+    /* 1. The Image + Dark Overlay */
+    /* We use linear-gradient to darken the image so text is readable */
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)),
+                url('https://images.unsplash.com/photo-1596797038530-2c107229654b?q=80&w=2070&auto=format&fit=crop');
+    
+    /* 2. Positioning */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Optional: Makes image stay still while scrolling (Parallax) */
+    
+    /* 3. Sizing & Spacing */
+    min-height: 400px; /* Give it height like the Corporate page */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    color: white;
+    padding: 80px 20px 100px; /* Extra bottom padding for the overlap */
+    text-align: center;
+    margin-bottom: -50px; /* Overlap effect with the sticky bar */
+    position: relative;
+}
+
+/* Typography updates to match Corporate Luxury feel */
+.heroBadge {
+    display: inline-block; 
+    color: #FCD34D; /* Gold Color */
+    font-size: 0.85rem; 
+    letter-spacing: 3px; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    margin-bottom: 15px;
+    border-bottom: 1px solid #FCD34D; /* Optional: Adds a subtle line like the screenshot */
+    padding-bottom: 5px;
+}
+
+.heroTitle {
+    font-family: 'Times New Roman', serif;
+    font-size: 3.5rem; /* Larger, more impactful */
+    margin-bottom: 15px;
+    color: #ffffff;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3); /* Slight shadow for readability */
+}
+
+.heroSubtitle {
+    color: #e5e5e5;
+    line-height: 1.6;
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    font-weight: 300;
+}
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+    .heroTitle { font-size: 2.5rem; }
+    .heroSection { min-height: 300px; padding-bottom: 80px; }
+}
+
+/* --- STICKY FILTER BAR --- */
+.stickyBar {
+    position: sticky;
+    top: 20px;
+    z-index: 50;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 50px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    border: 1px solid #eee;
+}
+
+.weekToggle {
+    display: flex;
+    background: #f3f4f6;
+    padding: 4px;
+    border-radius: 30px;
+}
+
+.toggleBtn {
+    border: none;
+    background: transparent;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.toggleBtn.active {
+    background: white;
+    color: #2c1810;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.dietFilter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-left: 1px solid #eee;
+    padding-left: 20px;
+}
+
+.filterSelect {
+    border: none;
+    font-size: 0.9rem;
+    color: #444;
+    font-weight: 600;
+    background: transparent;
+    cursor: pointer;
+}
+.filterSelect:focus { outline: none; }
+
+/* --- MENU GRID --- */
+.menuGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dayCard {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #eaeaea;
+    display: grid;
+    grid-template-columns: 100px 1fr 1px 1fr; /* Date | Lunch | Divider | Dinner */
+    align-items: stretch;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dayCard:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.06);
+    border-color: #d97706; /* Hover highlight */
+}
+
+/* Date Column */
+.dateCol {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #fbfbfb;
+    border-right: 1px solid #eaeaea;
+    border-radius: 12px 0 0 12px;
+}
+
+.dayName {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #9ca3af;
+    letter-spacing: 1px;
+}
+
+.dayDate {
+    font-family: 'Times New Roman', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c1810;
+    line-height: 1;
+    margin-top: 5px;
+}
+
+/* Meal Sections */
+.mealSection {
+    padding: 25px;
+}
+
+.mealHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.iconWrapper {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mealType {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #999;
+    letter-spacing: 1px;
+}
+
+.dishTitle {
+    font-family: 'Times New Roman', serif;
+    font-size: 1.4rem;
+    margin: 0 0 8px 0;
+    color: #2c1810;
+}
+
+.dishDesc {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+/* Tags */
+.tagRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.tag {
+    font-size: 0.7rem;
+    background: #fff8f1;
+    color: #d97706;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.calTag {
+    font-size: 0.75rem;
+    color: #999;
+    margin-left: auto; /* Pushes cals to the right */
+}
+
+.verticalDivider {
+    background: #eaeaea;
+    width: 1px;
+    height: 100%;
+}
+
+/* --- CTA BOTTOM --- */
+.ctaSection {
+    margin-top: 60px;
+}
+
+.ctaCard {
+    background: #2c1810;
+    color: white;
+    padding: 40px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ctaTitle {
+    font-family: 'Times New Roman', serif;
+    font-size: 1.8rem;
+    margin: 0 0 5px 0;
+}
+
+.ctaText { color: #d4d4d4; }
+
+.ctaButton {
+    background: #d97706;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+.ctaButton:hover { background: #b45309; }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 800px) {
+    .dayCard {
+        grid-template-columns: 1fr; /* Stack everything */
+        position: relative;
+    }
+
+    .dateCol {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 15px 20px;
+        border-right: none;
+        border-bottom: 1px solid #eaeaea;
+        border-radius: 12px 12px 0 0;
+        background: #fdfdfd;
+    }
+    
+    .dayDate { font-size: 1.5rem; margin-top: 0; }
+    
+    .verticalDivider { display: none; }
+    
+    .mealSection { padding: 20px; border-bottom: 1px solid #f5f5f5; }
+    .mealSection:last-child { border-bottom: none; }
+    
+    .stickyBar {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+        border-radius: 12px;
+    }
+    
+    .weekToggle { justify-content: center; }
+    
+    .dietFilter { 
+        border-left: none; 
+        border-top: 1px solid #eee; 
+        padding-top: 10px;
+        padding-left: 0;
+        justify-content: center;
+    }
+
+    .ctaCard {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+}

@@ -1,0 +1,321 @@
+/* --- HEADER CONTAINER --- */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: white;
+    border-bottom: 1px solid #f3f4f6;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.container {
+    /* FIX: Changed from 1200px to 100% to push items to the edges */
+    width: 100%;
+    margin: 0;
+    padding: 0 40px; /* Added padding so they don't touch the screen edge */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* --- LEFT SECTION --- */
+.leftSection {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.burgerBtn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.logo {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #1f2937;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+}
+
+.accent { color: #FF9801; }
+
+/* --- CENTER SECTION (DESKTOP NAV) --- */
+.desktopNav {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem; /* Increased gap for better spacing */
+}
+
+.navLink {
+    text-decoration: none;
+    color: #4b5563;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s;
+    position: relative;
+    padding: 8px 0;
+}
+
+.navLink:hover { color: #FF9801; }
+
+/* Dropdown Logic */
+.navItem { position: relative; }
+
+.dropdownMenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    width: 220px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 1px solid #f3f4f6;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.2s ease;
+    z-index: 10;
+}
+
+.dropdownLink {
+    text-decoration: none;
+    color: #4b5563;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.dropdownLink:hover {
+    background: #fff7ed;
+    color: #FF9801;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.newBadge {
+    background-color: #FF9801;
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 6px;
+    margin-left: 6px;
+    font-weight: 700;
+    vertical-align: middle;
+}
+
+/* --- RIGHT SECTION --- */
+.rightSection {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+/* --- NEW: Location Dropdown Styles --- */
+.locationWrapper {
+    position: relative;
+    cursor: pointer;
+}
+
+.locationBadge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff7ed;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: #d97706;
+    font-weight: 700;
+    transition: background 0.2s;
+}
+
+.locationBadge:hover {
+    background: #ffedd5;
+}
+
+.locationDropdown {
+    position: absolute;
+    top: 120%; /* Pushes it slightly below */
+    right: 0;
+    background: white;
+    width: 180px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    border: 1px solid #f3f4f6;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    z-index: 20;
+    animation: fadeIn 0.15s ease;
+}
+
+.cityItem {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    color: #374151;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.cityItem:hover {
+    background: #f9fafb;
+    color: #111827;
+}
+
+.activeCity {
+    background: #fff7ed;
+    color: #d97706;
+    font-weight: 600;
+}
+
+.iconBtn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.iconBtn:hover {
+    background-color: #f3f4f6;
+}
+
+.loginBtn {
+    text-decoration: none;
+    background-color: #1f2937;
+    color: white;
+    padding: 8px 24px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.loginBtn:hover { background-color: black; }
+
+.profileBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #374151;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    background: #FF9801;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* --- MOBILE DRAWER STYLES (Unchanged) --- */
+.overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 2000;
+    opacity: 0; visibility: hidden; transition: all 0.3s;
+    backdrop-filter: blur(2px);
+}
+.showOverlay { opacity: 1; visibility: visible; }
+
+.drawer {
+    position: fixed; top: 0; left: 0; 
+    width: 85%; max-width: 320px; height: 100%;
+    background: white; z-index: 2001;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+}
+.openDrawer { transform: translateX(0); }
+
+.drawerHeader {
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.drawerProfile {
+    display: flex; align-items: center; gap: 12px; text-decoration: none;
+}
+
+.avatarLarge {
+    width: 48px; height: 48px; background: #FF9801; color: white;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; font-weight: bold;
+}
+
+.welcomeText { margin: 0; font-weight: 700; color: #111827; font-size: 1rem; }
+.viewProfile { margin: 0; font-size: 0.85rem; color: #6b7280; }
+
+.authBox { display: flex; flex-direction: column; gap: 8px; }
+.authTitle { margin: 0; font-weight: 700; color: #111827; }
+.drawerLoginBtn {
+    background: #FF9801; color: white; padding: 8px 16px; border-radius: 6px;
+    text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-block; text-align: center;
+}
+
+.closeBtn { background: none; border: none; cursor: pointer; color: #6b7280; padding: 4px; }
+
+.drawerScrollable { overflow-y: auto; flex: 1; padding: 1.5rem; }
+.drawerSection { margin-bottom: 2rem; }
+
+.sectionTitle {
+    font-size: 0.75rem; text-transform: uppercase; color: #9ca3af;
+    font-weight: 700; letter-spacing: 0.5px; margin-bottom: 0.8rem;
+}
+
+.drawerItem {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0; text-decoration: none;
+    color: #374151; font-weight: 500; font-size: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.drawerItem:last-child { border-bottom: none; }
+.itemIcon { color: #9ca3af; }
+
+.comingSoon {
+    margin-left: auto; background: #f3f4f6; color: #6b7280;
+    font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: 600;
+}
+
+.logoutBtn {
+    width: 100%; text-align: left; background: #fee2e2; color: #991b1b;
+    border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer;
+}
+
+/* --- RESPONSIVE BREAKPOINTS --- */
+@media (max-width: 1100px) {
+    /* Hide desktop nav earlier since we spread things out */
+    .desktopNav { display: none; }
+    .locationWrapper { display: none; } /* Move location to drawer if needed on tablet */
+    .burgerBtn { display: block; }
+    .container { padding: 0 20px; }
+}
