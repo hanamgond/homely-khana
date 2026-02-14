@@ -1,4 +1,4 @@
-//frontend/src/app/menu/page.js
+//frontend/src/modules/subscribe/components/MenuClient.js
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -7,6 +7,7 @@ import {
   Sun, Moon, ChevronRight, Filter 
 } from 'lucide-react';
 import styles from './Menu.module.css';
+import api from '@/shared/lib/api';
 
 // --- HELPER: Get date for a specific day ---
 const getDateForDay = (dayName, isNextWeek) => {
@@ -49,7 +50,10 @@ export default function MenuPage() {
     async function fetchMenu() {
       try {
         // Matches the backend route we just added: router.get('/', ...)
-        const res = await fetch('http://localhost:5000/api/menu'); 
+
+        const baseURL = process.env.NEXT_PUBLIC_URL || 'http://localhost:5000';
+        const res = await fetch(`${baseURL}/api/menu`);
+
         if (!res.ok) throw new Error('Failed to fetch menu');
         
         const data = await res.json();

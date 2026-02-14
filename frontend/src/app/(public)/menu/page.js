@@ -1,4 +1,7 @@
+//frontend/src/app/(public)/menu/page.js
+
 import { MenuClient } from "@/modules/subscribe";
+import api from '@/shared/lib/api';
 
 export const metadata = {
   title: "Weekly Menu | Homely Khana",
