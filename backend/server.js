@@ -11,16 +11,21 @@ const app = express();
 // --- 1. Setup CORS ---
 const allowedOrigins = [
     "http://homelykhana.in",
-    "http://13.48.120.129",
+    "https://homelykhana.in", // Added https
     "http://localhost:3000", 
-    "http://localhost:3001" 
+    "http://localhost:3001",
+    process.env.FRONTEND_URL   // This will now pick up the '*' from Railway!
 ];
 
 app.use(cors({
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
+        // Allow if there's no origin (like mobile apps/curl) 
+        // OR if the origin is in our list 
+        // OR if FRONTEND_URL is set to '*'
+        if (!origin || allowedOrigins.includes(origin) || process.env.FRONTEND_URL === '*') {
             callback(null, true);
         } else {
+            console.log("🚫 CORS Blocked Origin:", origin);
             callback(new Error('Not allowed by CORS'));
         }
     },
