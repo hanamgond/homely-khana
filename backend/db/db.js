@@ -1,3 +1,4 @@
+//backend/db/db.js
 const { Pool } = require("pg");
 
 // We tell the Pool EXACTLY which variable goes where.

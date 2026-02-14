@@ -1,3 +1,4 @@
+//backend/routes/auth.js
 if (process.env.NODE_ENV !== "production") {
   require('dotenv').config()
 }
@@ -219,6 +220,43 @@ router.post('/forgot-password', async (req, res, next) => {
     await sendEmail(email, "Reset Password OTP", emailHtml);
 
     res.json({ success: true, message: "OTP sent to your email" });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ==========================================
+// 5. RESET PASSWORD (VERIFY OTP & UPDATE) -- ADD THIS SECTION
+// ==========================================
+
+router.post('/reset-password', async (req, res, next) => {
+  const { email, otp, newPassword } = req.body;
+
+  try {
+    // 1. Find user with matching Email and Valid Token
+    // We check if the token matches AND if the expiration time hasn't passed
+    const userResult = await pool.query(
+      'SELECT * FROM users WHERE email = $1 AND reset_password_token = $2 AND reset_password_expires > $3',
+      [email, otp, Date.now()]
+    );
+
+    if (userResult.rows.length === 0) {
+      const error = new Error("Invalid or expired OTP");
+      error.statusCode = 400;
+      return next(error);
+    }
+
+    // 2. Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // 3. Update User: Set new password and clear reset tokens
+    await pool.query(
+      'UPDATE users SET password_hash = $1, reset_password_token = NULL, reset_password_expires = NULL WHERE email = $2',
+      [hashedPassword, email]
+    );
+
+    res.json({ success: true, message: "Password reset successful! Please login." });
+
   } catch (err) {
     next(err);
   }
