@@ -1,7 +1,10 @@
+//admin-portal/src/lib/api.js
 // This function creates a helper to make authenticated API calls
 export const createApiClient = (token) => {
   // Base URL for your backend
-  const baseURL = 'http://localhost:5000/api';
+  const baseURL = process.env.NEXT_PUBLIC_API_URL 
+  ? `${process.env.NEXT_PUBLIC_API_URL}/api` 
+  : 'http://localhost:5000/api';
 
   const apiClient = async (endpoint, options = {}) => {
     // Merge default options with any custom options
