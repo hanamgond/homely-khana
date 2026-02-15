@@ -8,86 +8,39 @@ const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 
-// --- 1. Setup CORS ---
+// --- 1. Setup CORS (Production Safe) ---
 const allowedOrigins = [
-    "http://homelykhana.in",
     "https://homelykhana.in",
-    "https://admin.homelykhana.in", // Added https
-    "http://localhost:3000", 
-    "http://localhost:3001"  // This will now pick up the '*' from Railway!
+    "https://admin.homelykhana.in",
+    "http://localhost:3000",
+    "http://localhost:3001"
 ];
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow if there's no origin (like mobile apps/curl) 
-        // OR if the origin is in our list 
-        // OR if FRONTEND_URL is set to '*'
-        if (!origin || allowedOrigins.includes(origin) || process.env.FRONTEND_URL === '*') {
+        if (!origin) return callback(null, true); // allow Postman / server-to-server
+        
+        if (allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             console.log("🚫 CORS Blocked Origin:", origin);
-            callback(new Error('Not allowed by CORS'));
+            callback(new Error("Not allowed by CORS"));
         }
     },
-    methods: "GET,POST,PUT,DELETE",
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
 
-app.use(express.json()); 
+app.use(express.json());
 
-// ⭐⭐⭐ ADD THIS EXACT DEBUG MIDDLEWARE ⭐⭐⭐
-app.use((req, res, next) => {
-    if (req.originalUrl.includes('address')) {
-        console.log(`🔍 [ADDRESS-DEBUG] ${new Date().toISOString()}`);
-        console.log(`   Method: ${req.method}`);
-        console.log(`   Original URL: "${req.originalUrl}"`);
-        console.log(`   Full URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`);
-        console.log(`   Path: ${req.path}`);
-        console.log(`   Query:`, req.query);
-        console.log(`   Headers:`, {
-            'authorization': req.headers.authorization ? 'Present' : 'Missing',
-            'content-type': req.headers['content-type'],
-            'origin': req.headers.origin
-        });
-        console.log(`   Body keys:`, Object.keys(req.body));
-    }
-    next();
-});
-// ⭐⭐⭐ END DEBUG MIDDLEWARE ⭐⭐⭐
-// --- 2.5 Request Logging Middleware ---
-app.use((req, res, next) => {
-    console.log(`\n📨 [${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
-    console.log('   Headers:', {
-        authorization: req.headers.authorization ? 'Present' : 'Missing',
-        origin: req.headers.origin,
-        'user-agent': req.headers['user-agent']?.substring(0, 50) + '...'
+// --- Minimal Dev Logger (Disabled in Production) ---
+if (process.env.NODE_ENV !== "production") {
+    app.use((req, res, next) => {
+        console.log(`${req.method} ${req.originalUrl}`);
+        next();
     });
-    
-    // Store the original send function
-    const originalSend = res.send;
-    
-    // Override send to log response
-    res.send = function(body) {
-        console.log(`📨 Response for ${req.method} ${req.originalUrl}:`);
-        console.log('   Status:', res.statusCode);
-        console.log('   Content-Type:', res.get('Content-Type'));
-        
-        // Try to parse as JSON to see if it's HTML
-        if (typeof body === 'string') {
-            if (body.trim().startsWith('<!DOCTYPE') || body.trim().startsWith('<html')) {
-                console.error('❌ WARNING: Returning HTML instead of JSON!');
-                console.error('   First 200 chars:', body.substring(0, 200));
-            } else if (body.length < 500) {
-                console.log('   Body:', body);
-            }
-        }
-        
-        // Call the original send function
-        return originalSend.call(this, body);
-    };
-    
-    next();
-});
+}
+
 
 // --- 2. Health Check Endpoint (Refined) ---
 app.get("/api/health", async (req, res) => {
