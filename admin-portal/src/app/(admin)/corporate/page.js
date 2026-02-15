@@ -11,7 +11,14 @@ export default function CorporateLeadsPage() {
     const fetchLeads = async () => {
       try {
         // Ensure this points to your backend URL (usually port 5000)
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/corporate/leads`);
+        const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+        if (!API_URL) {
+        throw new Error("NEXT_PUBLIC_API_URL is not defined. Check Vercel environment variables.");
+        }
+
+        const res = await fetch(`${API_URL}/api/corporate/leads`);
+
         if (res.ok) {
           const data = await res.json();
           setLeads(data);
