@@ -51,12 +51,9 @@ export default function MenuPage() {
       try {
         // Matches the backend route we just added: router.get('/', ...)
 
-        const baseURL = process.env.NEXT_PUBLIC_URL || 'http://localhost:5000';
-        const res = await fetch(`${baseURL}/api/menu`);
-
-        if (!res.ok) throw new Error('Failed to fetch menu');
-        
-        const data = await res.json();
+        // Replace the lines above with this:
+        const res = await api.get('/api/menu');
+        const data = res.data;
         const items = data.data ? data.data : data;
         
         setRawData(items); 

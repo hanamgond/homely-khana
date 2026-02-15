@@ -11,8 +11,12 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'plus.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'maps.gstatic.com', // 👈 Add this line
+      },
     ],
   },
 };
 
-export default nextConfig
+export default nextConfig;

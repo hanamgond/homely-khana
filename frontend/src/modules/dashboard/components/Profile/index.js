@@ -1,7 +1,7 @@
 //frtonend/src/modules/dashboard/components/profile/index.js
 'use client';
 
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useCallback } from 'react';
 import { toast } from "sonner";
 import { AppContext } from "@/shared/lib/AppContext";
 import { 

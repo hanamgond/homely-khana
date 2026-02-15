@@ -178,7 +178,7 @@ export default function TeamPage() {
               <tr key={user.id} className="group hover:bg-gray-50/50 transition-colors">
                 <td className="p-5">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-sm font-bold text-gray-600">
+                    <div className="h-10 w-10 rounded-full bg-linear-to-br from-gray-100 to-gray-200 flex items-center justify-center text-sm font-bold text-gray-600">
                         {user.name.charAt(0)}
                     </div>
                     <div>
@@ -307,7 +307,7 @@ export default function TeamPage() {
                     {/* Conditional Logic (Updated Dropdown) */}
                     {(formData.role === 'manager' || formData.role === 'delivery') && (
                         <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
-                            <label className="block text-xs font-bold text-blue-800 mb-2 flex items-center gap-1"><MapPin size={12}/> Assigned Zone</label>
+                            <label className="block text-xs font-bold text-blue-800 mb-2 items-center gap-1"><MapPin size={12}/> Assigned Zone</label>
                             <div className="relative">
                                 <select 
                                     name="zone" 
@@ -339,7 +339,7 @@ export default function TeamPage() {
                     {/* Kitchen Station Dropdown */}
                     {formData.role === 'kitchen' && (
                         <div className="bg-red-50 p-4 rounded-xl border border-red-100">
-                            <label className="block text-xs font-bold text-red-800 mb-2 flex items-center gap-1"><ChefHat size={12}/> Kitchen Station</label>
+                            <label className="text-xs font-bold text-red-800 mb-2 flex items-center gap-1"><ChefHat size={12}/> Kitchen Station</label>
                             <div className="relative">
                                 <select name="kitchen_station" value={formData.kitchen_station} onChange={handleChange} className="w-full border border-red-200 rounded-lg p-2.5 text-sm bg-white focus:ring-2 focus:ring-red-500 outline-none appearance-none cursor-pointer">
                                     <option value="">Select Station...</option>
