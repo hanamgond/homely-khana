@@ -19520,3 +19520,14 @@ Error: Route.post() requires a callback function but got a [object Undefined]
     at /Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/pg-pool/index.js:45:11
     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
     at async /Users/hanamgondvagge/My Projects/homelykhana/backend/routes/userDashboard.js:277:20
+2026-02-15 21:37:14: [ERROR] OPTIONS /api/auth/login: Error: Not allowed by CORS
+    at origin (/Users/hanamgondvagge/My Projects/homelykhana/backend/server.js:29:22)
+    at /Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/cors/lib/index.js:219:13
+    at optionsCallback (/Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/cors/lib/index.js:199:9)
+    at corsMiddleware (/Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/cors/lib/index.js:204:7)
+    at Layer.handle [as handle_request] (/Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/express/lib/router/index.js:328:13)
+    at /Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/express/lib/router/index.js:286:9
+    at Function.process_params (/Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/express/lib/router/index.js:280:10)
+    at expressInit (/Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/express/lib/middleware/init.js:40:5)

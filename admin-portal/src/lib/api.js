@@ -1,19 +1,22 @@
 //admin-portal/src/lib/api.js
-// This function creates a helper to make authenticated API calls
+// admin-portal/src/lib/api.js
+
 export const createApiClient = (token) => {
-  // Base URL for your backend
-  const baseURL = process.env.NEXT_PUBLIC_API_URL 
-  ? `${process.env.NEXT_PUBLIC_API_URL}/api` 
-  : 'http://localhost:5000/api';
+
+  if (!process.env.NEXT_PUBLIC_API_URL) {
+    throw new Error(
+      "NEXT_PUBLIC_API_URL is not defined. Check Vercel environment variables."
+    );
+  }
+
+  const baseURL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
   const apiClient = async (endpoint, options = {}) => {
-    // Merge default options with any custom options
     const config = {
       ...options,
       headers: {
         ...options.headers,
         'Content-Type': 'application/json',
-        // Add the JWT token to the Authorization header
         'Authorization': `Bearer ${token}`,
       },
     };
