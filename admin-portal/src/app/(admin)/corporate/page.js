@@ -1,3 +1,4 @@
+//admin-portal/src/app/(admin)/corporate/page.js
 'use client';
 import React, { useEffect, useState } from 'react';
 import { Building2, Phone, Mail, Calendar, Users } from 'lucide-react';
