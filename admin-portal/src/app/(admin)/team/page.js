@@ -1,3 +1,4 @@
+//admin-portal/src/app/(admin)/team/page.js
 'use client';
 import React, { useState, useEffect } from 'react';
 import { 
@@ -24,7 +25,7 @@ export default function TeamPage() {
   // --- Fetch Logic ---
   const fetchStaff = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/team`);
+      const res = await fetch(`${API_URL}/api/team`);
       if (res.ok) {
         const data = await res.json();
         setStaff(data);
@@ -51,7 +52,7 @@ export default function TeamPage() {
     e.preventDefault();
     setErrorMsg('');
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/team`, {
+      const res = await fetch(`${API_URL}/api/team`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -71,7 +72,7 @@ export default function TeamPage() {
   };
   const toggleStatus = async (id, currentStatus) => {
     try {
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/team/${id}/status`, {
+        await fetch(`${API_URL}/api/team/${id}/status`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ is_active: !currentStatus })
