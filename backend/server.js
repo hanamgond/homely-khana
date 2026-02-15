@@ -11,10 +11,10 @@ const app = express();
 // --- 1. Setup CORS ---
 const allowedOrigins = [
     "http://homelykhana.in",
-    "https://homelykhana.in", // Added https
+    "https://homelykhana.in",
+    "https://admin.homelykhana.in", // Added https
     "http://localhost:3000", 
-    "http://localhost:3001",
-    process.env.FRONTEND_URL   // This will now pick up the '*' from Railway!
+    "http://localhost:3001"  // This will now pick up the '*' from Railway!
 ];
 
 app.use(cors({
