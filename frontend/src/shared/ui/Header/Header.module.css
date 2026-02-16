@@ -12,13 +12,13 @@
 }
 
 .container {
-    /* FIX: Changed from 1200px to 100% to push items to the edges */
     width: 100%;
     margin: 0;
-    padding: 0 40px; /* Added padding so they don't touch the screen edge */
+    padding: 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative; /* Essential for mobile logo centering */
 }
 
 /* --- LEFT SECTION --- */
@@ -26,10 +26,10 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex: 1; /* Balances space for mobile centering */
 }
 
 .burgerBtn {
-    display: none;
     background: none;
     border: none;
     cursor: pointer;
@@ -37,20 +37,25 @@
 }
 
 .logo {
-    font-size: 1.6rem;
+    font-size: 1.9rem;
     font-weight: 800;
     color: #1f2937;
     text-decoration: none;
     letter-spacing: -0.5px;
+    /* Absolute centering for mobile */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
 }
 
 .accent { color: #FF9801; }
 
 /* --- CENTER SECTION (DESKTOP NAV) --- */
 .desktopNav {
-    display: flex;
+    display: none; /* Hidden on mobile */
     align-items: center;
-    gap: 2.5rem; /* Increased gap for better spacing */
+    gap: 3rem; /* Increased gap between nav items */
 }
 
 .navLink {
@@ -68,7 +73,6 @@
 
 .navLink:hover { color: #FF9801; }
 
-/* Dropdown Logic */
 .navItem { position: relative; }
 
 .dropdownMenu {
@@ -121,13 +125,13 @@
 .rightSection {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    justify-content: flex-end;
+    gap: 1.5rem; 
+    flex: 1; /* Balances space for mobile centering */
 }
 
-/* --- NEW: Location Dropdown Styles --- */
 .locationWrapper {
-    position: relative;
-    cursor: pointer;
+    display: none; /* Hidden on mobile */
 }
 
 .locationBadge {
@@ -135,51 +139,11 @@
     align-items: center;
     gap: 6px;
     background: #fff7ed;
-    padding: 8px 16px;
+    padding: 6px 12px;
     border-radius: 20px;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: #d97706;
     font-weight: 700;
-    transition: background 0.2s;
-}
-
-.locationBadge:hover {
-    background: #ffedd5;
-}
-
-.locationDropdown {
-    position: absolute;
-    top: 120%; /* Pushes it slightly below */
-    right: 0;
-    background: white;
-    width: 180px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-    border: 1px solid #f3f4f6;
-    padding: 6px;
-    display: flex;
-    flex-direction: column;
-    z-index: 20;
-    animation: fadeIn 0.15s ease;
-}
-
-.cityItem {
-    padding: 10px 12px;
-    font-size: 0.9rem;
-    color: #374151;
-    border-radius: 8px;
-    transition: background 0.2s;
-}
-
-.cityItem:hover {
-    background: #f9fafb;
-    color: #111827;
-}
-
-.activeCity {
-    background: #fff7ed;
-    color: #d97706;
-    font-weight: 600;
 }
 
 .iconBtn {
@@ -193,19 +157,23 @@
     transition: background 0.2s;
 }
 
-.iconBtn:hover {
-    background-color: #f3f4f6;
+.iconBtn:hover { background-color: #f3f4f6; }
+
+.desktopUtils {
+    display: none; /* Hidden on mobile */
 }
 
+/* BIGGER LOGIN BUTTON (DESKTOP) */
 .loginBtn {
     text-decoration: none;
     background-color: #1f2937;
     color: white;
-    padding: 8px 24px;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    padding: 9px 24px; 
+    border-radius: 7px;
+    font-size: 0.9rem;    
     font-weight: 600;
     transition: background 0.2s;
+    white-space: nowrap;
 }
 
 .loginBtn:hover { background-color: black; }
@@ -213,11 +181,11 @@
 .profileBtn {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     text-decoration: none;
     color: #374151;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 
 .avatar {
@@ -232,7 +200,7 @@
     font-weight: bold;
 }
 
-/* --- MOBILE DRAWER STYLES (Unchanged) --- */
+/* --- MOBILE DRAWER STYLES --- */
 .overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.5); z-index: 2000;
@@ -248,74 +216,111 @@
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex; flex-direction: column;
-    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
 }
 .openDrawer { transform: translateX(0); }
 
-.drawerHeader {
-    padding: 1.5rem;
-    background: #f9fafb;
-    border-bottom: 1px solid #e5e7eb;
+.drawerHeader { 
+    padding: 1.5rem; 
+    background: #f9fafb; 
+    border-bottom: 1px solid #e5e7eb; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+}
+
+/* AUTH BUTTON IN DRAWER */
+.authBox {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
 }
 
-.drawerProfile {
-    display: flex; align-items: center; gap: 12px; text-decoration: none;
+.authTitle {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1f2937;
 }
 
+.drawerLoginBtn {
+    background-color: #FF9801; /* Primary Orange */
+    color: white !important;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-align: center;
+    display: block;
+    transition: background 0.2s ease;
+}
+
+.drawerLoginBtn:hover { background-color: #e68a00; }
+
+.drawerProfile { display: flex; align-items: center; gap: 12px; text-decoration: none; }
 .avatarLarge {
     width: 48px; height: 48px; background: #FF9801; color: white;
     border-radius: 50%; display: flex; align-items: center; justify-content: center;
     font-size: 1.2rem; font-weight: bold;
 }
 
-.welcomeText { margin: 0; font-weight: 700; color: #111827; font-size: 1rem; }
+.welcomeText { margin: 0; font-weight: 700; color: #111827; }
 .viewProfile { margin: 0; font-size: 0.85rem; color: #6b7280; }
-
-.authBox { display: flex; flex-direction: column; gap: 8px; }
-.authTitle { margin: 0; font-weight: 700; color: #111827; }
-.drawerLoginBtn {
-    background: #FF9801; color: white; padding: 8px 16px; border-radius: 6px;
-    text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-block; text-align: center;
-}
-
-.closeBtn { background: none; border: none; cursor: pointer; color: #6b7280; padding: 4px; }
+.closeBtn { background: none; border: none; color: #6b7280; }
 
 .drawerScrollable { overflow-y: auto; flex: 1; padding: 1.5rem; }
 .drawerSection { margin-bottom: 2rem; }
 
-.sectionTitle {
-    font-size: 0.75rem; text-transform: uppercase; color: #9ca3af;
-    font-weight: 700; letter-spacing: 0.5px; margin-bottom: 0.8rem;
+.sectionTitle { 
+    font-size: 0.75rem; 
+    text-transform: uppercase; 
+    color: #9ca3af; 
+    font-weight: 700; 
+    margin-bottom: 0.8rem;
+    border-bottom: 1px solid #f3f4f6; /* Visual grouping for sections */
+    padding-bottom: 4px;
 }
 
-.drawerItem {
-    display: flex; align-items: center; gap: 12px;
-    padding: 12px 0; text-decoration: none;
-    color: #374151; font-weight: 500; font-size: 1rem;
-    border-bottom: 1px solid #f3f4f6;
+.drawerItem { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    padding: 12px 0; 
+    text-decoration: none; 
+    color: #374151; 
+    font-weight: 500; 
+    border-bottom: 1px solid #f3f4f6; 
 }
 
-.drawerItem:last-child { border-bottom: none; }
-.itemIcon { color: #9ca3af; }
+.logoutBtn { width: 100%; text-align: left; background: #fee2e2; color: #991b1b; border: none; padding: 12px; border-radius: 8px; font-weight: 600; margin-top: 1rem;}
 
-.comingSoon {
-    margin-left: auto; background: #f3f4f6; color: #6b7280;
-    font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: 600;
-}
+/* --- WEBSITE VIEW (1024px+) --- */
+@media (min-width: 1024px) {
+    .container { padding: 0 40px; }
+    
+    .burgerBtn { display: none; }
+    
+    .leftSection { flex: 0.7; }
 
-.logoutBtn {
-    width: 100%; text-align: left; background: #fee2e2; color: #991b1b;
-    border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer;
-}
+    .logo {
+        position: static; 
+        transform: none;
+        font-size: 1.6rem;
+        margin-right: 4rem; /* Moves Nav closer to Logo */
+    }
 
-/* --- RESPONSIVE BREAKPOINTS --- */
-@media (max-width: 1100px) {
-    /* Hide desktop nav earlier since we spread things out */
-    .desktopNav { display: none; }
-    .locationWrapper { display: none; } /* Move location to drawer if needed on tablet */
-    .burgerBtn { display: block; }
-    .container { padding: 0 20px; }
+    .desktopNav { 
+        display: flex; 
+        margin-right: auto; /* Pushes Nav to the left */
+    }
+
+    .locationWrapper { display: flex; }
+    
+    .rightSection {
+        flex: 0; 
+        gap: 2rem;
+    }
+
+    .desktopUtils { display: flex; align-items: center; }
 }

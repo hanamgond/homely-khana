@@ -1,4 +1,3 @@
-//frontend/src/shared/ui/Header/index.js
 'use client';
 
 import React, { useState, useContext, useEffect } from 'react';
@@ -6,8 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AppContext } from "@/shared/lib/AppContext";
 import { 
-    Menu, X, ShoppingCart, User, ChevronDown, MapPin, 
-    Utensils, ShoppingBag, Building, ShieldCheck, Phone, BookOpen 
+    Menu, X, ShoppingCart, ChevronDown, MapPin, 
+    Utensils, ShoppingBag, Building, Phone, BookOpen 
 } from 'lucide-react';
 import styles from './Header.module.css';
 
@@ -15,32 +14,21 @@ export default function Header() {
     const { user, logout } = useContext(AppContext);
     const pathname = usePathname();
 
-    // State
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [isMealDropdownOpen, setIsMealDropdownOpen] = useState(false);
     
-    // Location State
-    const [isLocationOpen, setIsLocationOpen] = useState(false);
-    const [selectedCity, setSelectedCity] = useState("Navi Mumbai");
-    const cities = ["Navi Mumbai", "Mumbai", "Pune", "Bangalore", "Hyderabad"];
+    // Default location (no longer interactive)
+    const selectedCity = "Bangalore";
 
-    // Close menus when route changes
     useEffect(() => {
         setIsDrawerOpen(false);
         setIsMealDropdownOpen(false);
-        setIsLocationOpen(false);
     }, [pathname]);
 
-    // Prevent body scroll when drawer is open
     useEffect(() => {
         if (isDrawerOpen) document.body.style.overflow = 'hidden';
         else document.body.style.overflow = 'unset';
     }, [isDrawerOpen]);
-
-    const handleCitySelect = (city) => {
-        setSelectedCity(city);
-        setIsLocationOpen(false);
-    };
 
     return (
         <>
@@ -64,7 +52,6 @@ export default function Header() {
                             onMouseEnter={() => setIsMealDropdownOpen(true)}
                             onMouseLeave={() => setIsMealDropdownOpen(false)}
                         >
-                            {/* CHANGE 1: Renamed 'Meal Plans' to 'Subscriptions' */}
                             <Link href="/subscribe" className={styles.navLink}>
                                 Subscriptions <ChevronDown size={14} />
                             </Link>
@@ -75,66 +62,43 @@ export default function Header() {
                                 </div>
                             )}
                         </div>
-
                         <Link href="/menu" className={styles.navLink}>Weekly Menu</Link>
-                        
-                        {/* CHANGE 2: Added 'Our Story' Link */}
                         <Link href="/about" className={styles.navLink}>Our Story</Link>
-                        
                         <Link href="/pantry" className={styles.navLink}>
                             The Pantry <span className={styles.newBadge}>NEW</span>
                         </Link>
-                        
                         <Link href="/corporate" className={styles.navLink}>Corporate</Link>
                     </nav>
 
                     {/* RIGHT: Utilities */}
                     <div className={styles.rightSection}>
                         
-                        {/* Location Dropdown */}
-                        <div 
-                            className={styles.locationWrapper}
-                            onClick={() => setIsLocationOpen(!isLocationOpen)}
-                            onMouseLeave={() => setIsLocationOpen(false)}
-                        >
+                        {/* Static Location (Hidden on mobile via CSS) */}
+                        <div className={styles.locationWrapper}>
                             <div className={styles.locationBadge}>
                                 <MapPin size={16} color="#FF9801" />
-                                <span>{selectedCity}</span>
-                                <ChevronDown size={14} color="#d97706" />
+                                <span className={styles.cityName}>{selectedCity}</span>
                             </div>
-
-                            {isLocationOpen && (
-                                <div className={styles.locationDropdown}>
-                                    {cities.map((city) => (
-                                        <div 
-                                            key={city} 
-                                            className={`${styles.cityItem} ${selectedCity === city ? styles.activeCity : ''}`}
-                                            onClick={(e) => {
-                                                e.stopPropagation(); 
-                                                handleCitySelect(city);
-                                            }}
-                                        >
-                                            {city}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
                         </div>
 
-                        <Link href="/cart" className={styles.iconBtn}>
+                        {/* Cart redirected to Subscribe */}
+                        <Link href="/subscribe" className={styles.iconBtn}>
                             <ShoppingCart size={22} color="#374151" />
                         </Link>
 
-                        {user ? (
-                            <Link href="/dashboard" className={styles.profileBtn}>
-                                <div className={styles.avatar}>{user.name[0]}</div>
-                                <span className={styles.userName}>{user.name.split(' ')[0]}</span>
-                            </Link>
-                        ) : (
-                            <Link href="/login" className={styles.loginBtn}>
-                                Login
-                            </Link>
-                        )}
+                        {/* Profile/Login section */}
+                        <div className={styles.desktopUtils}>
+                            {user ? (
+                                <Link href="/dashboard" className={styles.profileBtn}>
+                                    <div className={styles.avatar}>{user.name[0]}</div>
+                                    <span className={styles.userName}>{user.name.split(' ')[0]}</span>
+                                </Link>
+                            ) : (
+                                <Link href="/login" className={styles.loginBtn}>
+                                    Login
+                                </Link>
+                            )}
+                        </div>
                     </div>
                 </div>
             </header>
@@ -166,16 +130,14 @@ export default function Header() {
                 <div className={styles.drawerScrollable}>
                     <div className={styles.drawerSection}>
                         <h4 className={styles.sectionTitle}>Eat Daily</h4>
-                        {/* Updated Mobile Label as well */}
                         <Link href="/subscribe" className={styles.drawerItem}>
                             <Utensils size={18} className={styles.itemIcon} />
                             Subscriptions
                         </Link>
                         <Link href="/menu" className={styles.drawerItem}>
-                            <span style={{fontSize:'1.1rem'}}>📅</span>
+                            <span style={{fontSize:'1.1rem', marginRight: '4px'}}>📅</span>
                             Weekly Menu
                         </Link>
-                         {/* Added Mobile Link for Our Story */}
                          <Link href="/about" className={styles.drawerItem}>
                             <BookOpen size={18} className={styles.itemIcon} />
                             Our Story
@@ -187,23 +149,18 @@ export default function Header() {
                         <Link href="/pantry" className={styles.drawerItem}>
                             <ShoppingBag size={18} className={styles.itemIcon} />
                             Pickles & Podis
-                            <span className={styles.comingSoon}>Coming Soon</span>
-                        </Link>
-                    </div>
-
-                    <div className={styles.drawerSection}>
-                        <h4 className={styles.sectionTitle}>Partner with Us</h4>
-                        <Link href="/corporate" className={styles.drawerItem}>
-                            <Building size={18} className={styles.itemIcon} />
-                            Corporate Catering
                         </Link>
                     </div>
 
                     <div className={styles.drawerSection}>
                         <h4 className={styles.sectionTitle}>Support</h4>
+                        <Link href="/corporate" className={styles.drawerItem}>
+                            <Building size={18} className={styles.itemIcon} />
+                            Corporate
+                        </Link>
                         <Link href="/contact" className={styles.drawerItem}>
                             <Phone size={18} className={styles.itemIcon} />
-                            Contact Support
+                            Contact
                         </Link>
                     </div>
 

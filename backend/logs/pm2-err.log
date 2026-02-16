@@ -19586,3 +19586,53 @@ Error: Route.post() requires a callback function but got a [object Undefined]
     at Function.process_params (/Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/express/lib/router/index.js:346:12)
     at next (/Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/express/lib/router/index.js:280:10)
     at expressInit (/Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/express/lib/middleware/init.js:40:5)
+2026-02-16 22:40:42: ❌ [auth-middleware] No token provided
+2026-02-16 22:40:42: ❌ [auth-middleware] No token provided
+2026-02-16 22:40:42: ❌ [auth-middleware] No token provided
+2026-02-16 22:40:42: ❌ [auth-middleware] No token provided
+2026-02-16 22:40:42: ❌ [auth-middleware] No token provided
+2026-02-16 22:40:42: ❌ [auth-middleware] No token provided
+2026-02-16 22:40:42: ❌ [auth-middleware] No token provided
+2026-02-16 22:40:42: ❌ [auth-middleware] No token provided
+2026-02-16 22:40:42: ❌ [auth-middleware] No token provided
+2026-02-16 22:40:42: ❌ [auth-middleware] No token provided
+2026-02-17 00:58:33: ❌ [userDashboard/enhanced-subscriptions] Error: could not identify an equality operator for type json
+2026-02-17 00:58:33: [ERROR] GET /api/userDashboard/enhanced-subscriptions: error: could not identify an equality operator for type json
+    at /Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /Users/hanamgondvagge/My Projects/homelykhana/backend/routes/userDashboard.js:277:20
+2026-02-17 00:58:33: ❌ [userDashboard/enhanced-subscriptions] Error: could not identify an equality operator for type json
+2026-02-17 00:58:33: [ERROR] GET /api/userDashboard/enhanced-subscriptions: error: could not identify an equality operator for type json
+    at /Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /Users/hanamgondvagge/My Projects/homelykhana/backend/routes/userDashboard.js:277:20
+2026-02-17 00:58:35: ❌ [userDashboard/enhanced-subscriptions] Error: could not identify an equality operator for type json
+2026-02-17 00:58:35: [ERROR] GET /api/userDashboard/enhanced-subscriptions: error: could not identify an equality operator for type json
+    at /Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /Users/hanamgondvagge/My Projects/homelykhana/backend/routes/userDashboard.js:277:20
+2026-02-17 00:58:35: ❌ [userDashboard/enhanced-subscriptions] Error: could not identify an equality operator for type json
+2026-02-17 00:58:35: [ERROR] GET /api/userDashboard/enhanced-subscriptions: error: could not identify an equality operator for type json
+    at /Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /Users/hanamgondvagge/My Projects/homelykhana/backend/routes/userDashboard.js:277:20
+2026-02-17 00:58:36: ❌ [userDashboard/enhanced-subscriptions] Error: could not identify an equality operator for type json
+2026-02-17 00:58:36: [ERROR] GET /api/userDashboard/enhanced-subscriptions: error: could not identify an equality operator for type json
+    at /Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /Users/hanamgondvagge/My Projects/homelykhana/backend/routes/userDashboard.js:277:20
+2026-02-17 00:58:36: ❌ [userDashboard/enhanced-subscriptions] Error: could not identify an equality operator for type json
+2026-02-17 00:58:36: [ERROR] GET /api/userDashboard/enhanced-subscriptions: error: could not identify an equality operator for type json
+    at /Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /Users/hanamgondvagge/My Projects/homelykhana/backend/routes/userDashboard.js:277:20
+2026-02-17 01:11:04: ❌ [userDashboard/enhanced-subscriptions] Error: could not identify an equality operator for type json
+2026-02-17 01:11:04: [ERROR] GET /api/userDashboard/enhanced-subscriptions: error: could not identify an equality operator for type json
+    at /Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /Users/hanamgondvagge/My Projects/homelykhana/backend/routes/userDashboard.js:277:20
+2026-02-17 01:11:04: ❌ [userDashboard/enhanced-subscriptions] Error: could not identify an equality operator for type json
+2026-02-17 01:11:04: [ERROR] GET /api/userDashboard/enhanced-subscriptions: error: could not identify an equality operator for type json
+    at /Users/hanamgondvagge/My Projects/homelykhana/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /Users/hanamgondvagge/My Projects/homelykhana/backend/routes/userDashboard.js:277:20

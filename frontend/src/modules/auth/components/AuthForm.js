@@ -1,3 +1,4 @@
+//frontend/src/modules/auth/components/AuthForm.js
 'use client';
 
 import { useState, useContext } from "react";

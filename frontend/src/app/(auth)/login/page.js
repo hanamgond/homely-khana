@@ -1,3 +1,4 @@
+//frontend/src/app/(auth)/login/page.js
 import { AuthForm } from "@/modules/auth"; // Importing from the MODULE index!
 
 export default function LoginPage() {
