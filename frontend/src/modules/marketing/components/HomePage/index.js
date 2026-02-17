@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./HomePage.module.css"; // Make sure this path is correct
 import Hero from '../Hero';
 import Offering from '../Offering';
@@ -49,6 +49,25 @@ const FaqItem = ({ faq, index, toggleFAQ, isOpen }) => (
 
 
 export default function HomePageClient() {
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const scrollRef = useRef(null);
+
+  const handleScroll = (e) => {
+    const width = e.target.offsetWidth;
+    const scrollPosition = e.target.scrollLeft;
+    const index = Math.round(scrollPosition / width);
+    setActiveTestimonial(index);
+  };
+
+  const scrollTo = (index) => {
+    if (scrollRef.current) {
+      const width = scrollRef.current.offsetWidth;
+      scrollRef.current.scrollTo({
+        left: width * index,
+        behavior: 'smooth'
+      });
+    }
+  };
   const [openFAQ, setOpenFAQ] = useState(null);
   const toggleFAQ = index => { setOpenFAQ(openFAQ === index ? null : index); };
 
@@ -120,48 +139,57 @@ export default function HomePageClient() {
           </div>
         </section>
 
-        {/* --- Why HomelyKhana Section --- */}
-        <section className={styles.section}>
-            <div className={styles.sectionHeader}>
-                <h2>Why HomelyKhana?</h2>
-                <p>Experience the warmth of home-cooked meals with the convenience of doorstep delivery</p>
+{/* --- Why HomelyKhana Section --- */}
+<section className={styles.section}>
+    <div className={styles.sectionHeader}>
+        <h2>Why HomelyKhana?</h2>
+        <p>Experience the warmth of home-cooked meals with the convenience of doorstep delivery</p>
+    </div>
+
+    <div className={styles.featureContainer}>
+        {/* GROUP 1: Home & Health (Lady Cooking Image) */}
+        <div className={styles.featureGroup}>
+            <div className={styles.groupImage}>
+                <Image src="/why-us-1.jpg" alt="Home Style Cooking" width={600} height={450} priority />
             </div>
-            <div className={styles.whyUsGrid}>
-                <div className={styles.whyUsImages}>
-                    {/* Ensure images exist in public folder */}
-                    <div><Image src="/why-us-1.jpg" alt="Woman cooking" width={500} height={400} style={{ objectFit: 'cover', borderRadius: '12px', width: '100%', height: 'auto' }} priority /></div>
-                    <div><Image src="/why-us-2.jpg" alt="Chopping vegetables" width={500} height={300} style={{ objectFit: 'cover', borderRadius: '12px', width: '100%', height: 'auto' }} /></div>
+            <div className={styles.groupList}>
+                <div className={styles.groupItem}>
+                    <div className={styles.itemIcon}>🧡</div>
+                    <div><h3>Authentic Home-Style Cooking</h3><p>Every meal is prepared with love, just like your mom would make it at home</p></div>
                 </div>
-                 {/* --- CORRECTED whyUsList Structure --- */}
-                <div className={styles.whyUsList}>
-                    <div className={styles.whyUsItem}>
-                        <div className={styles.whyUsIcon}>🧡</div>
-                        <div><h3>Authentic Home-Style Cooking</h3><p>Every meal is prepared with love, just like your mom would make it at home</p></div>
-                    </div>
-                    <div className={styles.whyUsItem}>
-                        <div className={styles.whyUsIcon}>🌿</div>
-                        <div><h3>Farm-Fresh Ingredients</h3><p>We source the freshest vegetables and ingredients daily from local farms</p></div>
-                    </div>
-                    <div className={styles.whyUsItem}>
-                        <div className={styles.whyUsIcon}>✅</div>
-                        <div><h3>100% Natural & Safe</h3><p>Absolutely no preservatives, artificial colors, or harmful additives</p></div>
-                    </div>
-                    <div className={styles.whyUsItem}>
-                        <div className={styles.whyUsIcon}>🕒</div>
-                        <div><h3>On-Time Hot Delivery</h3><p>Piping hot meals delivered punctually to your doorstep every day</p></div>
-                    </div>
-                    <div className={styles.whyUsItem}>
-                        <div className={styles.whyUsIcon}>🛡️</div> {/* Ensure this emoji renders correctly or use an SVG */}
-                        <div><h3>Hygienic Preparation</h3><p>Prepared in FSSAI-certified kitchens with strict hygiene protocols</p></div>
-                    </div>
-                    <div className={styles.whyUsItem}>
-                        <div className={styles.whyUsIcon}>🧑‍🤝‍🧑</div> {/* Ensure this emoji renders correctly or use an SVG */}
-                        <div><h3>Trusted by Thousands</h3><p>Join 10,000+ happy customers enjoying healthy meals daily</p></div>
-                    </div>
+                <div className={styles.groupItem}>
+                    <div className={styles.itemIcon}>✅</div>
+                    <div><h3>100% Natural & Safe</h3><p>Absolutely no preservatives, artificial colors, or harmful additives</p></div>
                 </div>
-                 {/* --- END CORRECTED whyUsList Structure --- */}
+                <div className={styles.groupItem}>
+                    <div className={styles.itemIcon}>🛡️</div>
+                    <div><h3>Hygienic Preparation</h3><p>Prepared in FSSAI-certified kitchens with strict hygiene protocols</p></div>
+                </div>
             </div>
-        </section>
+        </div>
+
+        {/* GROUP 2: Quality & Service (Ingredients Image) - Flips on Desktop */}
+        <div className={`${styles.featureGroup} ${styles.reverse}`}>
+            <div className={styles.groupImage}>
+                <Image src="/why-us-2.jpg" alt="Fresh Ingredients" width={600} height={450} />
+            </div>
+            <div className={styles.groupList}>
+                <div className={styles.groupItem}>
+                    <div className={styles.itemIcon}>🌿</div>
+                    <div><h3>Farm-Fresh Ingredients</h3><p>We source the freshest vegetables and ingredients daily from local farms</p></div>
+                </div>
+                <div className={styles.groupItem}>
+                    <div className={styles.itemIcon}>🕒</div>
+                    <div><h3>On-Time Hot Delivery</h3><p>Piping hot meals delivered punctually to your doorstep every day</p></div>
+                </div>
+                <div className={styles.groupItem}>
+                    <div className={styles.itemIcon}>🧑‍🤝‍🧑</div>
+                    <div><h3>Trusted by Thousands</h3><p>Join 10,000+ happy customers enjoying healthy meals daily</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
         {/* --- Meal Offerings Section --- */}
         <section className={styles.section}>
@@ -205,26 +233,65 @@ export default function HomePageClient() {
           </div>
         </section>
 
-        {/* --- Testimonials Section --- */}
-        <section className={styles.section}>
-            <div className={styles.sectionHeader}>
-                <h2>What Our Customers Say</h2>
-                <p>Join thousands of happy customers who trust HomelyKhana for their daily meals</p>
+{/* =========================
+    TESTIMONIALS SECTION
+========================= */}
+
+<section className={styles.section}>
+  <div className={styles.sectionHeader}>
+    <span className={styles.upperTitle}>TESTIMONIALS</span>
+    <h2>What Our Customers Say</h2>
+    <p>Trusted by families & working professionals across Bangalore</p>
+  </div>
+
+  <div className={styles.carouselContainer}>
+    <div
+      className={styles.testimonialSlider}
+      ref={scrollRef}
+      onScroll={handleScroll}
+    >
+      {testimonials.map((t, index) => (
+        <div key={index} className={styles.testimonialCard}>
+          
+          <div className={styles.quoteIcon}>“</div>
+
+          <div className={styles.stars}>★★★★★</div>
+
+          <p className={styles.reviewText}>
+            {t.review}
+          </p>
+
+          <div className={styles.testimonialFooter}>
+            <div className={styles.testimonialAvatar}>
+              {t.initials}
             </div>
-            <div className={styles.testimonialsGrid}>
-                {testimonials.map((t, index) => ( // Added index for key fallback, though name should be unique
-                    <div key={t.name || index} className={styles.testimonialCard}>
-                        <div className={styles.testimonialHeader}>
-                            {/* Simple Avatar */}
-                            <div className={styles.testimonialAvatar}>{t.initials}</div>
-                            <div><h3>{t.name}</h3><p className={styles.role}>{t.role}</p></div>
-                        </div>
-                        <div className={styles.testimonialStars}>★★★★★</div>
-                        <p>{t.review}</p>
-                    </div>
-                ))}
+
+            <div>
+              <h3 className={styles.name}>{t.name}</h3>
+              <p className={styles.role}>{t.role}</p>
             </div>
-        </section>
+          </div>
+
+        </div>
+      ))}
+    </div>
+
+    {/* Mobile Dots */}
+    <div className={styles.navDots}>
+      {testimonials.map((_, i) => (
+        <button
+          key={i}
+          className={`${styles.dot} ${
+            activeTestimonial === i ? styles.activeDot : ""
+          }`}
+          onClick={() => scrollTo(i)}
+          aria-label={`Go to testimonial ${i + 1}`}
+        />
+      ))}
+    </div>
+  </div>
+</section>
+
 
         {/* --- FAQ Section --- */}
         <section className={styles.section}>
