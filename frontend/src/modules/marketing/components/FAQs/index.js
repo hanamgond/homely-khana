@@ -1,37 +1,42 @@
-'use client'; // 1. ADDED - This component is interactive
+//frontend/src/modules/marketing/components/FAQs/index.js
+'use client'; 
 
 import React, { useRef, useState } from "react";
 import Image from "next/image";
-
-// styles (assumes colocation)
 import styles from "./FAQs.module.css";
-
-// assets (using the '@/' alias)
-import arrow from "@/assets/arrow.svg"; // 2. CORRECTED PATH
+import arrow from "@/assets/arrow.svg"; 
 
 const AccordionItem = ({ question, answer, isOpen, onClick }) => {
     const contentHeight = useRef();
+    
     return (
       <div className={styles.wrapper}>
-        <button className={`${styles.questionContainer} ${isOpen ? styles.active : ""}`} onClick={onClick}>
+        <button 
+          className={`${styles.questionContainer} ${isOpen ? styles.active : ""}`} 
+          onClick={onClick}
+          aria-expanded={isOpen}
+        >
           <p className={styles.questionText}>{question}</p>
-          {/* 3. ADDED alt prop */}
-          <Image src={arrow} alt="Toggle answer" className={`${styles.arrow} ${isOpen ? styles.active : ""}`} />
+          <span className={styles.plus}>
+            {isOpen ? "−" : "+"}
+          </span>
         </button>
   
         <div 
           ref={contentHeight} 
           className={styles.answerContainer} 
-          style={isOpen ? { height: contentHeight.current.scrollHeight } : { height: "0px" }}
+          style={{ 
+            height: isOpen ? `${contentHeight.current.scrollHeight}px` : "0px",
+            opacity: isOpen ? 1 : 0 
+          }}
         >
-          <p className={styles.answerContent}>{answer}</p>
+          <div className={styles.answerContent}>{answer}</div>
         </div>
       </div>
     );
-  };
+};
 
 export default function FAQs() {
-    // The data can live inside the component that uses it
     const data = [
         { "question": "What is HomelyKhana?", "answer": "HomelyKhana is a cloud-based subscription meal provider offering fresh, homemade-style meals delivered to your doorstep." },
         { "question": "How do I subscribe to a meal plan?", "answer": "You can subscribe by signing up on our website, choosing your preferred meal plan, and completing the payment process." },
@@ -48,16 +53,24 @@ export default function FAQs() {
     };
 
     return (
-        <div className={styles.container}>
-            {data.map((item, index) => (
-                <AccordionItem
-                    key={index}
-                    question={item.question}
-                    answer={item.answer}
-                    isOpen={activeIndex === index}
-                    onClick={() => handleItemClick(index)}
-                />
-            ))}
-        </div>
+        <section id="faq-section" className={styles.container}>
+            <div className={styles.maxWidthWrapper}>
+                <h2 className={styles.title}>Frequently Asked Questions</h2>
+                  <p className={styles.subtitle}>
+                  Everything you need to know about our service
+                  </p>
+                <div className={styles.faqList}>
+                    {data.map((item, index) => (
+                        <AccordionItem
+                            key={index}
+                            question={item.question}
+                            answer={item.answer}
+                            isOpen={activeIndex === index}
+                            onClick={() => handleItemClick(index)}
+                        />
+                    ))}
+                </div>
+            </div>
+        </section>
     );
 }

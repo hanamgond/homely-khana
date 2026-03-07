@@ -269,46 +269,17 @@
   margin: 0;
 }
 
-/* FAQ List */
-.faqList {
-  display: grid;
-  gap: 1.25rem;
-  margin-bottom: 2rem;
-}
-
-.faqItem {
-  border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 1.25rem;
-}
-
-.faqItem:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.faqItem h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #374151;
-  margin: 0 0 0.75rem 0;
-}
-
-.faqItem p {
-  color: #6b7280;
-  margin: 0;
-  line-height: 1.6;
-  font-size: 0.95rem;
-}
-
-/* Support Hours */
+/* Improvised Support Hours */
 .supportHours {
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-  background: #f8fafc;
-  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 16px;
   padding: 1.5rem;
-  margin-top: 2rem;
+  margin-top: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
 }
 
 .supportHours svg {
@@ -319,17 +290,14 @@
 
 .supportHours strong {
   color: #1f2937;
-  font-weight: 600;
+  font-weight: 700;
   display: block;
   margin-bottom: 0.5rem;
 }
 
 .supportHours p {
-  color: #6b7280;
+  color: #64748b;
   margin: 0 0 0.25rem 0;
-  font-size: 0.95rem;
-}
-
-.supportHours p:last-child {
-  margin-bottom: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
 }

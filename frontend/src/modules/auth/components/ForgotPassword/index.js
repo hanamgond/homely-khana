@@ -1,3 +1,4 @@
+//frontend/src/modules/auth/components/ForgotPassword/index.js
 'use client';
 
 import { useState } from 'react';

@@ -1,4 +1,4 @@
-//frontend/src/app/(protected)/dashboard/page.js
+//frontend/src/app/dashboard/page.js
 import { Dashboard } from "@/modules/dashboard";
 
 export const metadata = { title: "My Dashboard | Homely Khana" };

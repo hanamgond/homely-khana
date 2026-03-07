@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, Phone, MessageSquare, Clock, Send, HelpCircle, CheckCircle } from 'lucide-react';
+import { Mail, Phone, MessageSquare, Clock, Send, CheckCircle } from 'lucide-react';
 import styles from './Contact.module.css';
 
 export default function ContactSupport() {
@@ -24,13 +24,9 @@ export default function ContactSupport() {
     setLoading(true);
     
     try {
-      // TODO: Implement actual contact form API
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
       setSubmitted(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
-      
-      // Reset submitted state after 5 seconds
       setTimeout(() => setSubmitted(false), 5000);
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -44,44 +40,25 @@ export default function ContactSupport() {
       icon: <Phone size={24} />,
       title: 'Phone Support',
       description: 'Call us for immediate assistance',
-      details: '+91 98765 43210',
+      details: '+91 78159 84631',
       action: 'Call Now',
-      link: 'tel:+919876543210'
+      link: 'tel:+917815984631'
     },
     {
       icon: <Mail size={24} />,
       title: 'Email Us',
       description: 'Send us an email for detailed inquiries',
-      details: 'support@homelykhana.com',
+      details: 'contact@homelykhana.in',
       action: 'Send Email',
-      link: 'mailto:support@homelykhana.com'
+      link: 'mailto:contact@homelykhana.in'
     },
     {
       icon: <MessageSquare size={24} />,
       title: 'Live Chat',
-      description: 'Chat with our support team in real-time',
+      description: 'Chat with our support team on WhatsApp',
       details: 'Available 9 AM - 9 PM',
       action: 'Start Chat',
-      link: '#'
-    }
-  ];
-
-  const faqs = [
-    {
-      question: 'How can I change my delivery address?',
-      answer: 'You can update your delivery address from the Profile Settings page. Go to "Saved Addresses" and edit or add a new address.'
-    },
-    {
-      question: 'Can I skip a meal?',
-      answer: 'Yes, you can skip upcoming meals from your Dashboard or Subscriptions page. Skipping must be done 12 hours before delivery time.'
-    },
-    {
-      question: 'How do I cancel my subscription?',
-      answer: 'You can cancel from the Subscriptions page. Click "Manage" on your active subscription and select "Cancel Plan".'
-    },
-    {
-      question: 'What are your delivery timings?',
-      answer: 'Lunch deliveries: 11:30 AM - 1:30 PM, Dinner deliveries: 7:00 PM - 9:00 PM. Exact timing depends on your location.'
+      link: 'https://wa.me/917815984631?text=Hi%20HomelyKhana!%20I%20have%20a%20question.'
     }
   ];
 
@@ -111,7 +88,7 @@ export default function ContactSupport() {
               <h3>{method.title}</h3>
               <p className={styles.contactDescription}>{method.description}</p>
               <p className={styles.contactDetails}>{method.details}</p>
-              <a href={method.link} className={styles.contactAction}>
+              <a href={method.link} className={styles.contactAction} target="_blank" rel="noopener noreferrer">
                 {method.action}
               </a>
             </div>
@@ -202,32 +179,13 @@ export default function ContactSupport() {
         </div>
       </div>
 
-      {/* FAQ Section */}
-      <div className={styles.faqSection}>
-        <div className={styles.faqHeader}>
-          <h2>
-            <HelpCircle size={24} />
-            Frequently Asked Questions
-          </h2>
-          <p>Quick answers to common questions</p>
-        </div>
-
-        <div className={styles.faqList}>
-          {faqs.map((faq, index) => (
-            <div key={index} className={styles.faqItem}>
-              <h3>{faq.question}</h3>
-              <p>{faq.answer}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className={styles.supportHours}>
-          <Clock size={20} />
-          <div>
-            <strong>Support Hours:</strong>
-            <p>Monday - Saturday: 9:00 AM - 9:00 PM</p>
-            <p>Sunday: 10:00 AM - 6:00 PM</p>
-          </div>
+      {/* Support Hours (Now outside the grid for a clean footer feel) */}
+      <div className={styles.supportHours}>
+        <Clock size={20} />
+        <div>
+          <strong>Support Hours:</strong>
+          <p>Monday - Saturday: 9:00 AM - 9:00 PM</p>
+          <p>Sunday: 10:00 AM - 6:00 PM</p>
         </div>
       </div>
     </div>

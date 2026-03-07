@@ -1,9 +1,10 @@
+//frontend/src/modules/auth/services/authService.js
 import api from '@/shared/lib/api';
 import Cookies from 'js-cookie';
 
 export const AuthService = {
-  login: async (phone, password) => {
-    const response = await api.post('/api/auth/login', { phone, password });
+  login: async (identifier, password) => {
+    const response = await api.post('/api/auth/login', { identifier, password });
     if (response.data.token) {
       Cookies.set('token', response.data.token, { expires: 7 });
     }
@@ -16,8 +17,11 @@ export const AuthService = {
   },
 
   verifyOtp: async (email, otp) => {
-    const response = await api.post('/api/auth/verify-otp', { email, otp });
-    return response.data;
+  const response = await api.post('/api/auth/verify-otp', { email, otp });
+  if (response.data.token) {
+    Cookies.set('token', response.data.token, { expires: 7 });
+  }
+  return response.data;
   },
 
   forgotPassword: async (email) => {

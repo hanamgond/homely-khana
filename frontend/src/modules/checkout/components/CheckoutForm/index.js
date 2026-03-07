@@ -15,7 +15,7 @@ import { Trash2, Pencil, CreditCard, Banknote, ShieldCheck, Lock, Plus, Home, Br
 import GoogleAddressInput from '@/shared/components/GoogleAddressInput';
 
 export default function CheckoutClient() {
-  const { user,cart, cartTotal, setDeliveryAddress, clearCart, removeSubscription } = useContext(AppContext);
+  const { user,cart, cartTotal, setDeliveryAddress, clearCart, removeSubscription, addSubscription } = useContext(AppContext);
   const router = useRouter();
 
   // --- STATE VARIABLES ---
@@ -95,6 +95,23 @@ export default function CheckoutClient() {
       setIsAddressLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+  const draft = sessionStorage.getItem("subscriptionDraft");
+
+  if (draft) {
+    try {
+      const parsed = JSON.parse(draft);
+
+      addSubscription(parsed);
+
+      sessionStorage.removeItem("subscriptionDraft");
+
+    } catch (err) {
+      console.error("Failed to restore subscription draft:", err);
+    }
+  }
+}, [addSubscription]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;

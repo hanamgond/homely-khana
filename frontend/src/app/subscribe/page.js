@@ -1,3 +1,4 @@
+//src/app/subscribe/page.js
 import { SubscribeClient } from "@/modules/subscribe";
 
 export const metadata = {

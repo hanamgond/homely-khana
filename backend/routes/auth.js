@@ -23,7 +23,7 @@ const signupSchema = z.object({
 });
 
 const loginSchema = z.object({
-    phone: z.string().regex(/^[0-9]{10}$/),
+    identifier: z.string().min(3), // email or phone
     password: z.string().min(1)
 });
 
@@ -87,27 +87,63 @@ router.post("/signup", async (req, res, next) => {
 });
 
 router.post("/verify-otp", async (req, res, next) => {
-    const { email, otp } = req.body;
-    try {
-        const userResult = await pool.query('SELECT * FROM "users" WHERE email = $1', [email]);
-        if (userResult.rows.length === 0) {
-            const error = new Error("User not found");
-            error.statusCode = 404;
-            return next(error);
-        }
+  const { email, otp } = req.body;
 
-        const user = userResult.rows[0];
-        if (user.verification_token !== otp) {
-            const error = new Error("Invalid OTP");
-            error.statusCode = 400;
-            return next(error);
-        }
+  try {
+    const userResult = await pool.query(
+      'SELECT * FROM "users" WHERE email = $1',
+      [email]
+    );
 
-        await pool.query('UPDATE "users" SET is_verified = TRUE, verification_token = NULL WHERE id = $1', [user.id]);
-        res.json({ success: true, message: "Email verified! You can now login." });
-    } catch (err) {
-        next(err);
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found"
+      });
     }
+
+    const user = userResult.rows[0];
+
+    if (user.verification_token !== otp) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid OTP"
+      });
+    }
+
+    await pool.query(
+      'UPDATE "users" SET is_verified = TRUE, verification_token = NULL WHERE id = $1',
+      [user.id]
+    );
+
+    // LOGIN USER AUTOMATICALLY
+    const token = jwt.sign(
+      {
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.json({
+      success: true,
+      message: "Account verified and logged in",
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone
+      }
+    });
+
+  } catch (err) {
+    next(err);
+  }
 });
 
 // ==========================================
@@ -116,12 +152,18 @@ router.post("/verify-otp", async (req, res, next) => {
 
 router.post("/login", async (req, res, next) => {
     const validation = loginSchema.safeParse(req.body);
-    if (!validation.success) return res.status(400).json({ success: false, details: validation.error.errors });
+    if (!validation.success) {
+        return res.status(400).json({ success: false, details: validation.error.errors });
+    }
 
-    const { phone, password } = validation.data;
+    const { identifier, password } = validation.data;
 
     try {
-        const userResult = await pool.query('SELECT * FROM "users" WHERE phone = $1', [phone]);
+
+        const userResult = await pool.query(
+            'SELECT * FROM "users" WHERE phone = $1 OR email = $1',
+            [identifier]
+        );
         if (userResult.rows.length === 0) {
             const error = new Error("Invalid credentials.");
             error.statusCode = 401;
@@ -201,7 +243,7 @@ router.get("/debug-token", authenticateToken, (req, res) => {
 router.post('/forgot-password', async (req, res, next) => {
   const { email } = req.body;
   try {
-    const userQuery = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    const userQuery = await pool.query('SELECT * FROM "users" WHERE email = $1', [email]);
     if (userQuery.rows.length === 0) {
         const error = new Error("User not found");
         error.statusCode = 404;
@@ -212,7 +254,7 @@ router.post('/forgot-password', async (req, res, next) => {
     const tokenExpiry = Date.now() + 600000; // 10 mins
 
     await pool.query(
-      'UPDATE users SET reset_password_token = $1, reset_password_expires = $2 WHERE email = $3',
+      'UPDATE "users" SET reset_password_token = $1, reset_password_expires = $2 WHERE email = $3',
       [otp, tokenExpiry, email]
     );
 
@@ -236,7 +278,7 @@ router.post('/reset-password', async (req, res, next) => {
     // 1. Find user with matching Email and Valid Token
     // We check if the token matches AND if the expiration time hasn't passed
     const userResult = await pool.query(
-      'SELECT * FROM users WHERE email = $1 AND reset_password_token = $2 AND reset_password_expires > $3',
+      'SELECT * FROM "users" WHERE email = $1 AND reset_password_token = $2 AND reset_password_expires > $3',
       [email, otp, Date.now()]
     );
 
@@ -251,7 +293,7 @@ router.post('/reset-password', async (req, res, next) => {
 
     // 3. Update User: Set new password and clear reset tokens
     await pool.query(
-      'UPDATE users SET password_hash = $1, reset_password_token = NULL, reset_password_expires = NULL WHERE email = $2',
+      'UPDATE "users" SET password_hash = $1, reset_password_token = NULL, reset_password_expires = NULL WHERE email = $2',
       [hashedPassword, email]
     );
 

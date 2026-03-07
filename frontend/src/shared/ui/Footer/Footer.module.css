@@ -1,10 +1,12 @@
 /* styles/Footer.module.css */
+/* --- FOOTER MAIN --- */
 .footer {
   background-color: var(--primary-orange);
   color: #ffffff;
-  padding: 14px 20px; /* Reduced from 50px 20px (60% reduction) */
+  /* Reduced height by ~20% (Padding 50px -> 40px) */
+  padding: 40px 20px 20px 20px;
   position: relative;
-  z-index: 10; /* Ensure footer is above sidebar */
+  z-index: 10;
 }
 
 .container {
@@ -15,51 +17,29 @@
 .footerGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2rem; /* Keep original gap */
-}
-
-.brandColumn {
-  grid-column: span 1;
+  gap: 2rem;
 }
 
 .logo {
-  font-size: 1.75rem; /* Keep original size */
+  font-size: 1.75rem;
   font-weight: 700;
-  margin: 0 0 1rem 0; /* Keep original margin */
+  margin-bottom: 1rem;
   color: white;
 }
 
 .description {
-  font-size: 0.9rem; /* Keep original size */
-  line-height: 1.6; /* Keep original */
-  opacity: 0.9;
+  font-size: 0.9rem;
+  line-height: 1.6;
   max-width: 250px;
-  margin-bottom: 0.7rem; /* Reduced from 1.5rem (33% reduction) */
-}
-
-.socialIcons {
-  display: flex;
-  gap: 1rem; /* Keep original */
-}
-
-.socialIcons a {
-  color: white;
-  opacity: 0.8;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.socialIcons a:hover {
-  opacity: 1;
-  transform: translateY(-2px);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .footerHeading {
-  font-size: 1rem; /* Keep original */
+  font-size: 1rem;
   font-weight: 700;
-  margin: 0 0 1rem 0; /* Keep original */
+  margin-bottom: 1.5rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  opacity: 0.95;
+  color: white;
 }
 
 .footerLinks {
@@ -68,51 +48,66 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem; /* Keep original */
+  gap: 0.75rem;
 }
 
-.footerLinks li {
-  font-size: 0.9rem; /* Keep original */
-}
-
-.footerLinks a, .footerLinks li {
-  color: white;
-  text-decoration: none;
-  opacity: 0.8;
+/* --- LINK RESET (No Blue, No Underline) --- */
+.footerLink {
+  color: #ffffff !important;
+  text-decoration: none !important; /* Removes the line below text */
+  font-size: 0.9rem;
   transition: opacity 0.2s ease;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
 }
 
-.footerLinks a:hover {
-  opacity: 1;
-  text-decoration: underline;
+/* Fix for visited/active links that browser might turn blue */
+.footerLink:visited, 
+.footerLink:active, 
+.footerLink:focus {
+  color: #ffffff !important;
+  text-decoration: none !important;
 }
 
+.footerLink:hover {
+  opacity: 0.8;
+  text-decoration: none !important;
+}
+
+.contactItem {
+  color: #ffffff;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* --- FOOTER BOTTOM --- */
 .footerBottom {
-  margin-top: 14px; /* Reduced from 40px (50% reduction) */
-  padding-top: 7px; /* Reduced from 20px (50% reduction) */
+  /* Reduced margin top by ~20% (40px -> 32px) */
+  margin-top: 32px;
+  padding-top: 15px;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   text-align: center;
-  font-size: 0.85rem; /* Keep original */
-  opacity: 0.8;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
 }
 
-/* Responsive Styles - Keep original proportions */
+/* --- MOBILE RESPONSIVE --- */
 @media (max-width: 992px) {
   .footerGrid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 2.5rem; /* Keep original */
-  }
-  .brandColumn {
-    grid-column: span 2;
+    gap: 2.5rem;
   }
 }
 
 @media (max-width: 576px) {
   .footerGrid {
     grid-template-columns: 1fr;
-    gap: 2rem; /* Keep original */
+    gap: 1.5rem;
   }
-  .brandColumn {
-    grid-column: span 1;
+  
+  .logo, .footerHeading {
+    margin-bottom: 0.8rem;
   }
 }

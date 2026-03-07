@@ -1,78 +1,168 @@
+/* //frontend/src/modules/marketing/components/Testimonials/Testimonials.module.css */
 .section {
-    padding: 4rem 2rem;
-    background-color: #fff8f5; /* A light, warm background */
+  padding: 20px 20px;
+  background: linear-gradient(to bottom, #fffaf5, #ffffff);
 }
 
 .sectionHeader {
-    text-align: center;
-    margin-bottom: 3rem;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.upperTitle {
+  display: block;
+  /*color: #ff9801;  Matches brand orange */
+  font-weight: 600;
+  letter-spacing: 1px;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
 }
 
 .sectionHeader h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    color: #333;
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: #111827;
+  margin-bottom: 8px;
 }
 
 .sectionHeader p {
-    font-size: 1.1rem;
-    color: #666;
-    max-width: 600px;
-    margin: 0 auto;
+  color: #6b7280;
+  font-size: 0.95rem;
 }
 
-.testimonialsGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
+.carouselContainer {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Base Slider: Horizontal scroll with snap */
+.testimonialSlider {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 20px 16px;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+}
+
+.testimonialSlider::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 .testimonialCard {
-    background-color: #ffffff;
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    border: 1px solid #eee;
-    display: flex;
-    flex-direction: column;
+  flex: 0 0 100%; /* Mobile: one card per view */
+  scroll-snap-align: center;
+  background: #ffffff;
+  padding: 2.5rem 1.5rem;
+  border-radius: 18px;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+  position: relative;
 }
 
-.testimonialHeader {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+.quoteIcon {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  font-size: 3.5rem;
+  color: rgba(255, 152, 1, 0.1); /* Light brand orange */
+  font-family: Georgia, serif;
 }
 
-.testimonialAvatar {
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.testimonialHeader h3 {
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: 600;
-}
-
-.role {
-    margin: 0;
-    font-size: 0.9rem;
-    color: #777;
-}
-
-.testimonialStars {
-    color: #f59e0b; /* A nice gold color for stars */
-    margin-bottom: 1rem;
+.stars {
+  color: #facc15;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
 }
 
 .reviewText {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: #555;
-    flex-grow: 1; /* Ensures cards in a row have the same height */
-    font-style: italic;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #374151;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.testimonialFooter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.testimonialAvatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff9801, #fb923c);
+  color: white;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.role {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Dots */
+.navDots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.activeDot {
+  width: 24px;
+  height: 8px;
+  border-radius: 999px;
+  background: #ff9801;
+}
+
+/* Tablet (2 cards view) */
+@media (min-width: 768px) {
+  .testimonialCard {
+    flex: 0 0 48%;
+    scroll-snap-align: start;
+  }
+}
+
+/* Desktop (All in one row) */
+@media (min-width: 1024px) {
+  .testimonialSlider {
+    scroll-snap-type: none;
+    overflow-x: auto;
+  }
+
+  .testimonialCard {
+    flex: 0 0 320px;
+  }
+
+  .navDots {
+    display: none;
+  }
 }

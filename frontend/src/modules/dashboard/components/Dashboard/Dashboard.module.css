@@ -24,26 +24,12 @@
   border-right: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  max-height: 100vh;
-  z-index: 50;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease;
-  overflow: hidden;
 }
 
 @media (max-width: 768px) {
   .sidebar {
-    transform: translateX(-100%);
-    width: 280px;
-    height: 100vh;
-  }
-  
-  .sidebar.open {
-    transform: translateX(0);
+    display: none;
   }
 }
 
@@ -199,101 +185,11 @@
   text-overflow: ellipsis;
 }
 
-/* Mobile Header */
-.mobileHeader {
-  display: none;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem;
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  min-height: 56px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-@media (max-width: 768px) {
-  .mobileHeader {
-    display: flex;
-  }
-}
-
-.menuButton {
-  background: none;
-  border: none;
-  padding: 0.5rem;
-  font-size: 1.25rem;
-  cursor: pointer;
-  color: #64748b;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.menuButton:hover {
-  background: #f1f5f9;
-}
-
-.mobileTitle {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 0 0.5rem;
-  flex: 1;
-  text-align: center;
-}
-
-.mobileAvatar {
-  width: 32px;
-  height: 32px;
-  background: #FF9801;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 0.9rem;
-  flex-shrink: 0;
-}
-
-/* Overlay */
-.overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 45;
-}
-
-@media (max-width: 768px) {
-  .overlay {
-    display: block;
-  }
-}
-
 /* Main Content */
 .mainContent {
   flex: 1;
-  margin-left: 260px;
   background: #f8fafc;
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100vh - 150px); /* Account for footer space */
-  overflow-x: hidden;
-  width: calc(100% - 260px);
-  box-sizing: border-box;
+  padding: 2rem;
 }
 
 .contentWrapper {
@@ -313,10 +209,6 @@
 @media (max-width: 768px) {
   .mainContent {
     margin-left: 0;
-    width: 100%;
-  }
-  
-  .contentWrapper {
     padding: 1rem;
   }
 }
@@ -344,7 +236,6 @@
 .sidebar,
 .userInfo,
 .avatar,
-.navItem,
-.mobileHeader {
+.navItem {
   transition: all 0.2s ease;
 }

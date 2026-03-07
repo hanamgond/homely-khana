@@ -1,0 +1,683 @@
+/* ==============================
+   BASE STYLES (Mobile First)
+   Works on all devices
+================================ */
+
+.page {
+  background: #FDFBF7;
+  color: #1A1A1A;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.page * {
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  box-sizing: border-box;
+}
+
+/* Typography */
+.sectionTitle {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  color: #1E3D3A;
+  line-height: 1.3;
+}
+
+/* ==============================
+   HERO
+================================ */
+
+.hero {
+  padding: 3rem 0 2rem;
+  background: linear-gradient(135deg, #FDFBF7 0%, #F8F3EC 100%);
+}
+
+.heroTitle {
+  font-size: 2.2rem;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 0.75rem 0;
+  color: #1E3D3A;
+}
+
+.heroEmphasis {
+  color: #C17F59;
+  display: inline;
+}
+
+.heroSubtitle {
+  font-size: 1.1rem;
+  color: #6B6B6B;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* ==============================
+   CORE STORY
+================================ */
+
+.core {
+  padding: 2.5rem 0;
+}
+
+.coreText {
+  font-size: 1.1rem;
+  color: #4A4A4A;
+  margin-bottom: 1.5rem;
+  max-width: 700px;
+}
+
+.statement {
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #1E3D3A;
+  padding: 1.5rem 0;
+  border-top: 2px solid #E6B89C;
+  border-bottom: 2px solid #E6B89C;
+  margin: 2rem 0 0;
+}
+
+.statementHighlight {
+  color: #C17F59;
+  font-weight: 600;
+}
+
+/* ==============================
+   DIFFERENCE GRID
+================================ */
+
+.difference {
+  padding: 2.5rem 0;
+  background: #FFFFFF;
+}
+
+.differenceGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.diffCard {
+  background: #F8F5F0;
+  padding: 1.5rem;
+  border-radius: 16px;
+  transition: transform 0.2s;
+}
+
+.diffCard:hover {
+  transform: translateY(-4px);
+}
+
+.diffIcon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.diffCard h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: #1E3D3A;
+}
+
+.diffCard p {
+  font-size: 0.95rem;
+  color: #6B6B6B;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ==============================
+   UTTAM SECTION
+================================ */
+
+.uttam {
+  padding: 3rem 0;
+}
+
+.uttamCard {
+  background: #1E3D3A;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.uttamBadge {
+  background: rgba(230, 184, 156, 0.15);
+  padding: 1rem 1.5rem;
+  text-align: center;
+}
+
+.uttamBadge span {
+  color: #E6B89C;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.uttamContent {
+  padding: 2rem 1.5rem;
+  color: #FFFFFF;
+}
+
+.uttamName {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  color: #FFFFFF;
+}
+
+.uttamRole {
+  font-size: 1rem;
+  color: #E6B89C;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+.uttamStats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.uttamStat {
+  flex: 1;
+  min-width: 80px;
+  background: rgba(255,255,255,0.1);
+  padding: 1rem 0.5rem;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.uttamStatNumber {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #E6B89C;
+  margin-bottom: 0.25rem;
+}
+
+.uttamStatLabel {
+  font-size: 0.7rem;
+  color: #E0E0E0;
+  line-height: 1.3;
+}
+
+.uttamDesc {
+  font-size: 1rem;
+  color: #E0E0E0;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.uttamQuestion {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #E6B89C;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: rgba(0,0,0,0.2);
+  border-radius: 20px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.uttamFootnote {
+  font-size: 0.95rem;
+  color: #E0E0E0;
+  margin: 0 0 1.5rem 0;
+  font-style: italic;
+}
+
+.uttamSignature {
+  text-align: right;
+  font-size: 1rem;
+  color: #E6B89C;
+  font-style: italic;
+  border-top: 1px solid rgba(230,184,156,0.2);
+  padding-top: 1.5rem;
+}
+
+/* ==============================
+   FACTS SECTION
+================================ */
+
+.facts {
+  padding: 2.5rem 0;
+  background: #F8F5F0;
+}
+
+.factsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.factCard {
+  background: #FFFFFF;
+  padding: 1.5rem;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+}
+
+.factNumber {
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #1E3D3A;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.factLabel {
+  font-size: 1rem;
+  color: #4A4A4A;
+  margin-bottom: 0.5rem;
+}
+
+.factTrend {
+  font-size: 0.85rem;
+  color: #C17F59;
+  background: rgba(193, 127, 89, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 30px;
+  display: inline-block;
+}
+
+/* ==============================
+   AUDIENCE SECTION
+================================ */
+
+.audience {
+  padding: 2.5rem 0;
+}
+
+.audienceCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.audienceTag {
+  background: #FFFFFF;
+  padding: 0.6rem 1.2rem;
+  border-radius: 40px;
+  font-size: 0.9rem;
+  color: #1E3D3A;
+  border: 1px solid #E0E0E0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  transition: all 0.2s;
+}
+
+.audienceTag:hover {
+  background: #1E3D3A;
+  color: #FFFFFF;
+  border-color: #1E3D3A;
+}
+
+/* ==============================
+   TRUST SECTION
+================================ */
+
+.trust {
+  padding: 2.5rem 0;
+  background: #FFFFFF;
+}
+
+.trustHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.trustBadge {
+  background: #E6B89C;
+  color: #1E3D3A;
+  padding: 0.35rem 1.5rem;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+  letter-spacing: 1px;
+}
+
+.trustGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.trustCard {
+  background: #F8F5F0;
+  padding: 1.5rem;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.trustIcon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.trustCard h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: #1E3D3A;
+}
+
+.trustCard p {
+  font-size: 0.9rem;
+  color: #6B6B6B;
+  margin: 0;
+}
+
+/* ==============================
+   INVITE SECTION
+================================ */
+
+.invite {
+  padding: 3rem 0;
+}
+
+.inviteCard {
+  background: linear-gradient(135deg, #1E3D3A 0%, #15312E 100%);
+  padding: 2.5rem 1.5rem;
+  border-radius: 30px;
+  text-align: center;
+  color: #FFFFFF;
+}
+
+.inviteTitle {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.3;
+}
+
+.ctaGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.ctaButton {
+  display: block;
+  padding: 1rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.ctaPrimary {
+  background: #E6B89C;
+  color: #1E3D3A;
+}
+
+.ctaPrimary:hover {
+  background: #d4a78b;
+  transform: translateY(-2px);
+}
+
+.ctaSecondary {
+  background: transparent;
+  color: #FFFFFF;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.ctaSecondary:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.inviteNote {
+  font-size: 0.9rem;
+  color: #E0E0E0;
+  margin: 0 0 2rem 0;
+}
+
+.inviteFooter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #E0E0E0;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  padding-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.footerDot {
+  color: #E6B89C;
+  font-size: 0.5rem;
+}
+
+/* ==============================
+   TABLET (min-width: 640px)
+================================ */
+
+@media (min-width: 640px) {
+  .container {
+    padding: 0 2rem;
+  }
+
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+
+  .differenceGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .uttamStats {
+    flex-wrap: nowrap;
+  }
+
+  .factsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .trustGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ctaGroup {
+    flex-direction: row;
+    justify-content: center;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .ctaButton {
+    flex: 1;
+  }
+}
+
+/* ==============================
+   TABLET LANDSCAPE (min-width: 768px)
+================================ */
+
+@media (min-width: 768px) {
+  .hero {
+    padding: 4rem 0 3rem;
+  }
+
+  .heroTitle {
+    font-size: 3rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1.2rem;
+  }
+
+  .sectionTitle {
+    font-size: 2rem;
+  }
+
+  .coreText {
+    font-size: 1.2rem;
+  }
+
+  .statement {
+    font-size: 1.3rem;
+    padding: 2rem 0;
+  }
+
+  .uttamContent {
+    padding: 2.5rem;
+  }
+
+  .uttamName {
+    font-size: 3rem;
+  }
+
+  .uttamQuestion {
+    font-size: 1.6rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .factsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .audienceCloud {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .trustGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .inviteCard {
+    padding: 3rem 2.5rem;
+  }
+
+  .inviteTitle {
+    font-size: 2rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ==============================
+   DESKTOP (min-width: 1024px)
+================================ */
+
+@media (min-width: 1024px) {
+  .hero {
+    padding: 5rem 0 4rem;
+  }
+
+  .heroTitle {
+    font-size: 3.5rem;
+    max-width: 800px;
+  }
+
+  .coreText {
+    max-width: 800px;
+  }
+
+  .statement {
+    max-width: 800px;
+  }
+
+  .differenceGrid {
+    gap: 2rem;
+  }
+
+  .diffCard {
+    padding: 2rem;
+  }
+
+  .uttamCard {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .uttamStats {
+    gap: 2rem;
+  }
+
+  .uttamStat {
+    padding: 1.5rem 0.5rem;
+  }
+
+  .uttamStatNumber {
+    font-size: 1.5rem;
+  }
+
+  .facts {
+    padding: 3rem 0;
+  }
+
+  .factNumber {
+    font-size: 2.5rem;
+  }
+
+  .trustCard {
+    padding: 2rem 1.5rem;
+  }
+
+  .invite {
+    padding: 4rem 0;
+  }
+
+  .inviteCard {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 3.5rem;
+  }
+}
+
+/* ==============================
+   LARGE DESKTOP (min-width: 1280px)
+================================ */
+
+@media (min-width: 1280px) {
+  .container {
+    padding: 0 2rem;
+  }
+
+  .heroTitle {
+    font-size: 4rem;
+    max-width: 900px;
+  }
+
+  .differenceGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .uttamCard {
+    max-width: 1000px;
+  }
+}

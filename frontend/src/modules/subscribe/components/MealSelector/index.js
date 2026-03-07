@@ -1,3 +1,4 @@
+//frontend/src/modules/subscribe/components/MealSelector/index.js
 'use client';
 
 import React, { useState, useContext } from 'react';

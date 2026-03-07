@@ -1,4 +1,4 @@
-//frontend/sc/components/subscribe/index.js
+//frontend/src/modules/subscribe/components/SubscribeClient.js
 'use client';
 
 import { useState, useEffect, useContext } from 'react';
@@ -8,6 +8,7 @@ import { AppContext } from '@/shared/lib/AppContext';
 import styles from './Subscribe.module.css';
 import { toast } from 'sonner';
 import { Check, Clock, Calendar, ArrowRight, Edit2, Info, ShieldCheck } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
 // --- CONSTANTS ---
 const mealTypes = [
@@ -19,7 +20,7 @@ const deliveryFrequencies = [
   { id: 'mon-fri', name: 'Mon - Fri', days: 5 },
   { id: 'mon-sat', name: 'Mon - Sat', days: 6 },
   { id: 'mon-sun', name: 'Mon - Sun', days: 7 },
-  { id: 'custom', name: 'Custom', days: 0 }, 
+ // { id: 'custom', name: 'Custom', days: 0 }, 
 ];
 
 const daysOfWeek = [
@@ -36,6 +37,9 @@ const planRules = {
 export default function SubscribeClient() {
   const router = useRouter();
   const { addSubscription } = useContext(AppContext);
+  const searchParams = useSearchParams();
+  const mealFromURL = searchParams.get("meal");
+  const planFromURL = searchParams.get("plan");
 
   // --- STATE ---
   const [currentStep, setCurrentStep] = useState(1);
@@ -99,6 +103,71 @@ export default function SubscribeClient() {
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+    if (!mealFromURL) return;
+    if (!products || products.length === 0) return;
+
+    const formattedURL = mealFromURL.replace(/-/g, ' ').toLowerCase();
+
+    const matchedProduct = products.find(p =>
+    p.name.toLowerCase() === formattedURL
+    );
+
+     if (matchedProduct) {
+    setSelections(prev => ({
+      ...prev,
+      product: matchedProduct,
+      plan: null // ensure no auto plan
+    }));
+
+    setCurrentStep(1); // keep Step 1 visible
+    }
+
+    }, 
+    [mealFromURL, products]);
+
+useEffect(() => {
+    if (!planFromURL) return;
+    if (!products || products.length === 0) return;
+
+    const normalizedPlan = planFromURL.toLowerCase();
+
+  // Plan selection must happen only after product selected
+    if (!selections.product) return;
+
+    const matchedPlan = selections.product.plans?.find(p =>
+    p.plan_name.toLowerCase() === normalizedPlan
+    );
+
+    if (matchedPlan) {
+    setSelections(prev => ({
+      ...prev,
+      plan: matchedPlan
+    }));
+    }
+
+    }, [planFromURL, products, selections.product]);
+    
+useEffect(() => {
+    if (!selections.product) return;
+
+    // If plan already selected OR URL plan exists → do nothing
+    if (selections.plan || planFromURL) return;
+
+    const monthlyPlan = selections.product.plans?.find(
+    p => p.plan_name === "Monthly"
+    );
+
+    if (monthlyPlan) {
+    setSelections(prev => ({
+      ...prev,
+      plan: monthlyPlan
+    }));
+    }
+
+    }, [planFromURL, selections.plan, selections.product]);
+
+
   // --- 2. CALCULATIONS ---
   useEffect(() => {
     const { product, plan, frequency, customDays, quantity } = selections;
@@ -137,13 +206,22 @@ export default function SubscribeClient() {
 
   // --- HANDLERS ---
   const handleTypeSelect = (type) => {
-    setSelections(prev => ({ ...prev, mealType: type }));
-    setCurrentStep(2);
-  };
+  setSelections(prev => {
+    const updated = { ...prev, mealType: type };
+
+    if (updated.product) {
+      setCurrentStep(3);
+    } else {
+      setCurrentStep(2);
+    }
+
+    return updated;
+  });
+};
 
   const handleProductSelect = (product) => {
-    const firstValidPlan = product.plans.find(p => planRules[p.plan_name]) || product.plans[0];
-    setSelections(prev => ({ ...prev, product: product, plan: firstValidPlan }));
+    //const firstValidPlan = product.plans.find(p => planRules[p.plan_name]) || product.plans[0]; // Do NOT auto-select plan
+    setSelections(prev => ({ ...prev, product: product, plan: null })); // Do NOT auto-select plan
     setCurrentStep(3);
   };
 
@@ -159,33 +237,49 @@ export default function SubscribeClient() {
   };
 
   const handleProceedToCheckout = () => {
-    const { product, mealType, plan, startDate, quantity } = selections;
-    const rule = planRules[plan?.plan_name];
+  const token = document.cookie.includes("token");
 
-    if (!product || !plan || !startDate) return toast.error("Please complete all steps.");
-    
-    if (!rule?.isTrial && selections.frequency.id === 'custom' && summary.deliveryDaysText === 'None selected') {
-      return toast.error("Please select at least one delivery day.");
-    }
-    
-    addSubscription({
-      id: product.id,
-      name: product.name, 
-      mealType: mealType.name,
-      plan: plan, 
-      frequency: summary.deliveryDaysText, 
-      startDate: startDate, 
-      totalMeals: summary.totalMeals, 
-      originalAmount: summary.originalAmount,
-      discountAmount: summary.discountAmount,
-      totalPrice: summary.totalAmount,
-      quantity: quantity,
-      booking_type: product.booking_type,
-      base_price: product.base_price,
-      image_url: product.image_url
-    });
-    router.push('/checkout');
+  const { product, mealType, plan, startDate, quantity } = selections;
+  const rule = planRules[plan?.plan_name];
+
+  if (!product || !plan || !startDate) {
+    return toast.error("Please complete all steps.");
+  }
+
+  if (!rule?.isTrial && selections.frequency.id === 'custom' && summary.deliveryDaysText === 'None selected') {
+    return toast.error("Please select at least one delivery day.");
+  }
+
+  const subscriptionData = {
+    id: product.id,
+    name: product.name,
+    mealType: mealType.name,
+    plan: plan,
+    frequency: summary.deliveryDaysText,
+    startDate: startDate,
+    totalMeals: summary.totalMeals,
+    originalAmount: summary.originalAmount,
+    discountAmount: summary.discountAmount,
+    totalPrice: summary.totalAmount,
+    quantity: quantity,
+    booking_type: product.booking_type,
+    base_price: product.base_price,
+    image_url: product.image_url
   };
+
+  // Save draft in sessionStorage
+  sessionStorage.setItem("subscriptionDraft", JSON.stringify(subscriptionData));
+
+  // If not logged in → login page
+  if (!token) {
+    router.push("/login?redirect=checkout");
+    return;
+  }
+
+  // If logged in → continue
+  addSubscription(subscriptionData);
+  router.push("/checkout");
+};
 
   const getPricePerMeal = (plan) => {
     if (!plan?.price || !plan?.duration_days) return 0;
@@ -217,6 +311,16 @@ export default function SubscribeClient() {
         <div className={styles.mainCard}>
             
             {/* --- STEP 1: MEAL TYPE --- */}
+            {mealFromURL && selections.product && (
+            <div className={styles.preselectNote}>
+                <span className={styles.preselectLabel}>
+                {selections.product.name} selected
+                </span>
+                <span className={styles.preselectHint}>
+                Choose Lunch or Dinner to continue
+                </span>
+            </div>
+            )}
             <div className={`${styles.stepSection} ${currentStep >= 1 ? styles.activeStep : ''}`}>
                 <div className={styles.stepHeader}>
                     <div className={styles.stepNum}>1</div>
@@ -299,7 +403,12 @@ export default function SubscribeClient() {
                         <div className={styles.sectionBlock}>
                             <label className={styles.sectionLabel}>Select Duration</label>
                             <div className={styles.planCardsGrid}>
-                                {selections.product.plans?.map(p => {
+                                {[...selections.product.plans]
+  .sort((a, b) => {
+    const order = { Monthly: 1, Weekly: 2, Trial: 3 };
+    return (order[a.plan_name] || 99) - (order[b.plan_name] || 99);
+  })
+  .map(p => {
                                     const rule = planRules[p.plan_name];
                                     if (!rule) return null;
                                     const isSelected = selections.plan?.id === p.id;

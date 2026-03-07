@@ -1,322 +1,871 @@
-/* --- GLOBAL --- */
+/* frontend/src/app/(public)/coporate/Corporate.module.css */
+
 .pageContainer {
-    background-color: #FDFBF7;
-    min-height: 100vh;
-    color: #2c1810;
-    font-family: sans-serif;
-    overflow-x: hidden;
+  background-color: #faf7f2;
+  min-height: 100vh;
 }
 
-.maxWidthWrapper {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* --- HERO --- */
+/* Hero Section */
 .heroSection {
-    position: relative;
-    height: 500px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background-color: #1a1a1a; 
-    color: white;
-    margin-bottom: 80px;
+  position: relative;
+  height: 400px;
+  background: linear-gradient(135deg, #1a0f0a 0%, #2d1f18 100%);
+  overflow: hidden;
 }
-.heroImageWrapper {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
-}
+
 .heroOverlay {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.8));
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+  z-index: 1;
 }
+
+.heroImageWrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.heroImageWrapper img {
+  opacity: 0.6;
+}
+
 .heroContent {
-    position: relative; z-index: 2; max-width: 900px; padding: 0 20px;
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 24px;
+  color: white;
 }
-.heroTitle {
-    font-family: 'Times New Roman', serif;
-    font-size: clamp(3rem, 5vw, 4.5rem);
-    margin-bottom: 1.5rem;
-    line-height: 1.1;
-    color: #ffffff;
-}
-.heroSubtitle {
-    font-size: 1.25rem; color: #e5e5e5; max-width: 650px; margin: 0 auto; line-height: 1.8;
-}
+
 .heroBadge {
-    display: inline-block; color: #FCD34D; font-size: 0.8rem; letter-spacing: 3px; font-weight: 600;
-    margin-bottom: 25px; text-transform: uppercase; border-bottom: 1px solid #FCD34D; padding-bottom: 5px;
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
-/* --- MAIN GRID --- */
+.heroTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  max-width: 700px;
+  margin-bottom: 20px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.heroSubtitle {
+  font-size: 1.1rem;
+  max-width: 600px;
+  opacity: 0.9;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+/* Main Layout */
+.maxWidthWrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
 .mainGrid {
-    display: grid;
-    grid-template-columns: 1fr 450px;
-    gap: 80px;
-    align-items: start;
-    margin-bottom: 100px;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 40px;
+  margin: -60px 0 60px;
+  position: relative;
+  z-index: 10;
 }
-.leftContent { padding-top: 20px; }
-.sectionHeading { font-family: 'Times New Roman', serif; font-size: 2.5rem; color: #2c1810; margin-bottom: 1.5rem; }
-.bodyText { font-size: 1.15rem; color: #555; line-height: 1.7; margin-bottom: 50px; }
-.promiseGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-.promiseItem h4 { font-family: 'Times New Roman', serif; font-size: 1.3rem; margin: 10px 0 5px 0; }
-.promiseItem p { font-size: 0.95rem; color: #666; line-height: 1.5; }
 
-/* --- FORM --- */
-.stickyFormContainer { position: sticky; top: 40px; z-index: 10; }
+/* Left Content */
+.leftContent {
+  background: white;
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+
+.sectionHeading {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2d1f18;
+  margin-bottom: 24px;
+  line-height: 1.2;
+}
+
+.bodyText {
+  color: #4b5563;
+  line-height: 1.7;
+  font-size: 1.05rem;
+  margin-bottom: 40px;
+}
+
+.promiseGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.promiseItem {
+  text-align: center;
+  padding: 10px;
+}
+
+.promiseItem h4 {
+  color: #2d1f18;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.promiseItem p {
+  color: #6b7280;
+  font-size: 0.85rem;
+  line-height: 1.5;
+   margin: 0; 
+}
+
+/* Form Container */
+.stickyFormContainer {
+  position: sticky;
+  top: 100px;
+  align-self: start;
+}
+
 .formCard {
-    background: white; border-radius: 8px;
-    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
-    border-top: 5px solid #d97706; overflow: hidden;
-}
-.formHeader { padding: 30px 30px 10px 30px; text-align: center; background: #fff; }
-.formTitle { font-family: 'Times New Roman', serif; font-size: 1.8rem; margin: 0; color: #2c1810; }
-.formSubtitle { margin: 8px 0 0 0; color: #666; font-size: 0.9rem; }
-.formBody { padding: 20px 30px 30px 30px; display: flex; flex-direction: column; gap: 20px; }
-.row50 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.inputGroup { display: flex; flex-direction: column; gap: 6px; }
-.label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; color: #4b5563; text-transform: uppercase; margin-left: 2px; }
-.input, .select, .textarea {
-    width: 100%; padding: 12px 12px 12px 0; border: none; border-bottom: 1px solid #e5e7eb;
-    font-size: 1rem; background: transparent; color: #111; border-radius: 0; transition: border-color 0.2s;
-}
-.input:focus, .select:focus, .textarea:focus { outline: none; border-bottom-color: #d97706; }
-.select { cursor: pointer; background: white; }
-.submitBtn {
-    background: #2c1810; color: white; border: none; padding: 16px; font-weight: 600; font-size: 1rem;
-    cursor: pointer; margin-top: 10px; letter-spacing: 1px; text-transform: uppercase; width: 100%;
-    border-radius: 4px; transition: background 0.2s;
-}
-.submitBtn:hover { background: #d97706; }
-.tastingNote {
-    text-align: center; font-size: 0.8rem; color: #166534; display: flex; justify-content: center;
-    align-items: center; gap: 5px; background: #f0fdf4; padding: 8px; border-radius: 4px;
-}
-.directContactSection { margin-top: 10px; text-align: center; }
-.dividerOr { display: flex; align-items: center; color: #ccc; font-size: 0.75rem; margin-bottom: 15px; }
-.dividerOr::before, .dividerOr::after { content: ''; flex: 1; height: 1px; background: #eee; }
-.dividerOr span { padding: 0 10px; }
-.contactLabel { font-size: 0.85rem; color: #666; margin-bottom: 5px; }
-.phoneLink {
-    display: inline-flex; align-items: center; gap: 8px; color: #2c1810; font-weight: 700; font-size: 1.1rem;
-    text-decoration: none; padding: 8px 16px; border: 1px solid #eee; border-radius: 50px; transition: all 0.2s;
-}
-.phoneLink:hover { background: #fff8f1; border-color: #d97706; color: #d97706; }
-
-/* --- LOGO MARQUEE --- */
-.trustSection {
-    padding: 60px 0; background-color: #fff; border-top: 1px solid #f3f4f6;
-    border-bottom: 1px solid #f3f4f6; overflow: hidden;
-}
-.trustHeader {
-    text-align: center; font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; color: #9ca3af;
-    margin-bottom: 40px; text-transform: uppercase;
-}
-.marquee { display: flex; overflow: hidden; user-select: none; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
-.marqueeContent { display: flex; gap: 4rem; animation: scroll 30s linear infinite; padding-left: 4rem; }
-.logoItem { white-space: nowrap; font-size: 1.8rem; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; opacity: 0.8; }
-@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
-
-/* --- NEW CATERING JOURNEY (Stepper) --- */
-.processSection { padding: 80px 0; background: white; }
-
-.stepperWrapper {
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-    max-width: 1000px;
-    margin: 0 auto;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
 }
 
-.stepperLine {
-    position: absolute;
-    top: 35px;
-    left: 50px;
-    right: 50px;
-    height: 2px;
-    background: #e5e7eb;
-    z-index: 0;
+.formHeader {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  padding: 30px 24px;
+  text-align: center;
+  color: white;
 }
 
-.stepItem {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    flex: 1;
-    padding: 0 15px;
+.formTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
 }
 
-.stepIconBox {
-    width: 70px;
-    height: 70px;
-    background: #d97706;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 0 8px white;
-    margin-bottom: 25px;
-    transition: transform 0.3s ease;
+.formSubtitle {
+  font-size: 0.9rem;
+  opacity: 0.9;
 }
 
-.stepItem:hover .stepIconBox {
-    transform: scale(1.1);
-    background: #b45309;
+.formBody {
+  padding: 24px;
 }
 
-.stepTitle {
-    font-family: 'Times New Roman', serif;
-    font-size: 1.4rem;
-    color: #2c1810;
-    margin-bottom: 10px;
+/* Form Elements */
+.inputGroup {
+  margin-bottom: 20px;
 }
 
-.stepDesc {
-    font-size: 0.95rem;
-    color: #666;
-    line-height: 1.6;
-    max-width: 280px;
+.label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
 }
 
-/* RESPONSIVE */
-@media (max-width: 900px) {
-    .mainGrid { grid-template-columns: 1fr; gap: 50px; }
-    .stickyFormContainer { position: relative; top: 0; }
-    
-    .stepperWrapper {
-        flex-direction: column;
-        align-items: flex-start;
-        padding-left: 20px;
-    }
-    
-    .stepperLine {
-        top: 35px;
-        left: 55px;
-        right: auto;
-        width: 2px;
-        height: calc(100% - 70px);
-        bottom: 0;
-    }
-
-    .stepItem {
-        flex-direction: row;
-        align-items: flex-start;
-        text-align: left;
-        margin-bottom: 40px;
-        width: 100%;
-    }
-
-    .stepIconBox {
-        width: 60px; height: 60px;
-        margin-right: 20px;
-        flex-shrink: 0;
-        margin-bottom: 0;
-        box-shadow: 0 0 0 10px white;
-    }
-
-    .stepDesc { max-width: 100%; }
+.requiredStar {
+  color: #dc2626;
+  margin-left: 2px;
 }
 
-/* --- PHONE INPUT STYLING (Fixed Alignment) --- */
-.phoneInputWrapper {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border-bottom: 1px solid #e5e7eb;
-    padding-top: 0; /* Remove top padding - let the parent handle it */
-    padding-bottom: 12px;
-    transition: border-color 0.2s;
-    width: 100%;
-    flex-wrap: nowrap;
-    min-height: 44px;
-    margin-top: 6px; /* Match the margin of regular inputs */
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  background: #f9fafb;
 }
 
-/* Make sure regular inputs have consistent styling */
-.input, .phoneInput {
-    border: none;
-    background: transparent;
-    color: #111;
-    outline: none;
-    width: 100%;
-    font-size: 1rem;
-    padding: 12px 0; /* Consistent padding */
-    margin: 0;
-    line-height: 1.5;
+.inputWrapper:hover {
+  border-color: #d1d5db;
+  background: white;
 }
 
-/* Update the regular input styles to match */
+.inputWrapperFocused {
+  border-color: #d97706;
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
+  background: white;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 12px;
+  color: #9ca3af;
+}
+
 .input {
-    border-bottom: 1px solid #e5e7eb;
-    padding: 12px 0;
-    margin-top: 6px;
+  width: 100%;
+  padding: 14px 14px 14px 42px;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: #1f2937;
+  outline: none;
 }
 
-.input:focus {
-    border-bottom-color: #d97706;
+.input::placeholder {
+  color: #9ca3af;
 }
 
-.phoneInputWrapper:focus-within {
-    border-bottom-color: #d97706;
+/* Phone Input */
+.phoneInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  background: #f9fafb;
+}
+
+.phoneInputWrapper:hover {
+  border-color: #d1d5db;
+  background: white;
+}
+
+.phoneInputWrapperFocused {
+  border-color: #d97706;
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
+  background: white;
+}
+
+.phoneIcon {
+  position: absolute;
+  left: 12px;
+  color: #9ca3af;
+  z-index: 1;
 }
 
 .countryCode {
-    font-size: 1rem;
-    color: #111;
-    font-weight: 500;
-    margin-right: 12px;
-    padding-right: 12px;
-    border-right: 1px solid #e5e7eb;
-    line-height: 1.5;
-    white-space: nowrap;
-    flex-shrink: 0;
-    padding-top: 12px; /* Align text vertically with input */
-    padding-bottom: 12px;
+  position: absolute;
+  left: 42px;
+  color: #4b5563;
+  font-weight: 500;
+  font-size: 0.95rem;
+  background: transparent;
+  padding-right: 8px;
+  border-right: 1px solid #e5e7eb;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .phoneInput {
-    flex: 1;
-    min-width: 0;
-    padding: 12px 0; /* Match regular input padding */
-    margin: 0;
-    font-size: 1rem;
-    line-height: 1.5;
-    background: transparent;
-    color: #111;
-    outline: none;
-    width: 100%;
-    border: none;
+  width: 100%;
+  padding: 14px 14px 14px 98px;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: #1f2937;
+  outline: none;
 }
 
 .phoneInput::placeholder {
-    color: #9ca3af;
-    opacity: 1;
+  color: #9ca3af;
 }
 
-/* Ensure the input group has consistent spacing */
-.inputGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+/* Two Column Layout */
+.row50 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
-/* Alternative more aggressive fix */
-.phoneInput {
-    flex: 1;
-    min-width: 0;
-    border: none !important;
-    padding: 12px 0 !important;  /* More padding */
-    margin: 0 !important;
-    font-size: 1rem !important;
-    line-height: 1.5 !important;
-    background: transparent !important;
-    color: #111 !important;
-    outline: none !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
+
+.selectWrapper {
+  position: relative;
+}
+
+.select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f9fafb;
+  font-size: 0.95rem;
+  color: #1f2937;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.select:hover {
+  border-color: #d1d5db;
+  background: white;
+}
+
+.select:focus {
+  border-color: #d97706;
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
+}
+
+/* Textarea */
+.textareaWrapper {
+  position: relative;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  background: #f9fafb;
+}
+
+.textareaWrapper:hover {
+  border-color: #d1d5db;
+  background: white;
+}
+
+.textareaWrapperFocused {
+  border-color: #d97706;
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
+  background: white;
+}
+
+.textareaIcon {
+  position: absolute;
+  top: 14px;
+  left: 12px;
+  color: #9ca3af;
+}
+
+.textarea {
+  width: 100%;
+  padding: 14px 14px 14px 42px;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: #1f2937;
+  outline: none;
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.textarea::placeholder {
+  color: #9ca3af;
+}
+
+/* Submit Button */
+.submitBtn {
+  width: 100%;
+  padding: 16px 24px;
+  background: #d97706;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: #b45309;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(217, 119, 6, 0.2);
+}
+
+.submitBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submitBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Tasting Note */
+.tastingNote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 0.875rem;
+  color: #166534;
+}
+
+/* Direct Contact */
+.directContactSection {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.dividerOr {
+  position: relative;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.dividerOr::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #e5e7eb;
+  z-index: 1;
+}
+
+.dividerOr span {
+  position: relative;
+  z-index: 2;
+  background: white;
+  padding: 0 12px;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.contactLabel {
+  color: #4b5563;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.phoneLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #f3f4f6;
+  border-radius: 100px;
+  color: #d97706;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.phoneLink:hover {
+  background: #e5e7eb;
+  transform: scale(1.05);
+}
+
+/* Success View */
+.successView {
+  padding: 40px 24px;
+  text-align: center;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.successIconWrapper {
+  background: #dcfce7;
+  padding: 1.5rem;
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.successMessage {
+  color: #4b5563;
+  margin-bottom: 2rem;
+  line-height: 1.7;
+}
+
+.successInfoBox {
+  background: #f3f4f6;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #1f2937;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.resetBtn {
+  background: transparent;
+  border: 1px solid #3e2723;
+  color: #3e2723;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resetBtn:hover {
+  background: #3e2723;
+  color: white;
+}
+
+/* Error Message */
+.errorMessage {
+  color: #dc2626;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 12px;
+  background: #fee2e2;
+  border-radius: 8px;
+}
+
+/* Trust Section */
+.trustSection {
+  background: white;
+  padding: 40px 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.trustHeader {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.875rem;
+  letter-spacing: 2px;
+  margin-bottom: 30px;
+}
+
+.marquee {
+  overflow: hidden;
+  position: relative;
+}
+
+.marquee::before,
+.marquee::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.marquee::before {
+  left: 0;
+  background: linear-gradient(90deg, white, transparent);
+}
+
+.marquee::after {
+  right: 0;
+  background: linear-gradient(-90deg, white, transparent);
+}
+
+.marqueeContent {
+  display: flex;
+  animation: scroll 30s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.logoItem {
+  display: inline-block;
+  padding: 0 30px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.logoItem:hover {
+  opacity: 1;
+}
+
+/* Process Section */
+.processSection {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #faf7f2 0%, #f5efe8 100%);
+}
+
+.processSection .sectionHeading {
+  text-align: center;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.stepperWrapper {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+.stepperLine {
+  position: absolute;
+  top: 64px;
+  left: 80px;
+  right: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, #e5e7eb, #d97706, #e5e7eb);
+  z-index: 1;
+}
+
+.stepItem {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 30px;
+  margin-bottom: 40px;
+
+}
+
+.stepItem:last-child {
+  margin-bottom: 0;
+}
+
+.stepIconBox {
+  width: 80px;
+  height: 80px;
+  background: #d97706;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 20px rgba(217, 119, 6, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.stepItem:hover .stepIconBox {
+  transform: scale(1.05);
+}
+
+.stepContent {
+  padding-top: 15px;
+}
+
+.stepTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d1f18;
+  margin-bottom: 10px;
+}
+
+.stepDesc {
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 1024px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    margin-top: -40px;
+  }
+  
+  .stickyFormContainer {
+    position: static;
+  }
+  
+  .heroTitle {
+    white-space: normal; /* OVERRIDE - allow wrap on mobile */
+    font-size: 2rem; /* Keep your existing mobile size */
+    max-width: 100%; /* Allow full width on mobile */
+  }
+}
+
+@media (max-width: 768px) {
+  .heroSection {
+    height: 350px;
+  }
+  
+  .heroContent {
+    padding: 40px 20px;
+  }
+  
+  .heroTitle {
+    font-size: 2rem;
+  }
+  
+  .heroSubtitle {
+    white-space: normal; /* OVERRIDE - allow wrap on mobile */
+    font-size: 1rem; /* Keep your existing mobile size */
+    max-width: 100%; /* Allow full width on mobile */
+
+  }
+  
+  .leftContent {
+    padding: 30px 20px;
+  }
+  
+  .sectionHeading {
+    font-size: 1.75rem;
+  }
+  
+  .promiseGrid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+  
+  .row50 {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .formBody {
+    padding: 20px;
+  }
+  
+  .stepperWrapper {
+    padding: 20px 0;
+  }
+  
+  .stepperLine {
+    display: none;
+  }
+  
+  .stepItem {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .stepIconBox {
+    margin: 0 auto;
+  }
+  
+  .stepContent {
+    padding-top: 0;
+  }
+  
+  .marquee::before,
+  .marquee::after {
+    width: 50px;
+  }
+  
+  .logoItem {
+    padding: 0 20px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroTitle {
+    font-size: 1.75rem;
+    white-space: normal; /* Ensure wrap on small phones */
+  }
+
+  .heroSubtitle {
+    font-size: 0.95rem;
+    white-space: normal; /* Ensure wrap on small phones */
+  }
+  
+  .heroBadge {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+  
+  .formTitle {
+    font-size: 1.25rem;
+  }
+  
+  .input,
+  .phoneInput,
+  .select {
+    padding: 12px 12px 12px 38px;
+    font-size: 16px; /* Prevents zoom on mobile */
+  }
+  
+  .phoneInput {
+    padding-left: 88px;
+  }
+  
+  .countryCode {
+    left: 38px;
+    font-size: 16px;
+  }
+  
+  .inputIcon,
+  .phoneIcon,
+  .textareaIcon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .submitBtn {
+    padding: 14px 20px;
+  }
+  
+  .successView {
+    padding: 30px 20px;
+    min-height: auto;
+  }
+  
+  .successIconWrapper {
+    padding: 1.2rem;
+  }
+  
+  .processSection {
+    padding: 60px 0;
+  }
+}
+
+/* Touch-friendly improvements for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .input,
+  .phoneInput,
+  .select,
+  .textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  .submitBtn {
+    min-height: 56px; /* Larger touch target */
+  }
+  
+  .phoneLink {
+    min-height: 56px;
+    padding: 14px 28px;
+  }
+}
+
+/* Remove spinner from number input */
+.input[type=number]::-webkit-inner-spin-button,
+.input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input[type=number] {
+  -moz-appearance: textfield;
 }

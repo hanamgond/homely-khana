@@ -1,3 +1,4 @@
+//frontend/src/modules/subscribe/components/OfferingList/index.js
 'use client';
 
 import Image from "next/image";

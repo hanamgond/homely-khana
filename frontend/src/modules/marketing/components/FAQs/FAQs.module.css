@@ -1,0 +1,117 @@
+/* frontend/src/modules/marketing/components/FAQs/FAQ.module.css */
+/* --- FAQ SECTION --- */
+
+.container {
+    background: #faf7f3;
+    padding: 30px 20px 60px 20px;
+}
+
+/* --- HEADER --- */
+.maxWidthWrapper {
+    margin: 0 auto 32px auto;
+    text-align: center;
+}
+
+.header {
+    max-width: 800px;
+    margin: 0 auto 32px auto;
+    text-align: center;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    font-size: 15px;
+    color: #6b7280;
+}
+
+/* --- FAQ LIST --- */
+
+.faqList {
+    max-width: 800px;
+    margin: 30px auto 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* --- CARD --- */
+
+.wrapper {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+/* --- QUESTION --- */
+
+.questionContainer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 1rem 1.25rem;
+
+    background: none;
+    border: none;
+
+    font-size: 1rem;
+    font-weight: 600;
+
+    text-align: left;
+    cursor: pointer;
+
+    color: #1f2937;
+}
+
+.questionText {
+    margin: 0;
+}
+
+/* --- PLUS ICON --- */
+
+.plus {
+    font-size: 18px;
+    color: #6b7280;
+}
+
+/* --- ANSWER --- */
+
+.answerContainer {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.3s ease, opacity 0.3s ease;
+}
+
+.answerContent {
+    padding: 0 1.25rem 1.25rem 1.25rem;
+
+    color: #4b5563;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* --- MOBILE --- */
+
+@media (max-width: 768px) {
+
+.container {
+    padding: 40px 16px;
+}
+
+.title {
+    font-size: 1.8rem;
+}
+
+.subtitle {
+    font-size: 0.95rem;
+}
+
+}

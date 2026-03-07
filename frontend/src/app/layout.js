@@ -1,7 +1,13 @@
-import "@/shared/styles/globals.css";
+//frontend/src/app/layout.js
 import Header from "@/shared/ui/Header";
 import Footer from "@/shared/ui/Footer";
-import { Providers } from "./providers"; // Import the wrapper
+import { Providers } from "./providers";
+import "@/shared/styles/globals.css";
+
+export const metadata = {
+  title: "HomelyKhana",
+  description: "Homemade food delivery service",
+};
 
 export default function RootLayout({ children }) {
   return (
@@ -9,7 +15,9 @@ export default function RootLayout({ children }) {
       <body>
         <Providers>
           <Header />
-          <main style={{ minHeight: "80vh" }}>{children}</main>
+          <main style={{ minHeight: "80vh" }}>
+            {children}
+          </main>
           <Footer />
         </Providers>
       </body>

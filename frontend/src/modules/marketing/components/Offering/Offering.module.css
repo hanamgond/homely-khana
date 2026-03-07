@@ -1,157 +1,239 @@
+/* frontend/src/modules/marketing/components/Offering/Offerings.module.css */
+
+.section {
+    /* Tightened padding as requested for compact sections */
+    padding: 40px 20px;
+    /* Unified background to match the warm homepage style */
+    background: linear-gradient(to bottom, #fffaf5, #ffffff);
+}
+
+.sectionHeader {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sectionHeader h2 {
+    /*font-size: clamp(1.2rem, 4vw, 2.2rem); */
+    font-size: 1.2 rem;
+    font-weight: 400;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.sectionHeader p {
+    color: #6b7280;
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 0.95rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative; /* Essential for positioning the arrows */
+}
+
+/* --- PREMIUM CAROUSEL ARROWS --- */
+.navArrow {
+    display: flex; /* Flex makes centering the icon easier */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #f3f4f6;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: #10b981; /* Matches your brand green */
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.2s ease;
+}
+
+.navArrow:hover {
+    background: #ffffff;
+    color: #059669;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+}
+
+.prev { left: -15px; }
+.next { right: -15px; }
+
+/* CAROUSEL LOGIC (Mobile First) */
+.offeringsWrapper {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 10px 0 25px 0;
+    scrollbar-width: none; /* Hides scrollbar on Firefox */
+}
+
+.offeringsWrapper::-webkit-scrollbar {
+    display: none; /* Hides scrollbar on Chrome/Safari */
+}
+
+.slideItem {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+}
+
+/* DESKTOP GRID VIEW (4 items per row) */
+@media (min-width: 992px) {
+    .offeringsWrapper {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        overflow: visible;
+        scroll-snap-type: none;
+    }
+
+    .slideItem { flex: unset; }
+    .navDots, .navArrow { display: none; } /* Hide mobile nav on desktop */
+}
+
+/* CARD STYLES */
 .offeringCard {
-    background-color: #fff;
+    background: #fff;
     border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #f3f4f6;
+    overflow: hidden;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    border: 1px solid #f0f0f0;
-    height: 100%; /* Ensure full height */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .offeringCard:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.08);
 }
 
 .imageContainer {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 9; /* Shorter image height */
-    background-color: #f3f4f6;
+    aspect-ratio: 16 / 8; /* Slightly taller than 16/9 to address "too small" concern */
 }
 
-.trialBadge {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background-color: rgba(0, 0, 0, 0.75);
-    color: white;
-    padding: 3px 10px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    border-radius: 20px;
-    backdrop-filter: blur(4px);
-}
-
-/* COMPACT CONTENT STYLES */
 .offeringContent {
-    padding: 1rem; /* Reduced from 1.25rem */
-    display: flex;
-    flex-direction: column;
+    padding: 0.9rem;
     flex-grow: 1;
-    gap: 0.5rem; /* Manage vertical rhythm */
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
 }
 
 .title {
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1.rem;
+    font-weight: 800;
     color: #111827;
-    margin: 0;
-    line-height: 1.2;
 }
 
 .rating {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
+    margin-bottom: 10px;
 }
 
 .reviews {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin-top: 1px;
+    font-size: 0.8rem;
+    color: #9ca3af;
 }
 
 .caption {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: #4b5563;
-    margin: 0;
-    line-height: 1.4;
+    line-height: 1.5;
+    margin-bottom: 8px;
+    /* Truncates at 3 lines instead of 2 for better descriptions */
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* Limit description to 2 lines */
+    -webkit-line-clamp: 3; 
     -webkit-box-orient: vertical;
     overflow: hidden;
-}
-
-.itemsList {
-    list-style: none;
-    padding: 0;
-    margin: 0.5rem 0 0 0;
 }
 
 .itemsList li {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     font-size: 0.8rem;
     color: #374151;
     margin-bottom: 4px;
 }
 
-.checkIcon {
-    color: #16a34a; /* Darker green for visibility */
-    width: 14px;
-    height: 14px;
-}
+.checkIcon { color: #10b981; }
 
-/* COMPACT FOOTER */
 .footer {
-    padding: 0.8rem 1rem 1rem 1rem;
-    margin-top: auto;
+    padding: 0.8rem 1rem;
     border-top: 1px solid #f9fafb;
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 8px;
 }
 
 .pricingContainer {
     display: flex;
     align-items: baseline;
-    gap: 4px;
 }
 
-.currency {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #111827;
-}
-
-.bigPrice {
-    font-size: 1.4rem; /* Slightly smaller to fit better */
-    font-weight: 800;
-    color: #111827;
-    line-height: 1;
-}
-
-.perLabel {
-    font-size: 0.8rem;
-    color: #6b7280;
-    font-weight: 500;
-}
+.bigPrice { font-size: 1.5rem; font-weight: 800; color: #111827; }
+.perLabel { font-size: 0.85rem; color: #6b7280; margin-left: 4px; }
 
 .orderButton {
-    background-color: #10b981;
+    background: #10b981;
     color: white;
     border: none;
-    border-radius: 8px;
-    padding: 10px; /* Reduced button height */
-    font-size: 0.95rem;
+    padding: 12px;
+    border-radius: 10px;
     font-weight: 700;
     cursor: pointer;
-    width: 100%;
-    transition: background-color 0.2s ease;
-    text-align: center;
+    transition: background 0.2s;
 }
 
-.orderButton:hover {
-    background-color: #059669;
+.orderButton:hover { background: #059669; }
+
+/* MOBILE DOTS */
+.navDots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    border: none;
+    cursor: pointer;
+}
+
+.activeDot {
+    width: 24px;
+    background: #10b981;
+    border-radius: 10px;
+}
+
+.titleRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.vegIcon {
+    width: 14px;
+    height: 14px;
+}
+
+.title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
 }

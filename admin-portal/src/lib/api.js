@@ -1,5 +1,4 @@
 //admin-portal/src/lib/api.js
-// admin-portal/src/lib/api.js
 
 export const createApiClient = (token) => {
 

@@ -1,70 +1,85 @@
+//frontend/src/modules/marketing/components/Testimonials/index.js
 'use client';
 
-import Image from 'next/image'; // 1. Use the optimized Image component
-import styles from './Testimonials.module.css'; // Assumes colocation
+import React, { useState, useRef } from 'react';
+import Image from 'next/image';
+import styles from './Testimonials.module.css';
 
-// Using consistent testimonial data
 const testimonials = [
-    { name: 'Priya Sharma', role: 'Software Engineer', image: '/testimonials/priya.jpg', review: '"HomelyKhana has been a lifesaver! The food tastes just like my mom\'s cooking. The freshness and quality are unmatched."' },
-    { name: 'Rahul Verma', role: 'Marketing Manager', image: '/testimonials/rahul.jpg', review: '"As someone who works long hours, having healthy homemade meals delivered daily has changed my life. The variety is great and the delivery is always on time."' },
-    { name: 'Anjali Patel', role: 'Teacher', image: '/testimonials/anjali.jpg', review: '"I was skeptical at first, but the trial convinced me. The meals are delicious, portions are perfect, and it\'s so convenient. My family loves the food too!"' },
-    { name: 'Amit Kumar', role: 'Entrepreneur', image: '/testimonials/amit.jpg', review: '"Great service with authentic taste. The subscription flexibility is excellent. I can pause or modify my plan anytime."' },
+    { name: 'Priya Sharma', role: 'Software Engineer', initials: 'PS', review: '"HomelyKhana has been a lifesaver! The food tastes just like my mom\'s cooking. The freshness and quality are unmatched. I\'ve been subscribing for 6 months now and couldn\'t be happier!"' },
+    { name: 'Rahul Verma', role: 'Marketing Manager', initials: 'RV', review: '"As someone who works long hours, having healthy homemade meals delivered daily has changed my life. The variety is great and the delivery is always on time. Highly recommend!"' },
+    { name: 'Anjali Patel', role: 'Teacher', initials: 'AP', review: '"I was skeptical at first, but the trial convinced me. The meals are delicious, portions are perfect, and it\'s so convenient. My family loves the food too!"' },
+    { name: 'Amit Kumar', role: 'Entrepreneur', initials: 'AK', review: '"Great service with authentic taste. The subscription flexibility is excellent. I can pause or modify my plan anytime. The customer service is also very responsive."' },
 ];
 
-// Splitting the array just to match the two separate iterators from your error log
-const featuredTestimonials = testimonials.slice(0, 2);
-const otherTestimonials = testimonials.slice(2, 4);
-
 export default function TestimonialSection() {
+    const [activeTestimonial, setActiveTestimonial] = useState(0);
+    const scrollRef = useRef(null);
+
+    // Synchronizes the active dot with the current scroll position
+    const handleScroll = (e) => {
+        const width = e.target.offsetWidth;
+        const scrollPosition = e.target.scrollLeft;
+        const index = Math.round(scrollPosition / width);
+        setActiveTestimonial(index);
+    };
+
+    // Smoothly scrolls to a specific card when a dot is clicked
+    const scrollTo = (index) => {
+        if (scrollRef.current) {
+            const width = scrollRef.current.offsetWidth;
+            scrollRef.current.scrollTo({
+                left: width * index,
+                behavior: 'smooth'
+            });
+        }
+    };
+
     return (
         <section className={styles.section}>
-             <div className={styles.sectionHeader}>
-                <h2>What Our Customers Say</h2>
-                <p>Join thousands of happy customers who trust HomelyKhana for their daily meals</p>
+            <div className={styles.sectionHeader}>
+                <span className={styles.upperTitle}>What Our Customers Say</span>
+                <p>Trusted by families & working professionals across Bangalore</p>
             </div>
-            <div className={styles.testimonialsGrid}>
-                {/* --- First Iterator --- */}
-                {featuredTestimonials.map(testimonial => (
-                    // 2. Add a unique "key" prop to the root element of the map
-                    <div key={testimonial.name} className={styles.testimonialCard}>
-                        <div className={styles.testimonialHeader}>
-                            <Image 
-                                src={testimonial.image} 
-                                // 3. Add a descriptive "alt" prop
-                                alt={`Portrait of ${testimonial.name}`}
-                                width={50} 
-                                height={50} 
-                                className={styles.testimonialAvatar} 
-                            />
-                            <div>
-                                <h3>{testimonial.name}</h3>
-                                <p className={styles.role}>{testimonial.role}</p>
+
+            <div className={styles.carouselContainer}>
+                <div
+                    className={styles.testimonialSlider}
+                    ref={scrollRef}
+                    onScroll={handleScroll}
+                >
+                    {testimonials.map((t, index) => (
+                        <div key={index} className={styles.testimonialCard}>
+                            <div className={styles.quoteIcon}>“</div>
+                            <div className={styles.stars}>★★★★★</div>
+                            <p className={styles.reviewText}>{t.review}</p>
+                            
+                            <div className={styles.testimonialFooter}>
+                                <div className={styles.testimonialAvatar}>
+                                    {t.initials}
+                                </div>
+                                <div>
+                                    <h3 className={styles.name}>{t.name}</h3>
+                                    <p className={styles.role}>{t.role}</p>
+                                </div>
                             </div>
                         </div>
-                        <div className={styles.testimonialStars}>★★★★★</div>
-                        <p className={styles.reviewText}>{testimonial.review}</p>
-                    </div>
-                ))}
-                {/* --- Second Iterator --- */}
-                {otherTestimonials.map(testimonial => (
-                    <div key={testimonial.name} className={styles.testimonialCard}>
-                        <div className={styles.testimonialHeader}>
-                            <Image 
-                                src={testimonial.image} 
-                                alt={`Portrait of ${testimonial.name}`}
-                                width={50} 
-                                height={50} 
-                                className={styles.testimonialAvatar} 
-                            />
-                            <div>
-                                <h3>{testimonial.name}</h3>
-                                <p className={styles.role}>{testimonial.role}</p>
-                            </div>
-                        </div>
-                        <div className={styles.testimonialStars}>★★★★★</div>
-                        <p className={styles.reviewText}>{testimonial.review}</p>
-                    </div>
-                ))}
+                    ))}
+                </div>
+
+                {/* Mobile-only navigation dots */}
+                <div className={styles.navDots}>
+                    {testimonials.map((_, i) => (
+                        <button
+                            key={i}
+                            className={`${styles.dot} ${
+                                activeTestimonial === i ? styles.activeDot : ""
+                            }`}
+                            onClick={() => scrollTo(i)}
+                            aria-label={`Go to testimonial ${i + 1}`}
+                        />
+                    ))}
+                </div>
             </div>
         </section>
     );

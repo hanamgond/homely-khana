@@ -1,22 +1,27 @@
-// frontend/src/components/Hero.jsx
-import Link from "next/link";
+// frontend/src/modules/marketing/components/Hero/index.js
+'use client';
 
-export default function Hero(){
+import Link from "next/link";
+import styles from "./Hero.module.css";
+
+export default function Hero() {
   return (
-    <section className="hero" style={{ backgroundImage: `url('/hero-banner.jpg')` }}>
-      <div className="hero__overlay" />
-      <div className="hero__content">
+    <section className={styles.hero}>
+      <div className={styles.heroContent}>
         <h1>
-          Order Healthy &nbsp;
-          <span className="accent">Homely Food</span>
+          Order Healthy & <span className={styles.accent}>Homely Food</span>
         </h1>
-        <p style={{color:'rgba(255,255,255,0.92)', maxWidth:760, margin:'12px auto 0'}}>
+        <p>
           Fresh, home-cooked meals delivered to your doorstep. Subscribe now and never worry about meal planning again.
         </p>
 
-        <div className="cta-group" style={{marginTop:18}}>
-          <Link href="/subscribe" legacyBehavior><a className="btn-primary">Start Your Subscription</a></Link>
-          <Link href="/subscribe?trial=3" legacyBehavior><a className="btn-ghost">Try 3-Day Trial</a></Link>
+        <div className={styles.ctaGroup}>
+          <Link href="/subscribe" className={`${styles.ctaButton} ${styles.primary}`}>
+            Start Your Subscription →
+          </Link>
+          <Link href="/subscribe?plan=trial" className={`${styles.ctaButton} ${styles.secondary}`}>
+            Try 3-Day Trial
+          </Link>
         </div>
       </div>
     </section>

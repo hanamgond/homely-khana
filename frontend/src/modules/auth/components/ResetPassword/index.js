@@ -1,3 +1,4 @@
+//frontend/src/modules/auth/components/ResetPassword/index.js
 'use client';
 
 import { useState, use } from 'react';

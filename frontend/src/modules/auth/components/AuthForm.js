@@ -76,28 +76,30 @@ export default function AuthForm({ defaultTab = 'login' }) {
 
     // --- 2. VERIFY OTP ---
     const handleVerifyOtp = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-        setFormError("");
+    e.preventDefault();
+    setIsLoading(true);
+    setFormError("");
 
-        try {
-            // Refactored to use AuthService
-            await AuthService.verifyOtp(formData.email, otp);
+    try {
+        const data = await AuthService.verifyOtp(formData.email, otp);
 
-            // If successful
-            toast.success("Verified! Please login.");
-            setActiveTab('login');
-            // Clear sensitive fields
-            setFormData(prev => ({ ...prev, password: '', confirmPassword: '' }));
-            
-        } catch (err) {
-            console.error(err);
-            const msg = err.response?.data?.message || "Invalid OTP or Verification failed.";
-            setFormError(msg);
-        } finally {
-            setIsLoading(false);
+        if (data.user) {
+            login(data.user); // update AppContext
         }
-    };
+
+        toast.success("Account created successfully!");
+        const redirect = new URLSearchParams(window.location.search).get("redirect");
+
+        router.push(redirect ? `/${redirect}` : "/");
+
+    } catch (err) {
+        console.error(err);
+        const msg = err.response?.data?.message || "Invalid OTP or Verification failed.";
+        setFormError(msg);
+    } finally {
+        setIsLoading(false);
+    }
+};
 
     // --- 3. LOGIN (Existing) ---
     const handleLogin = async () => {
@@ -115,7 +117,9 @@ export default function AuthForm({ defaultTab = 'login' }) {
             }
             
             toast.success("Login successful!");
-            router.push("/"); 
+            const redirect = new URLSearchParams(window.location.search).get("redirect");
+
+            router.push(redirect ? `/${redirect}` : "/");
 
         } catch (error) {
             console.error("Login Error:", error);
