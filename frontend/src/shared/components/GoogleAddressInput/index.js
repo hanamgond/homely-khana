@@ -113,7 +113,7 @@ export default function GoogleAddressInput({ onAddressSelect }) {
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search 'Seawoods Grand Central'..."
+                    placeholder="Search your delivery location"
                     style={{
                         width: '100%',
                         padding: '0.75rem 1rem 0.75rem 2.5rem',

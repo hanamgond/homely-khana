@@ -43,7 +43,7 @@ export default function CheckoutClient() {
   });
   
   const [editingAddressId, setEditingAddressId] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState('online');
+  const [paymentMethod, setPaymentMethod] = useState('cod');
   const [isLoading, setIsLoading] = useState(false);
 
   const isCartEmpty = !cart || (cart.lunch.length === 0 && cart.dinner.length === 0);
@@ -210,6 +210,17 @@ export default function CheckoutClient() {
   };
 
   const handleProceedToPayment = async () => {
+if (paymentMethod === "online") {
+  const confirmSwitch = confirm(
+    "Online payment integration is currently in progress.\n\nWould you like to place this order using Cash on Delivery instead?"
+  );
+
+  if (!confirmSwitch) {
+    return;
+  }
+
+  setPaymentMethod("cod");
+}
     if (!selectedAddressId) return toast.error("Please select a delivery address.");
     const finalAddress = savedAddresses.find(addr => addr.id === selectedAddressId);
     if (!finalAddress) return toast.error("Selected address invalid.");
@@ -221,18 +232,31 @@ export default function CheckoutClient() {
         method: "POST", headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cart, cartTotal, addressId: selectedAddressId, paymentMethod }),
       });
-      const data = await response.json();
-      if (!data.success) throw new Error(data.error);
+const data = await response.json().catch(() => null);
 
-      if (data.payment_session_id) {
-        const cashfree = await load({ mode: "sandbox" });
-        clearCart();
-        cashfree.checkout({ paymentSessionId: data.payment_session_id, redirectTarget: "_self" });
-      } else {
-        toast.success("Order placed successfully!");
-        clearCart();
-        router.push('/order-success');
-      }
+if (!data || !data.success) {
+  toast.error(data?.error || "Order could not be created.");
+  setIsLoading(false);
+  return;
+}
+
+// If payment method is COD → skip payment gateway
+if (paymentMethod === "cod") {
+  toast.success("Order placed successfully!");
+  clearCart();
+  router.push("/checkout/order-success");
+  return;
+}
+
+// Online payment (future use)
+if (data.payment_session_id) {
+  const cashfree = await load({ mode: "sandbox" });
+
+  cashfree.checkout({
+    paymentSessionId: data.payment_session_id,
+    redirectTarget: "_self"
+  });
+}
     } catch (error) {
       console.error("Payment Error:", error);
       toast.error(error.message || "Order placement failed.");
@@ -371,7 +395,7 @@ export default function CheckoutClient() {
                         <label className={`${styles.paymentOption} ${paymentMethod === 'online' ? styles.selectedPayment : ''}`}>
                             <input type="radio" name="payment" checked={paymentMethod === 'online'} onChange={() => setPaymentMethod('online')} />
                             <div className={styles.payIconBox}><CreditCard size={20} color="#d97706"/></div>
-                            <div className={styles.payInfo}><span className={styles.payTitle}>Pay Online</span><span className={styles.paySub}>UPI, Cards, Netbanking</span></div>
+                            <div className={styles.payInfo}><span className={styles.payTitle}>Pay Online (Coming Soon)</span><span className={styles.paySub}>UPI, Cards, Netbanking</span></div>
                         </label>
                         <label className={`${styles.paymentOption} ${paymentMethod === 'cod' ? styles.selectedPayment : ''}`}>
                             <input type="radio" name="payment" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} />
